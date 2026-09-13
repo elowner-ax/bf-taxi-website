@@ -1,37 +1,37 @@
 {
   "artboards": [
-    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 1280, "h": 1620, "title": "A · Éditorial encre" },
-    { "file": "DirectionB.dc.html", "x": 1400, "y": 0, "w": 1280, "h": 1620, "title": "B · Grille suisse" },
-    { "file": "DirectionC.dc.html", "x": 2800, "y": 0, "w": 1280, "h": 1700, "title": "C · Sable chaleureux" }
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 1280, "h": 1980, "title": "A · Éditorial encre" },
+    { "file": "DirectionB.dc.html", "x": 1400, "y": 0, "w": 1280, "h": 1980, "title": "B · Grille suisse" },
+    { "file": "DirectionC.dc.html", "x": 2800, "y": 0, "w": 1280, "h": 1980, "title": "C · Sable chaleureux" }
   ],
   "annotations": [
     {
       "id": "note-lecture",
       "x": 0,
-      "y": -230,
-      "w": 560,
-      "text": "BF Taxi — 3 directions pour la page d'accueil.\nMême contenu partout : seul l'habillage change, pour que la comparaison porte sur le style.\nChaque maquette a un sélecteur de couleur au-dessus du cadre (chip « accent ») pour tester une autre teinte."
+      "y": -250,
+      "w": 620,
+      "text": "BF Taxi — 3 directions pour la page d’accueil.\nMême contenu partout : seul l’habillage change, pour que la comparaison porte sur le style.\nChaque maquette a un sélecteur de couleur au-dessus du cadre (chip « accent ») pour tester une autre teinte."
     },
     {
       "id": "note-a",
       "x": 0,
-      "y": 1680,
-      "w": 560,
-      "text": "A · ÉDITORIAL ENCRE\nSérif Newsreader, bleu encre, angles droits, filets fins, aucune ombre. Le plus sobre et le plus « installé » : lit comme une revue, rassure une clientèle médicale et senior.\nContrepartie : peu de couleur, donc peu d'effet « waouh » au premier coup d'œil."
+      "y": 2050,
+      "w": 620,
+      "text": "A · ÉDITORIAL ENCRE\nSérif Newsreader, bleu encre, angles droits, filets fins, aucune ombre. Le plus sobre et le plus « installé » : lit comme une revue, rassure une clientèle médicale et senior.\nContrepartie : peu de couleur, donc peu d’effet immédiat au premier coup d’œil."
     },
     {
       "id": "note-b",
       "x": 1400,
-      "y": 1680,
-      "w": 560,
+      "y": 2050,
+      "w": 620,
       "text": "B · GRILLE SUISSE\nSans-serif Schibsted, grille apparente, jaune taxi en accent, noir franc. Le plus contemporain et le plus lisible : chaque information a sa case, le prix se lit de loin.\nContrepartie : plus froid, plus « agence » que « artisan »."
     },
     {
       "id": "note-c",
       "x": 2800,
-      "y": 1760,
-      "w": 560,
-      "text": "C · SABLE CHALEUREUX\nSérif Instrument, fond sable, vert sauge, formes arrondies, ombres douces. Le plus accueillant : parle d'abord au patient et à sa famille.\nContrepartie : moins « premium affaires » pour la clientèle Tesla / déplacement pro."
+      "y": 2050,
+      "w": 620,
+      "text": "C · SABLE CHALEUREUX\nSérif Instrument, fond sable, vert sauge, formes arrondies, ombres douces. Le plus accueillant : parle d’abord au patient et à sa famille.\nContrepartie : moins « premium affaires » pour la clientèle Tesla et les déplacements pro."
     }
   ],
   "launch": { "view": "canvas" }
