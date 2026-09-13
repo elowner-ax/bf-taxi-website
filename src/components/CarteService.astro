@@ -9,44 +9,34 @@ interface Props {
 const { service } = Astro.props;
 ---
 
-<a href={`/${service.slug}/`} class="carte carte-service">
-  <span class="icone-carte">
-    <Icone nom={service.icon} taille={22} />
-  </span>
+<a href={`/${service.slug}/`} class="carte">
+  <Icone nom={service.icon} taille={30} class="carte__icone" />
   <h3>{service.navLabel}</h3>
   <p>{service.accroche}</p>
-  <span class="carte-service__lien">
-    En savoir plus
-    <Icone nom="arrow" taille={16} />
-  </span>
+  <span class="carte__lien">En savoir plus →</span>
 </a>
 
 <style>
-  .carte-service {
+  .carte {
     display: flex;
     flex-direction: column;
   }
 
-  .carte-service p {
+  .carte :global(.carte__icone) {
+    color: var(--encre);
+    stroke-width: 1.3;
+    margin-bottom: 1.35rem;
+  }
+
+  .carte p {
     flex: 1;
   }
 
-  .carte-service__lien {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    margin-top: 1.15rem;
-    font-size: 0.88rem;
-    font-weight: 620;
-    color: var(--or);
-    transition: gap var(--transition);
-  }
-
-  .carte-service:hover .carte-service__lien {
-    gap: 0.7rem;
-  }
-
-  :global(.section-claire) .carte-service__lien {
-    color: var(--or-sombre);
+  .carte__lien {
+    display: block;
+    margin-top: 1.25rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--chaud);
   }
 </style>

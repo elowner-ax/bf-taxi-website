@@ -1,13 +1,11 @@
 ---
 /**
- * Accordéon de questions fréquentes, en <details> natifs : accessible au
- * clavier et aux lecteurs d'écran sans JavaScript, et le contenu des réponses
- * reste dans le HTML — donc indexable et citable par les moteurs génératifs.
+ * Accordéon en <details> natifs : accessible au clavier sans JavaScript, et
+ * le texte des réponses reste dans le HTML — donc indexable et citable.
  */
 interface Props {
   items: { question: string; reponse: string }[];
   titre?: string;
-  /** Le premier élément est déplié par défaut. */
   premierOuvert?: boolean;
 }
 
@@ -40,29 +38,18 @@ const { items, titre, premierOuvert = true } = Astro.props;
 
   .faq__liste {
     display: grid;
-    gap: 0.7rem;
+    gap: 0.6rem;
   }
 
   .faq__item {
-    border: 1px solid var(--bord);
-    border-radius: var(--r-md);
-    background: rgba(255, 255, 255, 0.025);
-    transition: border-color var(--transition), background-color var(--transition);
+    border: 1px solid var(--filet);
+    background: var(--blanc);
+    transition: border-color var(--transition);
   }
 
   .faq__item[open] {
-    border-color: rgba(255, 194, 51, 0.3);
-    background: rgba(255, 194, 51, 0.045);
-  }
-
-  :global(.section-claire) .faq__item {
-    background: #fff;
-    border-color: rgba(18, 20, 26, 0.09);
-  }
-
-  :global(.section-claire) .faq__item[open] {
-    border-color: rgba(217, 154, 0, 0.4);
-    background: #fffdf6;
+    border-color: var(--filet-fort);
+    background: var(--ivoire);
   }
 
   .faq__item summary {
@@ -70,10 +57,10 @@ const { items, titre, premierOuvert = true } = Astro.props;
     align-items: center;
     justify-content: space-between;
     gap: 1.1rem;
-    padding: 1.1rem 1.3rem;
+    padding: 1.1rem 1.4rem;
     cursor: pointer;
     font-weight: 600;
-    font-size: 1.005rem;
+    font-size: 1.01rem;
     list-style: none;
     line-height: 1.45;
   }
@@ -82,23 +69,25 @@ const { items, titre, premierOuvert = true } = Astro.props;
     display: none;
   }
 
+  .faq__item[open] summary {
+    border-bottom: 1px solid var(--filet);
+  }
+
+  /* Signe + / − dessiné en CSS, sans image ni police d'icônes. */
   .faq__signe {
     position: relative;
     flex-shrink: 0;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    border: 1px solid var(--bord-forte);
-    transition: transform var(--transition), border-color var(--transition);
+    width: 20px;
+    height: 20px;
   }
 
   .faq__signe::before,
   .faq__signe::after {
     content: '';
     position: absolute;
-    inset: 50% 5px auto;
-    height: 1.5px;
-    background: var(--or);
+    inset: 50% 0 auto;
+    height: 1.6px;
+    background: var(--chaud);
     transform: translateY(-50%);
     transition: opacity var(--transition);
   }
@@ -107,35 +96,18 @@ const { items, titre, premierOuvert = true } = Astro.props;
     transform: translateY(-50%) rotate(90deg);
   }
 
-  .faq__item[open] .faq__signe {
-    border-color: var(--or);
-  }
-
   .faq__item[open] .faq__signe::after {
     opacity: 0;
   }
 
-  :global(.section-claire) .faq__signe {
-    border-color: rgba(18, 20, 26, 0.18);
-  }
-
-  :global(.section-claire) .faq__signe::before,
-  :global(.section-claire) .faq__signe::after {
-    background: var(--or-sombre);
-  }
-
   .faq__reponse {
-    padding: 0 1.3rem 1.25rem;
+    padding: 1.25rem 1.4rem 1.4rem;
   }
 
   .faq__reponse p {
-    color: var(--texte-doux);
+    color: var(--texte-2);
     font-size: 0.97rem;
-    line-height: 1.7;
-    max-width: 72ch;
-  }
-
-  :global(.section-claire) .faq__reponse p {
-    color: var(--texte-sombre-doux);
+    line-height: 1.75;
+    max-width: 74ch;
   }
 </style>

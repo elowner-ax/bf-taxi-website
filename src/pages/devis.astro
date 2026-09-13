@@ -35,13 +35,13 @@ const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
         </p>
 
         <div class="devis__direct">
-          <a href={`tel:${CONTACT.phone}`} class="btn btn-or btn-large" data-evt="tel-devis">
+          <a href={`tel:${CONTACT.phone}`} class="btn btn-appel btn-large" data-evt="tel-devis">
             <Icone nom="phone" taille={19} />
             {CONTACT.phoneDisplay}
           </a>
           <a
             href={`https://wa.me/${CONTACT.whatsapp}?text=${encodeURIComponent('Bonjour, je souhaite un devis pour un trajet en taxi.')}`}
-            class="btn btn-whatsapp btn-large"
+            class="btn btn-contour btn-large"
             rel="noopener"
             target="_blank"
           >
@@ -214,7 +214,7 @@ const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
 
           <p class="formulaire__erreur" data-erreur hidden role="alert"></p>
 
-          <button type="submit" class="btn btn-or btn-large formulaire__envoi">
+          <button type="submit" class="btn btn-appel btn-large formulaire__envoi">
             <Icone nom="arrow" taille={19} />
             <span data-libelle-envoi>Envoyer ma demande</span>
           </button>
@@ -252,7 +252,7 @@ const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
   }
 
   .devis__accroche {
-    color: var(--texte-doux);
+    color: var(--texte-2);
     margin-top: 1.1rem;
     line-height: 1.7;
     max-width: 48ch;
@@ -272,7 +272,7 @@ const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
     gap: 1.05rem;
     margin-top: 2.25rem;
     padding-top: 2rem;
-    border-top: 1px solid var(--bord);
+    border-top: 1px solid var(--filet);
   }
 
   .devis__points li {
@@ -282,7 +282,7 @@ const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
   }
 
   .devis__points :global(svg) {
-    color: var(--or);
+    color: var(--chaud);
     flex-shrink: 0;
     margin-top: 0.15rem;
   }
@@ -291,7 +291,7 @@ const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
     display: flex;
     flex-direction: column;
     font-size: 0.89rem;
-    color: var(--texte-faible);
+    color: var(--texte-3);
     line-height: 1.55;
   }
 
@@ -303,13 +303,11 @@ const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
 
   /* Formulaire */
   .formulaire {
-    padding: clamp(1.4rem, 3.5vw, 2.25rem);
-    border-radius: var(--r-xl);
-    border: 1px solid var(--bord-forte);
-    background: linear-gradient(165deg, var(--surface), var(--noir-3));
-    box-shadow: var(--ombre-lg);
+    padding: clamp(1.5rem, 3.5vw, 2.25rem);
+    border: 1px solid var(--filet-fort);
+    background: var(--ivoire);
     display: grid;
-    gap: 1.75rem;
+    gap: 1.9rem;
   }
 
   .pot-de-miel {
@@ -328,16 +326,16 @@ const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
   }
 
   .formulaire > fieldset > legend {
-    font-family: var(--font-display);
+    font-family: var(--font-titre);
     font-size: 0.82rem;
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--or);
+    color: var(--chaud);
     padding: 0 0 0.85rem;
     margin-bottom: 0.15rem;
     width: 100%;
-    border-bottom: 1px solid var(--bord);
+    border-bottom: 1px solid var(--filet);
   }
 
   .champ {
@@ -354,7 +352,7 @@ const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
   .champ__label {
     font-size: 0.82rem;
     font-weight: 620;
-    color: var(--texte-doux);
+    color: var(--texte-2);
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
@@ -364,21 +362,21 @@ const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
   .champ__label small {
     font-weight: 450;
     font-size: 0.74rem;
-    color: var(--texte-faible);
+    color: var(--texte-3);
   }
 
   .champ input,
   .champ select,
   .champ textarea {
     width: 100%;
-    padding: 0.78rem 0.9rem;
-    border-radius: var(--r-md);
-    background: rgba(8, 9, 12, 0.6);
-    border: 1px solid var(--bord-forte);
+    padding: 0.82rem 0.95rem;
+    border-radius: var(--r);
+    background: var(--blanc);
+    border: 1px solid var(--filet-fort);
     color: var(--texte);
-    font-size: 0.94rem;
+    font-size: 0.95rem;
     font-family: inherit;
-    transition: border-color var(--transition), background-color var(--transition);
+    transition: border-color var(--transition);
   }
 
   .champ select {
@@ -398,9 +396,9 @@ const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
   .champ input:focus,
   .champ select:focus,
   .champ textarea:focus {
-    border-color: var(--or);
-    outline: none;
-    background: rgba(8, 9, 12, 0.85);
+    border-color: var(--encre);
+    outline: 2px solid var(--chaud);
+    outline-offset: -1px;
   }
 
   .champ input:user-invalid,
@@ -408,13 +406,18 @@ const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
     border-color: var(--alerte);
   }
 
+  .champ input::placeholder,
+  .champ textarea::placeholder {
+    color: var(--texte-3);
+  }
+
   .champ option {
-    background: var(--noir-2);
+    background: var(--ivoire);
   }
 
   .champ input::placeholder,
   .champ textarea::placeholder {
-    color: var(--texte-faible);
+    color: var(--texte-3);
     opacity: 0.75;
   }
 
@@ -429,7 +432,7 @@ const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
     text-transform: none !important;
     letter-spacing: normal !important;
     font-size: 0.82rem !important;
-    color: var(--texte-doux) !important;
+    color: var(--texte-2) !important;
     font-family: var(--font-texte) !important;
     margin-bottom: 0 !important;
   }
@@ -437,11 +440,7 @@ const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
   .segment__options {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 0.35rem;
-    padding: 0.25rem;
-    background: rgba(8, 9, 12, 0.6);
-    border: 1px solid var(--bord-forte);
-    border-radius: var(--r-md);
+    gap: 0.45rem;
   }
 
   .segment__options--3 {
@@ -462,48 +461,52 @@ const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
   .segment__options span {
     display: block;
     text-align: center;
-    padding: 0.5rem 0.4rem;
-    border-radius: calc(var(--r-md) - 4px);
-    font-size: 0.845rem;
-    font-weight: 560;
-    color: var(--texte-faible);
+    padding: 0.72rem 0.5rem;
+    border: 1px solid var(--filet-fort);
+    border-radius: var(--r);
+    background: var(--blanc);
+    font-size: 0.87rem;
+    font-weight: 500;
+    color: var(--texte-2);
     cursor: pointer;
-    transition: background-color var(--transition), color var(--transition);
+    transition: background-color var(--transition), color var(--transition),
+      border-color var(--transition);
   }
 
   .segment__options input:checked + span {
-    background: var(--or);
-    color: #1a1305;
-    font-weight: 640;
+    background: var(--encre);
+    border-color: var(--encre);
+    color: var(--blanc);
+    font-weight: 600;
   }
 
   .segment__options input:focus-visible + span {
-    outline: 2px solid var(--or);
+    outline: 2px solid var(--chaud);
     outline-offset: 2px;
   }
 
   /* Cases à cocher */
   .case {
     display: flex;
-    gap: 0.75rem;
+    gap: 0.8rem;
     align-items: flex-start;
-    padding: 0.95rem 1.1rem;
-    border-radius: var(--r-md);
-    border: 1px solid var(--bord);
-    background: rgba(255, 255, 255, 0.022);
+    padding: 1rem 1.15rem;
+    border-radius: var(--r);
+    border: 1px solid var(--filet-fort);
+    background: var(--blanc);
     cursor: pointer;
     transition: border-color var(--transition);
   }
 
   .case:hover {
-    border-color: var(--bord-forte);
+    border-color: var(--encre);
   }
 
   .case input {
     width: 19px;
     height: 19px;
-    margin-top: 0.1rem;
-    accent-color: var(--or);
+    margin-top: 0.15rem;
+    accent-color: var(--encre);
     flex-shrink: 0;
     cursor: pointer;
   }
@@ -512,7 +515,7 @@ const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
     display: flex;
     flex-direction: column;
     font-size: 0.86rem;
-    color: var(--texte-faible);
+    color: var(--texte-3);
     line-height: 1.55;
   }
 
@@ -527,18 +530,18 @@ const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
   }
 
   .case--rgpd a {
-    color: var(--or-clair);
+    color: var(--chaud);
     text-decoration: underline;
     text-underline-offset: 2px;
   }
 
   .formulaire__erreur {
-    padding: 0.85rem 1.1rem;
-    border-radius: var(--r-md);
-    background: rgba(255, 138, 91, 0.12);
-    border: 1px solid rgba(255, 138, 91, 0.35);
+    padding: 0.9rem 1.15rem;
+    border-radius: var(--r);
+    background: var(--blanc);
+    border-left: 3px solid var(--alerte);
     color: var(--alerte);
-    font-size: 0.88rem;
+    font-size: 0.89rem;
   }
 
   .formulaire__envoi {
@@ -553,13 +556,13 @@ const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
 
   .formulaire__note {
     font-size: 0.82rem;
-    color: var(--texte-faible);
+    color: var(--texte-3);
     line-height: 1.6;
     text-align: center;
   }
 
   .formulaire__note a {
-    color: var(--or-clair);
+    color: var(--chaud);
     text-decoration: underline;
     text-underline-offset: 2px;
   }

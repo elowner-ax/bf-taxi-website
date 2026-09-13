@@ -1,6 +1,5 @@
 ---
 import Base from '../layouts/Base.astro';
-import Icone from '../components/Icone.astro';
 import FilAriane from '../components/FilAriane.astro';
 import Faq from '../components/Faq.astro';
 import BlocCTA from '../components/BlocCTA.astro';
@@ -77,7 +76,7 @@ const categories = (Object.keys(CATEGORIES_FAQ) as ItemFaq['categorie'][]).map((
 
   .tete__accroche {
     font-size: clamp(1.02rem, 2vw, 1.15rem);
-    color: var(--texte-doux);
+    color: var(--texte-2);
     max-width: 66ch;
     margin-top: 1.2rem;
     line-height: 1.7;
@@ -96,17 +95,17 @@ const categories = (Object.keys(CATEGORIES_FAQ) as ItemFaq['categorie'][]).map((
     gap: 0.5rem;
     padding: 0.55rem 1rem;
     border-radius: var(--r-full);
-    border: 1px solid var(--bord);
-    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--filet);
+    background: var(--blanc);
     font-size: 0.875rem;
     font-weight: 560;
-    color: var(--texte-doux);
+    color: var(--texte-2);
     transition: border-color var(--transition), color var(--transition);
   }
 
   .ancres a:hover {
-    border-color: rgba(255, 194, 51, 0.4);
-    color: var(--or-clair);
+    border-color: var(--filet);
+    color: var(--chaud);
   }
 
   .ancres span {
@@ -114,10 +113,9 @@ const categories = (Object.keys(CATEGORIES_FAQ) as ItemFaq['categorie'][]).map((
     place-items: center;
     min-width: 20px;
     height: 20px;
-    padding-inline: 0.3rem;
-    border-radius: var(--r-full);
-    background: rgba(255, 194, 51, 0.16);
-    color: var(--or);
+    padding-inline: 0.35rem;
+    background: var(--ivoire-2);
+    color: var(--chaud);
     font-size: 0.74rem;
     font-weight: 700;
   }
@@ -130,6 +128,6 @@ const categories = (Object.keys(CATEGORIES_FAQ) as ItemFaq['categorie'][]).map((
     font-size: clamp(1.3rem, 2.8vw, 1.7rem);
     margin-bottom: 1.4rem;
     padding-bottom: 0.85rem;
-    border-bottom: 1px solid var(--bord);
+    border-bottom: 1px solid var(--filet);
   }
 </style>

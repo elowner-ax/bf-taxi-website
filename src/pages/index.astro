@@ -6,8 +6,8 @@ import CarteService from '../components/CarteService.astro';
 import Vehicules from '../components/Vehicules.astro';
 import Faq from '../components/Faq.astro';
 import BlocCTA from '../components/BlocCTA.astro';
-import { SITE, TRUST_POINTS, CONTACT } from '../data/site.ts';
-import { SERVICES, servicesParCategorie } from '../data/services.ts';
+import { SITE, TRUST_POINTS } from '../data/site.ts';
+import { servicesParCategorie } from '../data/services.ts';
 import { VILLES } from '../data/villes.ts';
 import { FAQ_GENERALE } from '../data/faq.ts';
 import { schemaFaq } from '../lib/schema.ts';
@@ -49,7 +49,7 @@ const etapes = [
   <Hero />
 
   <!-- Réassurance -->
-  <section class="section-sombre-2 section-fine">
+  <section class="section-ivoire section-fine">
     <div class="conteneur">
       <div class="grille grille-4">
         {
@@ -73,14 +73,14 @@ const etapes = [
       <div class="entete-section reveal">
         <div>
           <p class="surtitre">Transport médical conventionné</p>
-          <h2>Agréé par l’Assurance Maladie</h2>
+          <h2>Conventionné par l’Assurance Maladie</h2>
           <p class="intro-section">
             Avec une prescription médicale de transport, vos trajets de soins sont pris en charge
             par la CPAM. Nous facturons directement votre caisse : vous n’avancez aucun frais et
             n’avez aucun dossier de remboursement à monter.
           </p>
         </div>
-        <a href="/taxi-conventionne-cpam/" class="btn btn-fantome">
+        <a href="/taxi-conventionne-cpam/" class="btn btn-contour">
           Comment ça marche
           <Icone nom="arrow" taille={17} />
         </a>
@@ -97,7 +97,7 @@ const etapes = [
   </section>
 
   <!-- Autres services -->
-  <section class="section section-claire">
+  <section class="section section-ivoire">
     <div class="conteneur">
       <div class="entete-section reveal">
         <div>
@@ -132,7 +132,7 @@ const etapes = [
             passagers, le volume de bagages et le confort recherché.
           </p>
         </div>
-        <a href="/vehicules/" class="btn btn-fantome">
+        <a href="/vehicules/" class="btn btn-contour">
           Voir le détail
           <Icone nom="arrow" taille={17} />
         </a>
@@ -145,7 +145,7 @@ const etapes = [
   </section>
 
   <!-- Déroulement -->
-  <section class="section section-sombre-2">
+  <section class="section section-encre">
     <div class="conteneur">
       <div class="entete-section reveal">
         <div>
@@ -159,9 +159,7 @@ const etapes = [
           etapes.map((etape, i) => (
             <li class="etape reveal" style={`transition-delay:${i * 80}ms`}>
               <span class="etape__num">{String(i + 1).padStart(2, '0')}</span>
-              <span class="etape__icone">
-                <Icone nom={etape.icone} taille={19} />
-              </span>
+              <span class="etape__trait" />
               <h3>{etape.titre}</h3>
               <p>{etape.texte}</p>
             </li>
@@ -183,7 +181,7 @@ const etapes = [
             et le Roannais. Pour la longue distance, toute la France.
           </p>
         </div>
-        <a href="/taxi/" class="btn btn-fantome">
+        <a href="/taxi/" class="btn btn-contour">
           Toutes les communes
           <Icone nom="arrow" taille={17} />
         </a>
@@ -208,7 +206,7 @@ const etapes = [
   </section>
 
   <!-- FAQ -->
-  <section class="section section-claire">
+  <section class="section section-ivoire">
     <div class="conteneur conteneur-etroit">
       <p class="surtitre reveal">Questions fréquentes</p>
       <div class="reveal">
@@ -226,18 +224,18 @@ const etapes = [
 <style>
   .section-fine {
     padding-block: clamp(2.25rem, 5vw, 3.5rem);
-    border-block: 1px solid var(--bord);
+    border-block: 1px solid var(--filet);
   }
 
   .reassurance h2 {
     font-size: 1.06rem;
-    font-family: var(--font-display);
+    font-family: var(--font-titre);
     margin-bottom: 0.45rem;
   }
 
   .reassurance p {
     font-size: 0.92rem;
-    color: var(--texte-faible);
+    color: var(--texte-3);
     line-height: 1.6;
   }
 
@@ -253,56 +251,38 @@ const etapes = [
     margin-top: clamp(2rem, 4vw, 3rem);
   }
 
-  /* Étapes */
+  /* Étapes — sur fond encre, les numéros portent le rythme. */
   .etapes {
     list-style: none;
     padding: 0;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(232px, 1fr));
-    gap: 1.3rem;
-    counter-reset: etape;
-  }
-
-  .etape {
-    position: relative;
-    padding: 1.75rem 1.5rem 1.6rem;
-    border-radius: var(--r-lg);
-    border: 1px solid var(--bord);
-    background: rgba(255, 255, 255, 0.025);
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 2rem;
   }
 
   .etape__num {
-    position: absolute;
-    top: 1.1rem;
-    right: 1.25rem;
-    font-family: var(--font-display);
-    font-size: 2.1rem;
-    font-weight: 800;
-    color: rgba(255, 194, 51, 0.16);
+    display: block;
+    font-family: var(--font-titre);
+    font-size: 2.5rem;
     line-height: 1;
+    color: var(--chaud-clair);
   }
 
-  .etape__icone {
-    display: grid;
-    place-items: center;
-    width: 42px;
-    height: 42px;
-    border-radius: var(--r-md);
-    background: rgba(255, 194, 51, 0.12);
-    border: 1px solid rgba(255, 194, 51, 0.24);
-    color: var(--or);
-    margin-bottom: 1.1rem;
+  .etape__trait {
+    display: block;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.28);
+    margin: 1.1rem 0;
   }
 
   .etape h3 {
-    font-size: 1.05rem;
-    margin-bottom: 0.45rem;
+    font-size: 1.3rem;
+    margin-bottom: 0.55rem;
   }
 
   .etape p {
-    font-size: 0.9rem;
-    color: var(--texte-faible);
-    line-height: 1.6;
+    font-size: 0.92rem;
+    line-height: 1.65;
   }
 
   /* Villes */
@@ -319,19 +299,19 @@ const etapes = [
     align-items: center;
     gap: 0.65rem;
     padding: 0.8rem 1rem;
-    border-radius: var(--r-md);
-    border: 1px solid var(--bord);
-    background: rgba(255, 255, 255, 0.022);
+    border-radius: var(--r);
+    border: 1px solid var(--filet);
+    background: var(--blanc);
     transition: border-color var(--transition), background-color var(--transition);
   }
 
   .villes a:hover {
-    border-color: rgba(255, 194, 51, 0.34);
-    background: rgba(255, 194, 51, 0.05);
+    border-color: var(--encre);
+    background: var(--ivoire);
   }
 
   .villes :global(svg) {
-    color: var(--or);
+    color: var(--chaud);
     flex-shrink: 0;
   }
 
@@ -349,7 +329,7 @@ const etapes = [
 
   .villes small {
     font-size: 0.76rem;
-    color: var(--texte-faible);
+    color: var(--texte-3);
   }
 
   .faq__plus {
@@ -362,7 +342,7 @@ const etapes = [
     align-items: center;
     gap: 0.45rem;
     font-weight: 620;
-    color: var(--or-sombre);
+    color: var(--chaud);
     transition: gap var(--transition);
   }
 

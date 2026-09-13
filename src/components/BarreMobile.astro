@@ -1,36 +1,35 @@
 ---
 /**
- * Barre d'action fixe en bas d'écran sur mobile : appeler, WhatsApp, devis.
- * Sur un site de taxi, l'appel est la conversion principale — il doit être
- * atteignable en permanence, sans scroll.
+ * Barre d'action fixe en bas d'écran sur mobile. La majorité des appels part
+ * d'ici : elle doit rester atteignable sans faire défiler la page.
  */
 import Icone from './Icone.astro';
 import { CONTACT } from '../data/site.ts';
 ---
 
-<div class="barre-mobile">
-  <a href={`tel:${CONTACT.phone}`} class="barre-mobile__lien barre-mobile__lien--principal" data-evt="tel-barre">
-    <Icone nom="phone" taille={19} />
+<div class="barre">
+  <a href={`tel:${CONTACT.phone}`} class="barre__lien barre__lien--appel" data-evt="tel-barre">
+    <Icone nom="phone" taille={20} />
     <span>Appeler</span>
   </a>
   <a
     href={`https://wa.me/${CONTACT.whatsapp}?text=${encodeURIComponent('Bonjour, je souhaite réserver un taxi.')}`}
-    class="barre-mobile__lien barre-mobile__lien--wa"
+    class="barre__lien"
     rel="noopener"
     target="_blank"
     data-evt="whatsapp-barre"
   >
-    <Icone nom="whatsapp" taille={19} />
+    <Icone nom="whatsapp" taille={20} />
     <span>WhatsApp</span>
   </a>
-  <a href="/devis/" class="barre-mobile__lien">
-    <Icone nom="doc" taille={19} />
+  <a href="/devis/" class="barre__lien">
+    <Icone nom="doc" taille={20} />
     <span>Devis</span>
   </a>
 </div>
 
 <style>
-  .barre-mobile {
+  .barre {
     position: fixed;
     bottom: 0;
     left: 0;
@@ -38,41 +37,37 @@ import { CONTACT } from '../data/site.ts';
     z-index: 90;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 1px;
-    background: var(--bord);
-    border-top: 1px solid var(--bord);
-    backdrop-filter: blur(18px);
+    background: var(--blanc);
+    border-top: 1px solid var(--filet-fort);
     padding-bottom: env(safe-area-inset-bottom, 0);
   }
 
-  .barre-mobile__lien {
+  .barre__lien {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0.2rem;
-    padding: 0.6rem 0.3rem 0.65rem;
-    background: rgba(14, 16, 21, 0.96);
-    font-size: 0.72rem;
+    gap: 0.25rem;
+    padding: 0.7rem 0.3rem 0.75rem;
+    font-size: 0.75rem;
     font-weight: 600;
-    color: var(--texte-doux);
-    transition: color var(--transition), background-color var(--transition);
+    color: var(--texte-2);
   }
 
-  .barre-mobile__lien:active {
-    background: rgba(30, 33, 42, 0.98);
+  .barre__lien + .barre__lien {
+    border-left: 1px solid var(--filet);
   }
 
-  .barre-mobile__lien--principal {
-    color: var(--or);
+  .barre__lien--appel {
+    color: var(--chaud);
   }
 
-  .barre-mobile__lien--wa {
-    color: #25d366;
+  .barre__lien:active {
+    background: var(--ivoire);
   }
 
-  @media (min-width: 1060px) {
-    .barre-mobile {
+  @media (min-width: 1080px) {
+    .barre {
       display: none;
     }
   }
@@ -80,9 +75,9 @@ import { CONTACT } from '../data/site.ts';
 
 <style is:global>
   /* Réserve la hauteur de la barre pour ne pas masquer le pied de page. */
-  @media (max-width: 1059px) {
+  @media (max-width: 1079px) {
     body {
-      padding-bottom: 68px;
+      padding-bottom: 70px;
     }
   }
 </style>

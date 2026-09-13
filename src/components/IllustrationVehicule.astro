@@ -1,10 +1,10 @@
 ---
 /**
- * Silhouettes vectorielles des deux véhicules, en attendant les photos
- * réelles du client (voir public/images/README.md).
+ * Silhouettes vectorielles des deux véhicules, en attendant les photos réelles
+ * du client (voir public/images/README.md).
  *
- * Dessin au trait volontairement stylisé : il tient à toutes les tailles,
- * pèse quelques kilo-octets et ne pose aucune question de droits d'image.
+ * Dessin au trait fin, dans la couleur d'encre du site : il tient à toutes les
+ * tailles, pèse quelques kilo-octets et ne pose aucune question de droits.
  */
 interface Props {
   type: 'berline' | 'van';
@@ -16,83 +16,52 @@ const { type, class: classe = '' } = Astro.props;
 
 <svg
   class:list={['illu', classe]}
-  viewBox="0 0 420 190"
+  viewBox="0 0 420 170"
   role="img"
   aria-label={type === 'berline' ? 'Silhouette de la berline Tesla Model 3' : 'Silhouette du van Mercedes Classe V'}
 >
-  <defs>
-    <linearGradient id={`carr-${type}`} x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="rgba(255,255,255,0.14)" />
-      <stop offset="100%" stop-color="rgba(255,255,255,0.03)" />
-    </linearGradient>
-    <linearGradient id={`sol-${type}`} x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="transparent" />
-      <stop offset="50%" stop-color="rgba(255,194,51,0.55)" />
-      <stop offset="100%" stop-color="transparent" />
-    </linearGradient>
-  </defs>
-
   {
     type === 'berline' ? (
       <g>
-        {/* Carrosserie : capot plongeant et pavillon fuyant, typiques d'une berline électrique */}
+        {/* Capot plongeant et pavillon fuyant d'une berline électrique */}
         <path
-          d="M32 132c-4-16 2-26 14-30l44-13c14-18 34-28 60-30 30-2 54 6 72 22l52 10c22 4 36 14 42 26 3 6 2 13-4 15H40c-5 0-7-4-8-12Z"
-          fill={`url(#carr-${type})`}
-          stroke="rgba(255,194,51,0.75)"
-          stroke-width="2.2"
+          d="M32 122c-4-15 2-25 14-29l44-12c14-17 34-27 60-29 30-2 54 6 72 21l52 10c22 4 36 13 42 25 3 6 2 12-4 14H40c-5 0-7-4-8-11Z"
+          fill="#fff"
+          stroke="var(--encre)"
+          stroke-width="2"
           stroke-linejoin="round"
         />
-        {/* Vitrage en une pièce */}
-        <path
-          d="M104 89c12-16 30-25 52-26 24-1 44 7 58 20l-14 6-96 2Z"
-          fill="rgba(107,168,255,0.13)"
-          stroke="rgba(255,255,255,0.28)"
-          stroke-width="1.6"
-        />
-        <path d="M158 63v26" stroke="rgba(255,255,255,0.22)" stroke-width="1.4" />
-        {/* Roues */}
-        <circle cx="112" cy="132" r="25" fill="rgba(8,9,12,0.9)" stroke="rgba(255,194,51,0.75)" stroke-width="2.2" />
-        <circle cx="112" cy="132" r="11" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1.6" />
-        <circle cx="290" cy="132" r="25" fill="rgba(8,9,12,0.9)" stroke="rgba(255,194,51,0.75)" stroke-width="2.2" />
-        <circle cx="290" cy="132" r="11" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1.6" />
-        {/* Bandeau lumineux avant */}
-        <path d="M320 108h28" stroke="rgba(255,194,51,0.9)" stroke-width="3" stroke-linecap="round" />
+        <path d="M104 82c12-15 30-24 52-25 24-1 44 7 58 19l-14 6-96 2Z" fill="#eef2f6" stroke="var(--encre)" stroke-width="1.4" />
+        <path d="M158 57v25" stroke="var(--encre)" stroke-width="1.2" opacity="0.5" />
+        <circle cx="112" cy="122" r="23" fill="#fff" stroke="var(--encre)" stroke-width="2" />
+        <circle cx="112" cy="122" r="10" fill="none" stroke="var(--encre)" stroke-width="1.4" opacity="0.55" />
+        <circle cx="290" cy="122" r="23" fill="#fff" stroke="var(--encre)" stroke-width="2" />
+        <circle cx="290" cy="122" r="10" fill="none" stroke="var(--encre)" stroke-width="1.4" opacity="0.55" />
+        <path d="M322 100h26" stroke="var(--chaud)" stroke-width="3" stroke-linecap="round" />
       </g>
     ) : (
       <g>
-        {/* Volume haut et droit du van */}
+        {/* Volume haut et droit du van, portes coulissantes suggérées par le rail */}
         <path
-          d="M30 132V70c0-13 9-22 22-22h156c10 0 19 4 25 12l34 42 44 8c17 3 27 12 30 22 2 7-2 12-9 12H38c-5 0-8-4-8-12Z"
-          fill={`url(#carr-${type})`}
-          stroke="rgba(255,194,51,0.75)"
-          stroke-width="2.2"
+          d="M30 122V64c0-12 9-21 21-21h156c10 0 19 4 25 11l33 40 44 8c17 3 27 11 30 21 2 7-2 11-9 11H38c-5 0-8-4-8-12Z"
+          fill="#fff"
+          stroke="var(--encre)"
+          stroke-width="2"
           stroke-linejoin="round"
         />
-        {/* Baies vitrées latérales */}
-        <rect x="48" y="62" width="58" height="34" rx="5" fill="rgba(107,168,255,0.13)" stroke="rgba(255,255,255,0.26)" stroke-width="1.5" />
-        <rect x="114" y="62" width="58" height="34" rx="5" fill="rgba(107,168,255,0.13)" stroke="rgba(255,255,255,0.26)" stroke-width="1.5" />
-        <path
-          d="M180 62h24l26 34h-50Z"
-          fill="rgba(107,168,255,0.13)"
-          stroke="rgba(255,255,255,0.26)"
-          stroke-width="1.5"
-          stroke-linejoin="round"
-        />
-        {/* Rail de porte coulissante */}
-        <path d="M48 104h124" stroke="rgba(255,194,51,0.4)" stroke-width="1.8" stroke-linecap="round" />
-        {/* Roues */}
-        <circle cx="100" cy="132" r="25" fill="rgba(8,9,12,0.9)" stroke="rgba(255,194,51,0.75)" stroke-width="2.2" />
-        <circle cx="100" cy="132" r="11" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1.6" />
-        <circle cx="288" cy="132" r="25" fill="rgba(8,9,12,0.9)" stroke="rgba(255,194,51,0.75)" stroke-width="2.2" />
-        <circle cx="288" cy="132" r="11" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1.6" />
-        <path d="M330 112h26" stroke="rgba(255,194,51,0.9)" stroke-width="3" stroke-linecap="round" />
+        <rect x="48" y="57" width="57" height="32" rx="4" fill="#eef2f6" stroke="var(--encre)" stroke-width="1.4" />
+        <rect x="113" y="57" width="57" height="32" rx="4" fill="#eef2f6" stroke="var(--encre)" stroke-width="1.4" />
+        <path d="M178 57h24l25 32h-49Z" fill="#eef2f6" stroke="var(--encre)" stroke-width="1.4" stroke-linejoin="round" />
+        <path d="M48 97h122" stroke="var(--encre)" stroke-width="1.4" opacity="0.45" stroke-linecap="round" />
+        <circle cx="100" cy="122" r="23" fill="#fff" stroke="var(--encre)" stroke-width="2" />
+        <circle cx="100" cy="122" r="10" fill="none" stroke="var(--encre)" stroke-width="1.4" opacity="0.55" />
+        <circle cx="288" cy="122" r="23" fill="#fff" stroke="var(--encre)" stroke-width="2" />
+        <circle cx="288" cy="122" r="10" fill="none" stroke="var(--encre)" stroke-width="1.4" opacity="0.55" />
+        <path d="M330 104h26" stroke="var(--chaud)" stroke-width="3" stroke-linecap="round" />
       </g>
     )
   }
-
-  {/* Ligne de sol */}
-  <path d="M20 158h380" stroke={`url(#sol-${type})`} stroke-width="2" />
+  <path d="M24 148h372" stroke="var(--filet)" stroke-width="2" />
 </svg>
 
 <style>

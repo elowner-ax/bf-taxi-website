@@ -14,13 +14,20 @@ const categories = (Object.keys(CATEGORIES) as Service['categorie'][]).map((cle)
 }));
 
 const liens = [
-  { href: '/vehicules/', label: 'Véhicules' },
   { href: '/tarifs/', label: 'Tarifs' },
-  { href: '/taxi/', label: 'Zones desservies' },
+  { href: '/vehicules/', label: 'Véhicules' },
+  { href: '/taxi/', label: 'Zones' },
   { href: '/faq/', label: 'FAQ' },
-  { href: '/contact/', label: 'Contact' },
 ];
 ---
+
+<!-- Bandeau de conventionnement : l'argument commercial n°1, visible d'emblée. -->
+<div class="bandeau">
+  <div class="conteneur bandeau__inner">
+    <Icone nom="shield" taille={15} />
+    <span>Conventionné par l’Assurance Maladie — transport médical sans avance de frais</span>
+  </div>
+</div>
 
 <header class="entete" data-entete>
   <div class="conteneur entete__inner">
@@ -28,26 +35,26 @@ const liens = [
       <Logo />
     </a>
 
-    <nav class="nav-bureau" aria-label="Navigation principale">
-      <div class="nav-item nav-item--menu">
+    <nav class="nav" aria-label="Navigation principale">
+      <div class="nav__item nav__item--menu">
         <button
           type="button"
-          class:list={['nav-lien', 'nav-lien--bouton', { actif: SERVICES.some((s) => chemin.startsWith(`/${s.slug}/`)) }]}
+          class:list={['nav__lien', { actif: SERVICES.some((s) => chemin.startsWith(`/${s.slug}/`)) }]}
           aria-expanded="false"
           aria-controls="megamenu"
-          data-declencheur-menu
+          data-declencheur
         >
           Nos services
-          <Icone nom="arrow" taille={14} class="nav-chevron" />
+          <Icone nom="chevron" taille={14} class="nav__chevron" />
         </button>
 
-        <div class="megamenu" id="megamenu" data-megamenu>
-          <div class="megamenu__grille">
+        <div class="mega" id="megamenu" data-mega>
+          <div class="mega__grille">
             {
               categories.map((cat) => (
-                <div class="megamenu__colonne">
-                  <p class="megamenu__titre">{cat.label}</p>
-                  <p class="megamenu__desc">{cat.description}</p>
+                <div class="mega__colonne">
+                  <p class="mega__titre">{cat.label}</p>
+                  <p class="mega__desc">{cat.description}</p>
                   <ul>
                     {cat.services.map((service) => (
                       <li>
@@ -62,12 +69,12 @@ const liens = [
               ))
             }
           </div>
-          <div class="megamenu__pied">
+          <div class="mega__pied">
             <div>
               <strong>Besoin d’une estimation&nbsp;?</strong>
-              <span>Simulateur de prix en ligne, basé sur les tarifs préfectoraux.</span>
+              <span>Simulateur en ligne, basé sur les tarifs préfectoraux de la Loire.</span>
             </div>
-            <a href="/tarifs/#simulateur" class="btn btn-or">
+            <a href="/tarifs/#simulateur" class="btn btn-encre">
               <Icone nom="euro" taille={17} /> Estimer ma course
             </a>
           </div>
@@ -76,7 +83,7 @@ const liens = [
 
       {
         liens.map((lien) => (
-          <a href={lien.href} class:list={['nav-lien', { actif: estActif(lien.href) }]}>
+          <a href={lien.href} class:list={['nav__lien', { actif: estActif(lien.href) }]}>
             {lien.label}
           </a>
         ))
@@ -84,11 +91,11 @@ const liens = [
     </nav>
 
     <div class="entete__actions">
-      <a href={`tel:${CONTACT.phone}`} class="entete__tel" data-evt="tel-header">
-        <Icone nom="phone" taille={18} />
+      <a href="/devis/" class="btn btn-contour entete__devis">Devis</a>
+      <a href={`tel:${CONTACT.phone}`} class="btn btn-appel entete__tel" data-evt="tel-header">
+        <Icone nom="phone" taille={16} />
         <span>{CONTACT.phoneDisplay}</span>
       </a>
-      <a href="/devis/" class="btn btn-or entete__devis">Devis gratuit</a>
 
       <button type="button" class="burger" aria-label="Ouvrir le menu" aria-expanded="false" data-burger>
         <Icone nom="menu" taille={24} />
@@ -96,14 +103,12 @@ const liens = [
     </div>
   </div>
 
-  <!-- Menu mobile -->
-  <div class="menu-mobile" data-menu-mobile hidden>
-    <div class="menu-mobile__contenu">
-      <p class="menu-mobile__section">Nos services</p>
+  <div class="mobile" data-menu-mobile hidden>
+    <div class="mobile__contenu">
       {
         categories.map((cat) => (
-          <div class="menu-mobile__groupe">
-            <p class="menu-mobile__groupe-titre">{cat.label}</p>
+          <div class="mobile__groupe">
+            <p class="mobile__titre">{cat.label}</p>
             {cat.services.map((service) => (
               <a href={`/${service.slug}/`}>
                 <Icone nom={service.icon} taille={18} />
@@ -114,19 +119,21 @@ const liens = [
         ))
       }
 
-      <p class="menu-mobile__section">Le site</p>
-      <div class="menu-mobile__groupe">
+      <div class="mobile__groupe">
+        <p class="mobile__titre">Informations</p>
         {liens.map((lien) => <a href={lien.href}>{lien.label}</a>)}
+        <a href="/a-propos/">À propos</a>
+        <a href="/contact/">Contact</a>
         <a href="/devis/">Demander un devis</a>
       </div>
 
-      <div class="menu-mobile__cta">
-        <a href={`tel:${CONTACT.phone}`} class="btn btn-or btn-large">
+      <div class="mobile__cta">
+        <a href={`tel:${CONTACT.phone}`} class="btn btn-appel btn-large">
           <Icone nom="phone" taille={18} /> {CONTACT.phoneDisplay}
         </a>
         <a
           href={`https://wa.me/${CONTACT.whatsapp}`}
-          class="btn btn-whatsapp btn-large"
+          class="btn btn-contour btn-large"
           rel="noopener"
           target="_blank"
         >
@@ -138,181 +145,182 @@ const liens = [
 </header>
 
 <style>
+  .bandeau {
+    background: var(--encre);
+    color: var(--sur-encre);
+    font-size: 0.84rem;
+  }
+
+  .bandeau__inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding-block: 0.7rem;
+    text-align: center;
+  }
+
+  .bandeau :global(svg) {
+    flex-shrink: 0;
+  }
+
   .entete {
     position: sticky;
     top: 0;
     z-index: 100;
-    background: rgba(8, 9, 12, 0.72);
-    backdrop-filter: blur(18px) saturate(1.4);
-    border-bottom: 1px solid transparent;
-    transition: background-color var(--transition), border-color var(--transition);
-  }
-
-  .entete[data-scrolled] {
-    background: rgba(8, 9, 12, 0.94);
-    border-bottom-color: var(--bord);
+    background: var(--blanc);
+    border-bottom: 1px solid var(--filet);
   }
 
   .entete__inner {
+    position: relative;
     display: flex;
     align-items: center;
     gap: 1.5rem;
-    min-height: 74px;
+    min-height: 76px;
   }
 
   .entete__logo {
     flex-shrink: 0;
-    transition: opacity var(--transition);
-  }
-
-  .entete__logo:hover {
-    opacity: 0.85;
   }
 
   /* --- Navigation bureau --- */
-  .nav-bureau {
+  .nav {
     display: none;
     align-items: center;
-    gap: 0.2rem;
-    margin-left: auto;
+    gap: 0.35rem;
+    margin-inline: auto;
   }
 
-  .nav-lien {
+  .nav__lien {
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
-    padding: 0.5rem 0.72rem;
-    border-radius: var(--r-full);
-    font-size: 0.9rem;
-    font-weight: 520;
+    padding: 0.45rem 0.7rem;
+    font-size: 0.92rem;
+    font-weight: 500;
+    color: var(--texte-2);
     white-space: nowrap;
-    color: var(--texte-doux);
-    transition: color var(--transition), background-color var(--transition);
+    border-bottom: 2px solid transparent;
+    transition: color var(--transition), border-color var(--transition);
   }
 
-  .nav-lien:hover,
-  .nav-lien.actif {
+  .nav__lien:hover {
     color: var(--texte);
-    background: rgba(255, 255, 255, 0.06);
   }
 
-  .nav-lien.actif {
-    color: var(--or-clair);
+  .nav__lien.actif {
+    color: var(--encre);
+    font-weight: 600;
+    border-bottom-color: var(--chaud);
   }
 
-  .nav-lien :global(.nav-chevron) {
-    transform: rotate(90deg);
+  .nav :global(.nav__chevron) {
     transition: transform var(--transition);
   }
 
-  .nav-item--menu {
-    position: relative;
+  .nav__item--menu {
+    position: static;
   }
 
-  .nav-item--menu[data-ouvert] :global(.nav-chevron) {
-    transform: rotate(-90deg);
+  .nav__item--menu[data-ouvert] :global(.nav__chevron) {
+    transform: rotate(180deg);
   }
 
   /* --- Méga-menu --- */
-  .megamenu {
+  .mega {
     position: absolute;
-    top: calc(100% + 0.7rem);
-    left: 50%;
-    translate: -50% 0;
-    width: min(880px, calc(100vw - 3rem));
-    background: var(--noir-2);
-    border: 1px solid var(--bord-forte);
-    border-radius: var(--r-lg);
-    box-shadow: var(--ombre-lg);
+    top: calc(100% + 0.55rem);
+    left: 0;
+    right: 0;
+    width: min(880px, 100%);
+    margin-inline: auto;
+    background: var(--blanc);
+    border: 1px solid var(--filet-fort);
     opacity: 0;
     visibility: hidden;
-    transform: translateY(-8px);
+    transform: translateY(-6px);
+    pointer-events: none;
     transition: opacity var(--transition), transform var(--transition), visibility var(--transition);
-    overflow: hidden;
   }
 
-  .nav-item--menu[data-ouvert] .megamenu {
+  .nav__item--menu[data-ouvert] .mega {
     opacity: 1;
     visibility: visible;
     transform: none;
+    pointer-events: auto;
   }
 
-  .megamenu__grille {
+  .mega__grille {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
+    gap: 1.75rem;
     padding: 1.75rem;
   }
 
-  .megamenu__titre {
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: 0.96rem;
-    color: var(--or);
+  .mega__titre {
+    font-family: var(--font-titre);
+    font-size: 1.05rem;
+    color: var(--encre);
     margin-bottom: 0.3rem;
   }
 
-  .megamenu__desc {
-    font-size: 0.82rem;
-    color: var(--texte-faible);
-    line-height: 1.45;
+  .mega__desc {
+    font-size: 0.8rem;
+    color: var(--texte-3);
+    line-height: 1.5;
     margin-bottom: 0.9rem;
+    padding-bottom: 0.9rem;
+    border-bottom: 1px solid var(--filet);
   }
 
-  .megamenu__colonne ul {
+  .mega__colonne ul {
     list-style: none;
     padding: 0;
     display: grid;
-    gap: 0.15rem;
+    gap: 0.1rem;
   }
 
-  .megamenu__colonne a {
+  .mega__colonne a {
     display: flex;
     align-items: center;
     gap: 0.6rem;
-    padding: 0.5rem 0.6rem;
-    margin-left: -0.6rem;
-    border-radius: var(--r-sm);
+    padding: 0.45rem 0.55rem;
+    margin-left: -0.55rem;
     font-size: 0.9rem;
-    color: var(--texte-doux);
-    transition: color var(--transition), background-color var(--transition);
+    color: var(--texte-2);
+    transition: background-color var(--transition), color var(--transition);
   }
 
-  .megamenu__colonne a:hover,
-  .megamenu__colonne a.actif {
-    background: rgba(255, 255, 255, 0.055);
+  .mega__colonne a:hover,
+  .mega__colonne a.actif {
+    background: var(--ivoire);
     color: var(--texte);
   }
 
-  .megamenu__colonne a:hover :global(svg),
-  .megamenu__colonne a.actif :global(svg) {
-    color: var(--or);
-  }
-
-  .megamenu__colonne :global(svg) {
-    color: var(--texte-faible);
-    transition: color var(--transition);
+  .mega__colonne :global(svg) {
+    color: var(--encre);
     flex-shrink: 0;
   }
 
-  .megamenu__pied {
+  .mega__pied {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 1.5rem;
-    padding: 1.1rem 1.75rem;
-    background: rgba(255, 194, 51, 0.05);
-    border-top: 1px solid var(--bord);
+    padding: 1.15rem 1.75rem;
+    background: var(--ivoire);
+    border-top: 1px solid var(--filet);
   }
 
-  .megamenu__pied strong {
+  .mega__pied strong {
     display: block;
-    font-size: 0.95rem;
+    font-size: 0.94rem;
   }
 
-  .megamenu__pied span {
-    font-size: 0.85rem;
-    color: var(--texte-faible);
+  .mega__pied span {
+    font-size: 0.84rem;
+    color: var(--texte-3);
   }
 
   /* --- Actions --- */
@@ -323,119 +331,84 @@ const liens = [
     margin-left: auto;
   }
 
-  .nav-bureau ~ .entete__actions {
+  .nav ~ .entete__actions {
     margin-left: 0;
-  }
-
-  .entete__tel {
-    display: none;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.55rem 0.9rem;
-    border-radius: var(--r-full);
-    font-weight: 620;
-    font-size: 0.92rem;
-    white-space: nowrap;
-    color: var(--or-clair);
-    border: 1px solid rgba(255, 194, 51, 0.28);
-    transition: background-color var(--transition), border-color var(--transition);
-  }
-
-  .entete__tel:hover {
-    background: rgba(255, 194, 51, 0.1);
-    border-color: var(--or);
   }
 
   .entete__devis {
     display: none;
-    padding: 0.72rem 1.25rem;
+    padding: 0.72rem 1.15rem;
+    font-size: 0.9rem;
+  }
+
+  .entete__tel {
+    display: none;
+    padding: 0.78rem 1.25rem;
     font-size: 0.92rem;
   }
 
   .burger {
     display: grid;
     place-items: center;
-    width: 42px;
-    height: 42px;
-    border-radius: var(--r-md);
-    border: 1px solid var(--bord-forte);
+    width: 46px;
+    height: 46px;
+    border: 1px solid var(--filet-fort);
     color: var(--texte);
-    transition: background-color var(--transition);
   }
 
   .burger:hover {
-    background: rgba(255, 255, 255, 0.07);
+    background: var(--ivoire);
   }
 
   /* --- Menu mobile --- */
-  .menu-mobile {
+  .mobile {
     position: fixed;
-    inset: 74px 0 0;
-    background: var(--noir);
+    inset: 76px 0 0;
+    background: var(--blanc);
     overflow-y: auto;
     overscroll-behavior: contain;
-    animation: apparition 260ms cubic-bezier(0.32, 0.72, 0, 1);
+    border-top: 1px solid var(--filet);
   }
 
-  @keyframes apparition {
-    from {
-      opacity: 0;
-      transform: translateY(-10px);
-    }
+  .mobile__contenu {
+    padding: 1.25rem var(--gouttiere) 3rem;
   }
 
-  .menu-mobile__contenu {
-    padding: 1.5rem var(--gouttiere) 3rem;
-  }
-
-  .menu-mobile__section {
-    font-size: 0.74rem;
-    font-weight: 700;
-    letter-spacing: 0.14em;
+  .mobile__titre {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: var(--or);
-    margin: 1.6rem 0 0.7rem;
+    color: var(--texte-3);
+    margin: 1.5rem 0 0.5rem;
   }
 
-  .menu-mobile__section:first-child {
+  .mobile__groupe:first-child .mobile__titre {
     margin-top: 0;
   }
 
-  .menu-mobile__groupe {
-    display: grid;
-    gap: 0.1rem;
-    padding-bottom: 0.5rem;
-  }
-
-  .menu-mobile__groupe-titre {
-    font-size: 0.82rem;
-    color: var(--texte-faible);
-    margin: 0.8rem 0 0.35rem;
-  }
-
-  .menu-mobile__groupe a {
+  .mobile__groupe a {
     display: flex;
     align-items: center;
     gap: 0.7rem;
-    padding: 0.75rem 0.25rem;
+    padding: 0.8rem 0.15rem;
     font-size: 1rem;
-    color: var(--texte-doux);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: var(--texte-2);
+    border-bottom: 1px solid var(--filet-doux);
   }
 
-  .menu-mobile__groupe a :global(svg) {
-    color: var(--or);
-    opacity: 0.8;
+  .mobile__groupe :global(svg) {
+    color: var(--encre);
   }
 
-  .menu-mobile__cta {
+  .mobile__cta {
     display: grid;
     gap: 0.7rem;
     margin-top: 2rem;
   }
 
-  @media (min-width: 1060px) {
-    .nav-bureau {
+  @media (min-width: 1080px) {
+    .nav {
       display: flex;
     }
 
@@ -443,33 +416,18 @@ const liens = [
       display: none;
     }
 
-    .entete__tel,
-    .entete__devis {
+    .entete__devis,
+    .entete__tel {
       display: inline-flex;
-    }
-  }
-
-  @media (max-width: 420px) {
-    .entete__actions .entete__tel span {
-      display: none;
     }
   }
 </style>
 
 <script>
-  const entete = document.querySelector<HTMLElement>('[data-entete]');
-  const declencheur = document.querySelector<HTMLButtonElement>('[data-declencheur-menu]');
-  const itemMenu = declencheur?.closest<HTMLElement>('.nav-item--menu');
+  const declencheur = document.querySelector<HTMLButtonElement>('[data-declencheur]');
+  const itemMenu = declencheur?.closest<HTMLElement>('.nav__item--menu');
   const burger = document.querySelector<HTMLButtonElement>('[data-burger]');
   const menuMobile = document.querySelector<HTMLElement>('[data-menu-mobile]');
-
-  // Ombre et opacité de l'en-tête au défilement.
-  const majScroll = () => {
-    if (window.scrollY > 12) entete?.setAttribute('data-scrolled', '');
-    else entete?.removeAttribute('data-scrolled');
-  };
-  majScroll();
-  window.addEventListener('scroll', majScroll, { passive: true });
 
   // Méga-menu : ouverture au survol comme au clavier.
   const basculerMega = (ouvert: boolean) => {
@@ -485,16 +443,18 @@ const liens = [
     if (!itemMenu.contains(e.relatedTarget as Node)) basculerMega(false);
   });
 
-  // Menu mobile.
+  const ICONE_MENU =
+    '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>';
+  const ICONE_FERMER =
+    '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>';
+
   const basculerMobile = (ouvert: boolean) => {
     if (!menuMobile || !burger) return;
     menuMobile.hidden = !ouvert;
     burger.setAttribute('aria-expanded', String(ouvert));
     burger.setAttribute('aria-label', ouvert ? 'Fermer le menu' : 'Ouvrir le menu');
     document.body.style.overflow = ouvert ? 'hidden' : '';
-    burger.innerHTML = ouvert
-      ? '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>'
-      : '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>';
+    burger.innerHTML = ouvert ? ICONE_FERMER : ICONE_MENU;
   };
 
   burger?.addEventListener('click', () => basculerMobile(menuMobile?.hidden ?? true));
@@ -505,8 +465,7 @@ const liens = [
     if (menuMobile && !menuMobile.hidden) basculerMobile(false);
   });
 
-  // Le menu bureau reprend la main au redimensionnement.
   window.addEventListener('resize', () => {
-    if (window.innerWidth >= 1060 && menuMobile && !menuMobile.hidden) basculerMobile(false);
+    if (window.innerWidth >= 1080 && menuMobile && !menuMobile.hidden) basculerMobile(false);
   });
 </script>

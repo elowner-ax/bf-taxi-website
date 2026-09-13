@@ -67,11 +67,11 @@ const groupesDestination = (Object.keys(GROUPES_DESTINATION) as (keyof typeof GR
       </p>
 
       <div class="groupe-btn tete__cta">
-        <a href={`tel:${CONTACT.phone}`} class="btn btn-or btn-large">
+        <a href={`tel:${CONTACT.phone}`} class="btn btn-appel btn-large">
           <Icone nom="phone" taille={19} />
           {CONTACT.phoneDisplay}
         </a>
-        <a href="/devis/" class="btn btn-fantome btn-large">
+        <a href="/devis/" class="btn btn-contour btn-large">
           <Icone nom="doc" taille={19} />
           Demander un devis
         </a>
@@ -124,7 +124,7 @@ const groupesDestination = (Object.keys(GROUPES_DESTINATION) as (keyof typeof GR
     </div>
   </section>
 
-  <section class="section section-claire">
+  <section class="section section-ivoire">
     <div class="conteneur">
       <p class="surtitre reveal">Destinations fréquentes</p>
       <h2 class="reveal">Où nous vous emmenons</h2>
@@ -176,7 +176,7 @@ const groupesDestination = (Object.keys(GROUPES_DESTINATION) as (keyof typeof GR
 
   .tete__accroche {
     font-size: clamp(1.02rem, 2vw, 1.15rem);
-    color: var(--texte-doux);
+    color: var(--texte-2);
     max-width: 68ch;
     margin-top: 1.2rem;
     line-height: 1.7;
@@ -193,7 +193,7 @@ const groupesDestination = (Object.keys(GROUPES_DESTINATION) as (keyof typeof GR
   .secteur__entete {
     margin-bottom: 1.5rem;
     padding-bottom: 1rem;
-    border-bottom: 1px solid var(--bord);
+    border-bottom: 1px solid var(--filet);
   }
 
   .secteur__entete h2 {
@@ -201,7 +201,7 @@ const groupesDestination = (Object.keys(GROUPES_DESTINATION) as (keyof typeof GR
   }
 
   .secteur__entete p {
-    color: var(--texte-faible);
+    color: var(--texte-3);
     font-size: 0.94rem;
     margin-top: 0.4rem;
   }
@@ -227,10 +227,9 @@ const groupesDestination = (Object.keys(GROUPES_DESTINATION) as (keyof typeof GR
   .carte-ville__cp {
     font-size: 0.78rem;
     font-weight: 600;
-    color: var(--or);
+    color: var(--chaud);
     padding: 0.2rem 0.55rem;
-    border-radius: var(--r-full);
-    background: rgba(255, 194, 51, 0.11);
+    background: var(--ivoire-2);
   }
 
   .carte-ville p {
@@ -248,9 +247,9 @@ const groupesDestination = (Object.keys(GROUPES_DESTINATION) as (keyof typeof GR
     gap: 1rem;
     margin-top: 1.2rem;
     padding-top: 0.95rem;
-    border-top: 1px solid var(--bord);
+    border-top: 1px solid var(--filet);
     font-size: 0.82rem;
-    color: var(--texte-faible);
+    color: var(--texte-3);
   }
 
   .carte-ville__pied span {
@@ -260,12 +259,12 @@ const groupesDestination = (Object.keys(GROUPES_DESTINATION) as (keyof typeof GR
   }
 
   .carte-ville__pied :global(svg) {
-    color: var(--or);
+    color: var(--chaud);
   }
 
   .carte-ville__fleche {
     margin-left: auto;
-    color: var(--or);
+    color: var(--chaud);
     transition: transform var(--transition);
   }
 
@@ -287,9 +286,9 @@ const groupesDestination = (Object.keys(GROUPES_DESTINATION) as (keyof typeof GR
     align-items: baseline;
     gap: 1rem;
     font-size: 0.9rem;
-    color: var(--texte-sombre-doux);
+    color: var(--texte-2);
     padding-bottom: 0.5rem;
-    border-bottom: 1px dashed rgba(18, 20, 26, 0.12);
+    border-bottom: 1px dashed var(--filet);
   }
 
   .destinations li:last-child {
@@ -299,7 +298,7 @@ const groupesDestination = (Object.keys(GROUPES_DESTINATION) as (keyof typeof GR
 
   .destinations b {
     white-space: nowrap;
-    color: var(--texte-sombre);
+    color: var(--texte);
     font-size: 0.84rem;
   }
 
@@ -310,7 +309,7 @@ const groupesDestination = (Object.keys(GROUPES_DESTINATION) as (keyof typeof GR
   .note {
     margin-top: 2rem;
     font-size: 0.92rem;
-    color: var(--texte-sombre-doux);
+    color: var(--texte-2);
   }
 
   .note a {

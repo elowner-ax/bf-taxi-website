@@ -1,0 +1,119 @@
+---
+import Base from '../layouts/Base.astro';
+import FilAriane from '../components/FilAriane.astro';
+import { SITE, CONTACT } from '../data/site.ts';
+
+const ariane = [
+  { nom: 'Accueil', url: '/' },
+  { nom: 'Politique de confidentialité', url: '/politique-de-confidentialite/' },
+];
+
+const maj = '13 septembre 2026';
+---
+
+<Base
+  titre={`Politique de confidentialité — ${SITE.name}`}
+  description="Comment BF Taxi traite vos données personnelles : finalités, durées de conservation, destinataires et exercice de vos droits."
+  canonical="/politique-de-confidentialite/"
+  filAriane={ariane}
+>
+  <FilAriane elements={ariane} />
+
+  <section class="section">
+    <div class="conteneur conteneur-etroit prose">
+      <h1>Politique de confidentialité</h1>
+      <p><em>Dernière mise à jour : {maj}.</em></p>
+
+      <p>
+        Cette page explique quelles données nous collectons, pourquoi, combien de temps nous les
+        conservons et comment exercer vos droits. Elle est rédigée en langage courant :
+        si un point vous paraît obscur, écrivez-nous, nous vous répondrons.
+      </p>
+
+      <h2>Ce site ne dépose aucun cookie</h2>
+      <p>
+        Le site bftaxi.fr ne dépose aucun cookie, ne contient aucun traceur publicitaire et
+        n’utilise aucun outil de mesure d’audience. Les polices de caractères sont servies depuis
+        notre propre serveur, et non depuis un service tiers : aucune requête vers un domaine
+        extérieur n’est déclenchée à votre insu. C’est la raison pour laquelle vous ne voyez pas de
+        bandeau de consentement — il n’y a rien à consentir.
+      </p>
+
+      <h2>Le simulateur de tarif</h2>
+      <p>
+        Les calculs du simulateur sont effectués intégralement dans votre navigateur. Le trajet que
+        vous y saisissez n’est transmis à personne et n’est conservé nulle part, ni sur votre
+        appareil, ni sur un serveur.
+      </p>
+
+      <h2>Le formulaire de devis</h2>
+      <p>
+        Lorsque vous nous adressez une demande de devis, nous collectons les informations que vous
+        renseignez : nom, téléphone, e-mail éventuel, adresses de départ et de destination, date,
+        nombre de passagers et précisions que vous souhaitez nous transmettre.
+      </p>
+      <ul>
+        <li>
+          <strong>Finalité :</strong> traiter votre demande, vous adresser une réponse et, le cas
+          échéant, organiser le transport.
+        </li>
+        <li>
+          <strong>Base légale :</strong> l’exécution de mesures précontractuelles prises à votre
+          demande (article 6.1.b du RGPD).
+        </li>
+        <li>
+          <strong>Conservation :</strong> trois ans à compter du dernier contact si aucune course
+          n’a suivi. Si une course a eu lieu, les pièces comptables associées sont conservées dix
+          ans, comme l’impose le code de commerce.
+        </li>
+        <li>
+          <strong>Destinataires :</strong> nous seuls. Vos données ne sont ni vendues, ni cédées, ni
+          utilisées à des fins de prospection.
+        </li>
+      </ul>
+
+      <h2>Les transports conventionnés</h2>
+      <p>
+        Pour un transport pris en charge par l’Assurance Maladie, nous traitons les informations
+        figurant sur votre prescription médicale de transport et votre carte Vitale, aux seules
+        fins de facturation auprès de votre caisse. Ce traitement repose sur une obligation légale
+        et sur la convention nationale liant les taxis aux caisses d’assurance maladie.
+      </p>
+      <p>
+        Ces informations relèvent des données de santé et bénéficient à ce titre d’une protection
+        renforcée. Elles ne sont transmises qu’à votre caisse d’assurance maladie et, le cas
+        échéant, à votre complémentaire santé, dans le cadre de la facturation. Elles sont
+        conservées selon les durées prévues par la réglementation applicable à la facturation des
+        transports sanitaires.
+      </p>
+
+      <h2>Vos droits</h2>
+      <p>
+        Vous disposez d’un droit d’accès, de rectification, d’effacement, de limitation et
+        d’opposition, ainsi que d’un droit à la portabilité de vos données. Pour les exercer,
+        écrivez-nous à <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a> ou appelez le
+        <a href={`tel:${CONTACT.phone}`}>{CONTACT.phoneDisplay}</a>. Une pièce d’identité pourra
+        vous être demandée en cas de doute sur votre identité.
+      </p>
+      <p>
+        Si vous estimez que vos droits ne sont pas respectés, vous pouvez introduire une réclamation
+        auprès de la CNIL, 3 place de Fontenoy, 75334 Paris Cedex 07, ou sur
+        <a href="https://www.cnil.fr" rel="noopener nofollow" target="_blank">cnil.fr</a>.
+      </p>
+
+      <h2>Sécurité</h2>
+      <p>
+        Le site est servi exclusivement en HTTPS. Les demandes de devis nous parviennent par
+        messagerie ou messagerie instantanée sécurisée. Les documents papier qui nous sont remis
+        (prescriptions) sont conservés hors d’atteinte de tiers et détruits à l’issue de leur durée
+        de conservation.
+      </p>
+
+      <h2>Modifications</h2>
+      <p>
+        Cette politique peut être mise à jour pour refléter une évolution du site ou de la
+        réglementation. La date de dernière mise à jour figure en haut de cette page.
+      </p>
+    </div>
+  </section>
+</Base>

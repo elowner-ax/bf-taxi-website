@@ -27,13 +27,13 @@ const suggestions = SERVICES.slice(0, 3);
       </p>
 
       <div class="groupe-btn merci__cta">
-        <a href={`tel:${CONTACT.phone}`} class="btn btn-or btn-large">
+        <a href={`tel:${CONTACT.phone}`} class="btn btn-appel btn-large">
           <Icone nom="phone" taille={19} />
           {CONTACT.phoneDisplay}
         </a>
         <a
           href={`https://wa.me/${CONTACT.whatsapp}`}
-          class="btn btn-whatsapp btn-large"
+          class="btn btn-contour btn-large"
           rel="noopener"
           target="_blank"
         >
@@ -82,13 +82,13 @@ const suggestions = SERVICES.slice(0, 3);
     height: 86px;
     margin: 0 auto 2rem;
     border-radius: 50%;
-    background: linear-gradient(140deg, rgba(62, 207, 142, 0.24), rgba(62, 207, 142, 0.06));
-    border: 1px solid rgba(62, 207, 142, 0.4);
+    background: linear-gradient(140deg, var(--ivoire), var(--ivoire));
+    border: 1px solid var(--ivoire);
     color: var(--succes);
   }
 
   .merci__texte {
-    color: var(--texte-doux);
+    color: var(--texte-2);
     font-size: 1.06rem;
     line-height: 1.75;
     margin: 1.2rem auto 0;
@@ -106,17 +106,17 @@ const suggestions = SERVICES.slice(0, 3);
     gap: 0.5rem;
     margin-top: 1.5rem;
     font-size: 0.88rem;
-    color: var(--texte-faible);
+    color: var(--texte-3);
   }
 
   .merci__dispo :global(svg) {
-    color: var(--or);
+    color: var(--chaud);
   }
 
   .merci__suite {
     margin-top: 3.5rem;
     padding-top: 2.5rem;
-    border-top: 1px solid var(--bord);
+    border-top: 1px solid var(--filet);
     text-align: left;
   }
 
@@ -137,18 +137,18 @@ const suggestions = SERVICES.slice(0, 3);
     align-items: center;
     gap: 0.85rem;
     padding: 0.95rem 1.15rem;
-    border-radius: var(--r-md);
-    border: 1px solid var(--bord);
-    background: rgba(255, 255, 255, 0.025);
+    border-radius: var(--r);
+    border: 1px solid var(--filet);
+    background: var(--blanc);
     transition: border-color var(--transition);
   }
 
   .merci__suite a:hover {
-    border-color: rgba(255, 194, 51, 0.34);
+    border-color: var(--filet);
   }
 
   .merci__suite :global(svg) {
-    color: var(--or);
+    color: var(--chaud);
     flex-shrink: 0;
   }
 
@@ -161,13 +161,13 @@ const suggestions = SERVICES.slice(0, 3);
 
   .merci__suite small {
     font-size: 0.83rem;
-    color: var(--texte-faible);
+    color: var(--texte-3);
   }
 
   .merci__retour {
     display: inline-block;
     margin-top: 1.75rem;
-    color: var(--or-clair);
+    color: var(--chaud);
     font-weight: 600;
   }
 </style>

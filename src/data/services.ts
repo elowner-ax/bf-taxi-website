@@ -40,7 +40,7 @@ export const SERVICES: Service[] = [
       'Taxi conventionné Assurance Maladie à Saint-Étienne et dans la Loire. Transport médical assis sans avance de frais avec prescription. Réservation 24h/24 au 07 82 33 34 45.',
     categorie: 'medical',
     icon: 'shield',
-    accroche: 'Agréé Assurance Maladie — transport médical assis dans toute la Loire, sans avance de frais.',
+    accroche: 'Conventionné Assurance Maladie — transport médical assis dans toute la Loire, sans avance de frais.',
     reponseCourte:
       "BF Taxi est un taxi conventionné par l'Assurance Maladie à Saint-Étienne (42). Avec une prescription médicale de transport établie par votre médecin, votre trajet vers un rendez-vous de soins est pris en charge par la CPAM et vous n'avancez pas les frais. Réservation 24h/24 au 07 82 33 34 45.",
     intro: [

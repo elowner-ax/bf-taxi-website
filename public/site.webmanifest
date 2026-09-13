@@ -1,0 +1,13 @@
+{
+  "name": "BF Taxi — Saint-Étienne",
+  "short_name": "BF Taxi",
+  "description": "Taxi conventionné CPAM à Saint-Étienne et dans toute la Loire.",
+  "lang": "fr-FR",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1c3d5a",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

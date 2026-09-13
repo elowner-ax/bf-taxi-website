@@ -123,7 +123,7 @@ const constantes = [
   </section>
 
   <!-- Exemples -->
-  <section class="section section-claire">
+  <section class="section section-ivoire">
     <div class="conteneur">
       <p class="surtitre reveal">Exemples</p>
       <h2 class="reveal">Combien coûtent les trajets les plus demandés ?</h2>
@@ -192,7 +192,7 @@ const constantes = [
     </div>
   </section>
 
-  <section class="section section-sombre-2">
+  <section class="section section-ivoire">
     <div class="conteneur conteneur-etroit">
       <div class="reveal">
         <Faq items={faqTarifs} titre="Tarifs et paiement : vos questions" />
@@ -217,7 +217,7 @@ const constantes = [
 
   .tete__accroche {
     font-size: clamp(1.02rem, 2vw, 1.15rem);
-    color: var(--texte-doux);
+    color: var(--texte-2);
     max-width: 66ch;
     margin-top: 1.2rem;
     line-height: 1.7;
@@ -229,16 +229,16 @@ const constantes = [
     gap: 0.55rem;
     margin-top: 1.5rem;
     padding: 0.7rem 1.05rem;
-    border-radius: var(--r-md);
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid var(--bord);
+    border-radius: var(--r);
+    background: var(--blanc);
+    border: 1px solid var(--filet);
     font-size: 0.86rem;
-    color: var(--texte-faible);
+    color: var(--texte-3);
     max-width: 72ch;
   }
 
   .source :global(svg) {
-    color: var(--or);
+    color: var(--chaud);
     flex-shrink: 0;
     margin-top: 0.1rem;
   }
@@ -255,9 +255,9 @@ const constantes = [
   .tarif {
     position: relative;
     padding: 1.6rem 1.5rem;
-    border-radius: var(--r-lg);
-    border: 1px solid var(--bord);
-    background: linear-gradient(155deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.012));
+    border-radius: var(--r);
+    border: 1px solid var(--filet);
+    background: linear-gradient(155deg, var(--blanc), var(--blanc));
     overflow: hidden;
   }
 
@@ -265,33 +265,33 @@ const constantes = [
     position: absolute;
     top: 0.35rem;
     right: 1rem;
-    font-family: var(--font-display);
+    font-family: var(--font-titre);
     font-size: 4.5rem;
     font-weight: 800;
     line-height: 1;
-    color: rgba(255, 194, 51, 0.13);
+    color: var(--filet);
   }
 
   .tarif__prix {
-    font-family: var(--font-display);
+    font-family: var(--font-titre);
     font-size: 1.95rem;
     font-weight: 800;
     letter-spacing: -0.03em;
-    color: var(--or);
+    color: var(--chaud);
     line-height: 1;
   }
 
   .tarif__prix span {
     font-size: 0.9rem;
     font-weight: 600;
-    color: var(--texte-doux);
+    color: var(--texte-2);
     letter-spacing: 0;
   }
 
   .tarif__cond {
     margin-top: 0.85rem;
     font-size: 0.87rem;
-    color: var(--texte-faible);
+    color: var(--texte-3);
     line-height: 1.55;
     position: relative;
   }
@@ -299,9 +299,9 @@ const constantes = [
   /* Constantes */
   .constante {
     padding: 1.3rem 1.4rem;
-    border-radius: var(--r-md);
-    border: 1px solid var(--bord);
-    background: rgba(255, 255, 255, 0.022);
+    border-radius: var(--r);
+    border: 1px solid var(--filet);
+    background: var(--blanc);
   }
 
   .constante dt {
@@ -309,12 +309,12 @@ const constantes = [
     font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: var(--texte-faible);
+    color: var(--texte-3);
   }
 
   .constante dd {
     margin: 0.4rem 0 0.5rem;
-    font-family: var(--font-display);
+    font-family: var(--font-titre);
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--texte);
@@ -322,7 +322,7 @@ const constantes = [
 
   .constante p {
     font-size: 0.82rem;
-    color: var(--texte-faible);
+    color: var(--texte-3);
     line-height: 1.5;
   }
 
@@ -331,13 +331,14 @@ const constantes = [
     gap: 1rem;
     margin-top: clamp(2rem, 4vw, 3rem);
     padding: 1.6rem 1.75rem;
-    border-radius: var(--r-lg);
-    background: linear-gradient(140deg, rgba(255, 194, 51, 0.1), rgba(255, 194, 51, 0.02));
-    border: 1px solid rgba(255, 194, 51, 0.26);
+    border-radius: var(--r);
+    background: var(--ivoire);
+    border: 0;
+    border-left: 3px solid var(--chaud);
   }
 
   .encart-info > :global(svg) {
-    color: var(--or);
+    color: var(--chaud);
     flex-shrink: 0;
     margin-top: 0.15rem;
   }
@@ -348,7 +349,7 @@ const constantes = [
   }
 
   .encart-info p {
-    color: var(--texte-doux);
+    color: var(--texte-2);
     font-size: 0.95rem;
     line-height: 1.7;
     max-width: 78ch;
@@ -358,8 +359,8 @@ const constantes = [
   .tableau-wrap {
     margin-top: clamp(1.75rem, 3.5vw, 2.5rem);
     overflow-x: auto;
-    border-radius: var(--r-lg);
-    border: 1px solid rgba(18, 20, 26, 0.1);
+    border-radius: var(--r);
+    border: 1px solid var(--filet);
     background: #fff;
   }
 
@@ -377,42 +378,42 @@ const constantes = [
   }
 
   .tableau thead th {
-    font-family: var(--font-display);
+    font-family: var(--font-titre);
     font-size: 0.8rem;
     font-weight: 700;
     letter-spacing: 0.05em;
     text-transform: uppercase;
-    color: var(--texte-sombre-doux);
+    color: var(--texte-2);
     background: #f2f1ea;
-    border-bottom: 1px solid rgba(18, 20, 26, 0.1);
+    border-bottom: 1px solid var(--filet);
     white-space: nowrap;
   }
 
   .tableau tbody tr + tr {
-    border-top: 1px solid rgba(18, 20, 26, 0.07);
+    border-top: 1px solid var(--filet);
   }
 
   .tableau tbody th {
     font-weight: 620;
-    color: var(--texte-sombre);
+    color: var(--texte);
   }
 
   .tableau td {
-    color: var(--texte-sombre-doux);
+    color: var(--texte-2);
     white-space: nowrap;
   }
 
   .tableau .prix {
-    font-family: var(--font-display);
+    font-family: var(--font-titre);
     font-weight: 700;
     font-size: 1rem;
-    color: var(--texte-sombre);
+    color: var(--texte);
   }
 
   .note {
     margin-top: 1.75rem;
     font-size: 0.94rem;
-    color: var(--texte-sombre-doux);
+    color: var(--texte-2);
     max-width: 76ch;
     line-height: 1.7;
   }

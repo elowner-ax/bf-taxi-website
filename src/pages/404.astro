@@ -25,11 +25,11 @@ const populaires = ['taxi-conventionne-cpam', 'taxi-aeroport-lyon-saint-exupery'
       </p>
 
       <div class="groupe-btn erreur__cta">
-        <a href={`tel:${CONTACT.phone}`} class="btn btn-or btn-large">
+        <a href={`tel:${CONTACT.phone}`} class="btn btn-appel btn-large">
           <Icone nom="phone" taille={19} />
           {CONTACT.phoneDisplay}
         </a>
-        <a href="/" class="btn btn-fantome btn-large">Retour à l’accueil</a>
+        <a href="/" class="btn btn-contour btn-large">Retour à l’accueil</a>
       </div>
 
       <div class="erreur__liens">
@@ -59,15 +59,12 @@ const populaires = ['taxi-conventionne-cpam', 'taxi-aeroport-lyon-saint-exupery'
   }
 
   .erreur__code {
-    font-family: var(--font-display);
+    font-family: var(--font-titre);
     font-size: clamp(4.5rem, 14vw, 8rem);
     font-weight: 800;
     line-height: 1;
     letter-spacing: -0.05em;
-    background: linear-gradient(160deg, var(--or-clair), rgba(255, 194, 51, 0.18));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    color: var(--filet-fort);
   }
 
   .erreur h1 {
@@ -76,7 +73,7 @@ const populaires = ['taxi-conventionne-cpam', 'taxi-aeroport-lyon-saint-exupery'
   }
 
   .erreur__texte {
-    color: var(--texte-doux);
+    color: var(--texte-2);
     margin: 1.1rem auto 0;
     max-width: 54ch;
     line-height: 1.7;
@@ -90,7 +87,7 @@ const populaires = ['taxi-conventionne-cpam', 'taxi-aeroport-lyon-saint-exupery'
   .erreur__liens {
     margin-top: 3.5rem;
     padding-top: 2.5rem;
-    border-top: 1px solid var(--bord);
+    border-top: 1px solid var(--filet);
     text-align: left;
   }
 
@@ -112,21 +109,21 @@ const populaires = ['taxi-conventionne-cpam', 'taxi-aeroport-lyon-saint-exupery'
     align-items: center;
     gap: 0.65rem;
     padding: 0.85rem 1.05rem;
-    border-radius: var(--r-md);
-    border: 1px solid var(--bord);
-    background: rgba(255, 255, 255, 0.025);
+    border-radius: var(--r);
+    border: 1px solid var(--filet);
+    background: var(--blanc);
     font-size: 0.92rem;
-    color: var(--texte-doux);
+    color: var(--texte-2);
     transition: border-color var(--transition), color var(--transition);
   }
 
   .erreur__liens a:hover {
-    border-color: rgba(255, 194, 51, 0.34);
+    border-color: var(--filet);
     color: var(--texte);
   }
 
   .erreur__liens :global(svg) {
-    color: var(--or);
+    color: var(--chaud);
     flex-shrink: 0;
   }
 </style>

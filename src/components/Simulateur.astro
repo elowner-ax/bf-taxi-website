@@ -40,71 +40,61 @@ const donnees = {
   <script type="application/json" data-simu-donnees set:html={JSON.stringify(donnees)} is:inline />
 
   <div class="simu__entete">
-    <Icone nom="euro" taille={20} />
-    <div>
-      <h2>{titre}</h2>
-      <p>Sur la base des tarifs officiels de la Loire — {ARRETE.reference}.</p>
-    </div>
+    <h2>{titre}</h2>
+    <span class="simu__source">Tarifs préfecture 42</span>
   </div>
 
   <form class="simu__form" data-simu-form>
-    <div class="simu__ligne">
-      <label class="champ">
-        <span class="champ__label">Départ</span>
-        <select name="depart" data-champ="depart">
-          {VILLES.map((v) => <option value={v.slug} selected={v.slug === 'saint-etienne'}>{v.nom}</option>)}
-        </select>
-      </label>
+    <label class="ligne">
+      <span class="ligne__label">Départ</span>
+      <select name="depart" data-champ="depart">
+        {VILLES.map((v) => <option value={v.slug} selected={v.slug === 'saint-etienne'}>{v.nom}</option>)}
+      </select>
+    </label>
 
-      <label class="champ">
-        <span class="champ__label">Destination</span>
-        <select name="arrivee" data-champ="arrivee">
-          {
-            groupes.map((g) => (
-              <optgroup label={g.label}>
-                {g.items.map((d) => (
-                  <option value={d.slug} selected={d.slug === 'aeroport-lyon-saint-exupery'}>
-                    {d.label}
-                  </option>
-                ))}
-              </optgroup>
-            ))
-          }
-          <optgroup label="Autre">
-            <option value="__libre">Autre destination (saisir la distance)</option>
-          </optgroup>
-        </select>
-      </label>
-    </div>
+    <label class="ligne">
+      <span class="ligne__label">Arrivée</span>
+      <select name="arrivee" data-champ="arrivee">
+        {
+          groupes.map((g) => (
+            <optgroup label={g.label}>
+              {g.items.map((d) => (
+                <option value={d.slug} selected={d.slug === 'aeroport-lyon-saint-exupery'}>
+                  {d.label}
+                </option>
+              ))}
+            </optgroup>
+          ))
+        }
+        <optgroup label="Autre">
+          <option value="__libre">Autre destination (saisir la distance)</option>
+        </optgroup>
+      </select>
+    </label>
 
-    <label class="champ champ--libre" data-champ-libre hidden>
-      <span class="champ__label">Distance estimée (km)</span>
+    <label class="ligne" data-champ-libre hidden>
+      <span class="ligne__label">Distance</span>
       <input type="number" name="kmLibre" min="1" max="1500" step="1" value="50" data-champ="kmLibre" />
     </label>
 
-    <div class="simu__ligne">
-      <fieldset class="segment">
-        <legend class="champ__label">Type de course</legend>
-        <div class="segment__options">
-          <label><input type="radio" name="sens" value="aller" checked data-champ="sens" /><span>Aller simple</span></label>
-          <label><input type="radio" name="sens" value="ar" data-champ="sens" /><span>Aller-retour</span></label>
-        </div>
-      </fieldset>
+    <fieldset class="ligne">
+      <legend class="ligne__label">Trajet</legend>
+      <div class="segment">
+        <label><input type="radio" name="sens" value="aller" checked data-champ="sens" /><span>Aller</span></label>
+        <label><input type="radio" name="sens" value="ar" data-champ="sens" /><span>Aller-retour</span></label>
+      </div>
+    </fieldset>
 
-      <fieldset class="segment">
-        <legend class="champ__label">Moment du trajet</legend>
-        <div class="segment__options">
-          <label><input type="radio" name="moment" value="jour" checked data-champ="moment" /><span>Jour</span></label>
-          <label><input type="radio" name="moment" value="nuit" data-champ="moment" /><span>Nuit / dim.</span></label>
-        </div>
-      </fieldset>
-    </div>
+    <fieldset class="ligne">
+      <legend class="ligne__label">Horaire</legend>
+      <div class="segment">
+        <label><input type="radio" name="moment" value="jour" checked data-champ="moment" /><span>Jour</span></label>
+        <label><input type="radio" name="moment" value="nuit" data-champ="moment" /><span>Nuit / dim.</span></label>
+      </div>
+    </fieldset>
 
-    <label class="champ champ--passagers">
-      <span class="champ__label">
-        Passagers
-        <small>supplément réglementaire à partir du 4<sup>e</sup></small>
-      </span>
+    <label class="ligne ligne--derniere">
+      <span class="ligne__label">Passagers</span>
       <select name="passagers" data-champ="passagers">
         {[1, 2, 3, 4, 5, 6, 7].map((n) => <option value={n}>{n} passager{n > 1 ? 's' : ''}</option>)}
       </select>
@@ -112,256 +102,232 @@ const donnees = {
   </form>
 
   <div class="simu__resultat" data-simu-resultat aria-live="polite">
-    <div class="simu__montant">
-      <span class="simu__label">Estimation</span>
-      <strong data-simu-total>—</strong>
-      <span class="simu__meta" data-simu-meta></span>
+    <div class="simu__prix">
+      <div>
+        <p class="simu__label">Estimation</p>
+        <p class="simu__montant" data-simu-total>—</p>
+      </div>
+      <p class="simu__meta" data-simu-meta></p>
     </div>
 
     <details class="simu__detail">
       <summary>Voir le détail du calcul</summary>
       <ul data-simu-lignes></ul>
-      <p class="simu__note">
-        Estimation indicative calculée selon les tarifs maximaux de l'{ARRETE.reference}.
-        Le montant définitif est celui affiché par le taximètre à l'arrivée.
-        <strong>En transport conventionné CPAM, vous ne réglez rien</strong> : la course est
-        facturée directement à l'Assurance Maladie.
-      </p>
     </details>
-  </div>
 
-  <div class="simu__actions">
-    <a href={`tel:${CONTACT.phone}`} class="btn btn-or" data-evt="tel-simu">
-      <Icone nom="phone" taille={18} /> Réserver au {CONTACT.phoneDisplay}
-    </a>
-    <a href="#" class="btn btn-whatsapp" data-simu-wa rel="noopener" target="_blank">
-      <Icone nom="whatsapp" taille={18} /> Envoyer par WhatsApp
-    </a>
-    <a href="/devis/" class="btn btn-fantome" data-simu-devis>
-      <Icone nom="doc" taille={18} /> Demander un devis écrit
-    </a>
+    <p class="simu__note">
+      Indicatif : seul le taximètre fait foi à l’arrivée. Calcul basé sur l’{ARRETE.reference} du
+      {' '}{ARRETE.dateDisplay}. <strong>En transport conventionné CPAM, vous ne réglez rien</strong> :
+      la course est facturée directement à l’Assurance Maladie.
+    </p>
+
+    <div class="simu__actions">
+      <a href={`tel:${CONTACT.phone}`} class="btn btn-appel" data-evt="tel-simu">
+        <Icone nom="phone" taille={17} /> Réserver au {CONTACT.phoneDisplay}
+      </a>
+      <a href="#" class="btn btn-contour" data-simu-wa rel="noopener" target="_blank">
+        <Icone nom="whatsapp" taille={17} /> Envoyer sur WhatsApp
+      </a>
+      <a href="/devis/" class="btn btn-noir simu__devis" data-simu-devis>
+        Demander un devis écrit
+      </a>
+    </div>
   </div>
 </div>
 
 <style>
   .simu {
-    background: linear-gradient(165deg, var(--surface), var(--noir-3));
-    border: 1px solid var(--bord-forte);
-    border-radius: var(--r-xl);
-    padding: clamp(1.4rem, 3.5vw, 2.2rem);
-    box-shadow: var(--ombre-lg);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .simu::before {
-    content: '';
-    position: absolute;
-    inset: 0 0 auto;
-    height: 3px;
-    background: linear-gradient(90deg, transparent, var(--or), transparent);
+    background: var(--ivoire);
+    border: 1px solid var(--filet-fort);
   }
 
   .simu__entete {
     display: flex;
-    gap: 0.85rem;
-    align-items: flex-start;
-    margin-bottom: 1.5rem;
-  }
-
-  .simu__entete > :global(svg) {
-    color: var(--or);
-    margin-top: 0.28rem;
-    flex-shrink: 0;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.6rem 1.75rem 1.1rem;
+    border-bottom: 1px solid var(--encre);
   }
 
   .simu__entete h2 {
-    font-size: clamp(1.15rem, 2.6vw, 1.45rem);
-    letter-spacing: -0.02em;
+    font-size: clamp(1.3rem, 2.4vw, 1.55rem);
   }
 
-  .simu__entete p {
-    font-size: 0.85rem;
-    color: var(--texte-faible);
-    margin-top: 0.2rem;
+  .simu__source {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--texte-3);
+    white-space: nowrap;
   }
 
+  /* Une ligne par information : le bloc se lit comme un tableau. */
   .simu__form {
-    display: grid;
-    gap: 1rem;
+    padding: 0 1.75rem;
   }
 
-  .simu__ligne {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-  }
-
-  .champ {
-    display: grid;
-    gap: 0.4rem;
-  }
-
-  .champ__label {
-    font-size: 0.8rem;
-    font-weight: 620;
-    letter-spacing: 0.02em;
-    color: var(--texte-doux);
+  .ligne {
     display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 0.4rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.9rem 0;
+    border: 0;
+    border-bottom: 1px solid var(--filet);
+    margin: 0;
+    min-width: 0;
   }
 
-  .champ__label small {
-    font-weight: 450;
-    color: var(--texte-faible);
-    font-size: 0.72rem;
+  .ligne--derniere {
+    border-bottom: 0;
   }
 
-  .champ select,
-  .champ input {
-    width: 100%;
-    padding: 0.78rem 0.9rem;
-    border-radius: var(--r-md);
-    background: rgba(8, 9, 12, 0.6);
-    border: 1px solid var(--bord-forte);
+  .ligne__label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--texte-3);
+    flex-shrink: 0;
+    padding: 0;
+  }
+
+  .ligne select,
+  .ligne input {
+    flex: 1;
+    min-width: 0;
+    max-width: 64%;
+    padding: 0.45rem 1.5rem 0.45rem 0;
+    background: transparent;
+    border: 0;
     color: var(--texte);
     font-size: 0.94rem;
-    transition: border-color var(--transition), background-color var(--transition);
+    font-weight: 500;
+    text-align: right;
+    text-align-last: right;
     appearance: none;
-  }
-
-  .champ select {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23ffc233' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='15' viewBox='0 0 24 24' fill='none' stroke='%239d988c' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: right 0.85rem center;
-    padding-right: 2.4rem;
+    background-position: right center;
+    cursor: pointer;
   }
 
-  .champ select:focus,
-  .champ input:focus {
-    border-color: var(--or);
-    outline: none;
-    background: rgba(8, 9, 12, 0.85);
+  .ligne input {
+    background-image: none;
+    padding-right: 0;
+    cursor: text;
   }
 
-  .champ option,
-  .champ optgroup {
-    background: var(--noir-2);
+  .ligne select:focus,
+  .ligne input:focus {
+    outline: 2px solid var(--chaud);
+    outline-offset: 2px;
+  }
+
+  .ligne option,
+  .ligne optgroup {
+    background: var(--blanc);
     color: var(--texte);
+    text-align: left;
   }
 
   .segment {
-    border: 0;
-    padding: 0;
-    margin: 0;
-    display: grid;
+    display: flex;
     gap: 0.4rem;
   }
 
-  .segment legend {
-    padding: 0;
-  }
-
-  .segment__options {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.35rem;
-    padding: 0.25rem;
-    background: rgba(8, 9, 12, 0.6);
-    border: 1px solid var(--bord-forte);
-    border-radius: var(--r-md);
-  }
-
-  .segment__options label {
+  .segment label {
     position: relative;
-    display: block;
   }
 
-  .segment__options input {
+  .segment input {
     position: absolute;
     opacity: 0;
     inset: 0;
     cursor: pointer;
   }
 
-  .segment__options span {
+  .segment span {
     display: block;
-    text-align: center;
-    padding: 0.5rem 0.4rem;
-    border-radius: calc(var(--r-md) - 4px);
-    font-size: 0.87rem;
-    font-weight: 560;
-    color: var(--texte-faible);
-    transition: background-color var(--transition), color var(--transition);
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--filet-fort);
+    background: var(--blanc);
+    font-size: 0.84rem;
+    font-weight: 500;
+    color: var(--texte-2);
     cursor: pointer;
+    white-space: nowrap;
+    transition: background-color var(--transition), color var(--transition),
+      border-color var(--transition);
   }
 
-  .segment__options input:checked + span {
-    background: var(--or);
-    color: #1a1305;
-    font-weight: 640;
+  .segment input:checked + span {
+    background: var(--encre);
+    border-color: var(--encre);
+    color: var(--blanc);
+    font-weight: 600;
   }
 
-  .segment__options input:focus-visible + span {
-    outline: 2px solid var(--or);
+  .segment input:focus-visible + span {
+    outline: 2px solid var(--chaud);
     outline-offset: 2px;
   }
 
+  /* Le prix doit se lire de loin : c'est la raison d'être du bloc. */
   .simu__resultat {
-    margin-top: 1.5rem;
-    padding: 1.3rem;
-    border-radius: var(--r-lg);
-    background: linear-gradient(140deg, rgba(255, 194, 51, 0.13), rgba(255, 194, 51, 0.03));
-    border: 1px solid rgba(255, 194, 51, 0.26);
+    padding: 1.5rem 1.75rem 1.75rem;
+    background: var(--blanc);
+    border-top: 1px solid var(--encre);
   }
 
-  .simu__montant {
+  .simu__prix {
     display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 0.3rem 0.85rem;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
   }
 
   .simu__label {
-    font-size: 0.78rem;
-    font-weight: 650;
-    letter-spacing: 0.12em;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--or);
-    width: 100%;
+    color: var(--chaud);
+    margin-bottom: 0.3rem;
   }
 
-  .simu__montant strong {
-    font-family: var(--font-display);
-    font-size: clamp(2.1rem, 6vw, 2.9rem);
-    font-weight: 800;
-    letter-spacing: -0.035em;
-    color: #fff;
+  .simu__montant {
+    font-family: var(--font-titre);
+    font-size: clamp(2.4rem, 6vw, 3.4rem);
     line-height: 1;
+    color: var(--texte);
   }
 
   .simu__meta {
-    font-size: 0.88rem;
-    color: var(--texte-doux);
+    font-size: 0.82rem;
+    color: var(--texte-3);
+    text-align: right;
+    line-height: 1.5;
+    max-width: 42%;
   }
 
   .simu__detail {
-    margin-top: 1rem;
-    border-top: 1px solid rgba(255, 194, 51, 0.2);
-    padding-top: 0.85rem;
+    margin-top: 1.15rem;
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--filet);
   }
 
   .simu__detail summary {
     cursor: pointer;
-    font-size: 0.87rem;
-    font-weight: 580;
-    color: var(--or-clair);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--chaud);
     list-style: none;
     display: flex;
     align-items: center;
-    gap: 0.4rem;
+    gap: 0.45rem;
   }
 
   .simu__detail summary::-webkit-details-marker {
@@ -372,11 +338,10 @@ const donnees = {
     content: '+';
     display: grid;
     place-items: center;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
+    width: 17px;
+    height: 17px;
     border: 1px solid currentColor;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     line-height: 1;
   }
 
@@ -389,17 +354,17 @@ const donnees = {
     padding: 0;
     margin: 0.85rem 0 0;
     display: grid;
-    gap: 0.45rem;
-    font-size: 0.88rem;
+    gap: 0.4rem;
+    font-size: 0.86rem;
   }
 
   .simu__detail li {
     display: flex;
     justify-content: space-between;
     gap: 1rem;
-    color: var(--texte-doux);
-    padding-bottom: 0.45rem;
-    border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+    color: var(--texte-2);
+    padding-bottom: 0.4rem;
+    border-bottom: 1px dotted var(--filet-fort);
   }
 
   .simu__detail li:last-child {
@@ -409,36 +374,54 @@ const donnees = {
   .simu__detail li b {
     color: var(--texte);
     white-space: nowrap;
+    font-weight: 600;
   }
 
   .simu__note {
-    font-size: 0.8rem;
-    color: var(--texte-faible);
-    line-height: 1.55;
-    margin-top: 0.9rem;
+    font-size: 0.78rem;
+    color: var(--texte-4);
+    line-height: 1.6;
+    margin-top: 1.1rem;
   }
 
   .simu__actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.7rem;
-    margin-top: 1.4rem;
+    display: grid;
+    gap: 0.6rem;
+    margin-top: 1.35rem;
   }
 
-  .simu--compact .simu__actions .btn-fantome {
+  .simu--compact .simu__devis {
     display: none;
   }
 
-  @media (max-width: 640px) {
-    .simu__ligne {
-      grid-template-columns: 1fr;
+  @media (max-width: 560px) {
+    .ligne {
+      flex-wrap: wrap;
+      gap: 0.35rem;
     }
 
-    .simu__actions .btn {
-      flex: 1 1 100%;
+    .ligne select,
+    .ligne input {
+      flex-basis: 100%;
+      max-width: 100%;
+      width: 100%;
+      text-align: left;
+      text-align-last: left;
+      font-size: 1rem;
+    }
+
+    .simu__prix {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .simu__meta {
+      text-align: left;
+      max-width: 100%;
     }
   }
 </style>
+
 
 <script>
   type Tarif = { key: string; parKm: number; label: string; court: string };

@@ -1,0 +1,33 @@
+# BF Taxi — https://bftaxi.fr
+
+User-agent: *
+Allow: /
+Disallow: /merci/
+
+# Assistants de recherche générative : l'accès est explicitement autorisé.
+# Le site vise aussi bien les moteurs classiques que les réponses générées.
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+Sitemap: https://bftaxi.fr/sitemap-index.xml

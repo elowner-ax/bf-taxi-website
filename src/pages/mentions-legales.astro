@@ -1,0 +1,125 @@
+---
+import Base from '../layouts/Base.astro';
+import FilAriane from '../components/FilAriane.astro';
+import { SITE, CONTACT, ADDRESS } from '../data/site.ts';
+
+const ariane = [
+  { nom: 'Accueil', url: '/' },
+  { nom: 'Mentions légales', url: '/mentions-legales/' },
+];
+
+/**
+ * ⚠️ À COMPLÉTER AVANT MISE EN LIGNE.
+ *
+ * Les mentions légales sont obligatoires (articles 6-III et 19 de la LCEN).
+ * Les valeurs vides ci-dessous s'affichent comme des champs à renseigner
+ * plutôt que comme des informations inventées : une mention fausse engage la
+ * responsabilité de l'exploitant du site.
+ *
+ * Pour une entreprise de taxi, l'autorisation de stationnement (ADS) et
+ * l'assurance responsabilité civile professionnelle sont à mentionner.
+ */
+const MENTIONS = {
+  formeJuridique: '', // ex. « Entreprise individuelle », « SASU »
+  capital: '', // le cas échéant
+  siret: '',
+  rcs: '',
+  tva: '',
+  ads: '', // numéro d'autorisation de stationnement et commune de rattachement
+  directeurPublication: '',
+  assureur: '',
+  numeroPolice: '',
+  hebergeur: 'GitHub Pages — GitHub, Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, États-Unis',
+};
+
+const aCompleter = (valeur: string) => valeur || '[à compléter]';
+---
+
+<Base
+  titre={`Mentions légales — ${SITE.name}`}
+  description="Mentions légales du site bftaxi.fr : éditeur, hébergeur, propriété intellectuelle et médiation de la consommation."
+  canonical="/mentions-legales/"
+  filAriane={ariane}
+>
+  <FilAriane elements={ariane} />
+
+  <section class="section">
+    <div class="conteneur conteneur-etroit prose">
+      <h1>Mentions légales</h1>
+
+      <h2>Éditeur du site</h2>
+      <p>
+        <strong>{SITE.legalName}</strong><br />
+        {aCompleter(MENTIONS.formeJuridique)}{MENTIONS.capital && ` au capital de ${MENTIONS.capital}`}<br />
+        {ADDRESS.street && <>{ADDRESS.street}<br /></>}
+        {aCompleter(ADDRESS.street ? '' : '[adresse du siège]')}<br />
+        {ADDRESS.postalCode} {ADDRESS.city}, France
+      </p>
+      <ul>
+        <li>SIRET : {aCompleter(MENTIONS.siret)}</li>
+        <li>RCS : {aCompleter(MENTIONS.rcs)}</li>
+        <li>Numéro de TVA intracommunautaire : {aCompleter(MENTIONS.tva)}</li>
+        <li>Autorisation de stationnement (ADS) : {aCompleter(MENTIONS.ads)}</li>
+        <li>Téléphone : <a href={`tel:${CONTACT.phone}`}>{CONTACT.phoneDisplay}</a></li>
+        <li>E-mail : <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a></li>
+        <li>Directeur de la publication : {aCompleter(MENTIONS.directeurPublication)}</li>
+      </ul>
+
+      <h2>Hébergement</h2>
+      <p>{MENTIONS.hebergeur}</p>
+
+      <h2>Activité réglementée</h2>
+      <p>
+        L’activité de taxi est réglementée par le code des transports. Les tarifs des courses sont
+        fixés par arrêté préfectoral et affichés dans le véhicule ; ils sont rappelés sur la
+        <a href="/tarifs/">page tarifs</a> de ce site. Le taximètre installé à bord est le seul
+        instrument faisant foi pour le calcul du prix d’une course.
+      </p>
+      <p>
+        Le transport de patients pris en charge par l’Assurance Maladie s’effectue dans le cadre de
+        la convention nationale organisant les rapports entre les entreprises de taxi et les
+        caisses d’assurance maladie.
+      </p>
+
+      <h2>Assurance</h2>
+      <p>
+        Responsabilité civile professionnelle souscrite auprès de {aCompleter(MENTIONS.assureur)},
+        police n° {aCompleter(MENTIONS.numeroPolice)}. Couverture géographique : France.
+      </p>
+
+      <h2>Propriété intellectuelle</h2>
+      <p>
+        L’ensemble des contenus de ce site — textes, illustrations, mise en page et code — est la
+        propriété de {SITE.legalName}, sauf mention contraire. Toute reproduction ou représentation,
+        totale ou partielle, sans autorisation écrite préalable est interdite.
+      </p>
+      <p>
+        Les marques citées (Tesla, Mercedes-Benz) appartiennent à leurs titulaires respectifs et ne
+        sont mentionnées qu’à titre descriptif des véhicules utilisés.
+      </p>
+
+      <h2>Liens externes</h2>
+      <p>
+        Ce site peut renvoyer vers des sites tiers, notamment institutionnels. {SITE.legalName} n’exerce
+        aucun contrôle sur ces sites et décline toute responsabilité quant à leur contenu.
+      </p>
+
+      <h2>Médiation de la consommation</h2>
+      <p>
+        Conformément à l’article L.612-1 du code de la consommation, tout consommateur a le droit de
+        recourir gratuitement à un médiateur de la consommation en vue de la résolution amiable d’un
+        litige, après avoir tenté de le résoudre directement auprès de nous.
+      </p>
+      <p>
+        Médiateur compétent : {aCompleter('')}. La plateforme européenne de règlement en ligne des
+        litiges est accessible à l’adresse <a href="https://ec.europa.eu/consumers/odr" rel="noopener nofollow" target="_blank">ec.europa.eu/consumers/odr</a>.
+      </p>
+
+      <h2>Données personnelles</h2>
+      <p>
+        Le traitement des données transmises via le formulaire de devis est détaillé dans notre
+        <a href="/politique-de-confidentialite/">politique de confidentialité</a>.
+      </p>
+    </div>
+  </section>
+</Base>

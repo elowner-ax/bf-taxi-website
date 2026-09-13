@@ -1,0 +1,71 @@
+# Déploiement du site statique sur GitHub Pages.
+#
+# Prérequis côté dépôt, à faire une seule fois :
+#   Settings → Pages → Source : « GitHub Actions »
+#   Settings → Pages → Custom domain : bftaxi.fr (le fichier public/CNAME est
+#   repris automatiquement dans la sortie du build)
+#
+# Côté registrar du domaine, faire pointer bftaxi.fr vers GitHub Pages :
+#   A     @    185.199.108.153
+#   A     @    185.199.109.153
+#   A     @    185.199.110.153
+#   A     @    185.199.111.153
+#   CNAME www  <utilisateur-github>.github.io.
+name: Déploiement
+
+on:
+  push:
+    branches: [main]
+  # Permet de relancer un déploiement à la main depuis l'onglet Actions.
+  workflow_dispatch:
+
+# Un seul déploiement à la fois ; les pushs suivants attendent leur tour
+# plutôt que d'écraser un déploiement en cours.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    name: Construction
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Installation des dépendances
+        run: npm ci
+
+      - name: Contrôle des types
+        run: npm run check
+
+      - name: Construction du site
+        run: npm run build
+        env:
+          # Endpoint de réception des demandes de devis. Sans ce secret, le
+          # formulaire bascule sur WhatsApp — le site reste fonctionnel.
+          PUBLIC_FORM_ENDPOINT: ${{ secrets.PUBLIC_FORM_ENDPOINT }}
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    name: Mise en ligne
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

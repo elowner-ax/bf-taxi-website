@@ -1,174 +1,115 @@
 ---
 import Icone from './Icone.astro';
 import Simulateur from './Simulateur.astro';
-import { CONTACT, OPENING_HOURS } from '../data/site.ts';
+import { CONTACT } from '../data/site.ts';
 ---
 
 <section class="hero">
-  <div class="hero__fond" aria-hidden="true">
-    <div class="hero__halo hero__halo--1"></div>
-    <div class="hero__halo hero__halo--2"></div>
-    <div class="hero__grille"></div>
-  </div>
-
   <div class="conteneur hero__inner">
     <div class="hero__texte">
-      <p class="hero__badge">
-        <Icone nom="shield" taille={15} />
-        Conventionné CPAM · Agréé Assurance Maladie
-      </p>
+      <p class="surtitre">Taxi conventionné · Loire 42</p>
 
       <h1>
-        Votre taxi à <span class="accent">Saint-Étienne</span><br />
-        et dans toute la Loire
+        Votre taxi à<br />Saint-Étienne,<br />
+        <span class="italique">24 heures sur 24.</span>
       </h1>
 
       <p class="hero__accroche">
-        Transport médical conventionné, transferts aéroports et gares, longue distance.
-        Tesla Model 3 et van Mercedes 7 places, disponibles {OPENING_HOURS.humanShort}.
+        Transport médical conventionné CPAM, transferts vers les aéroports et les gares, trajets
+        longue distance. Une berline Tesla Model 3 et un van Mercedes 7 places, disponibles tous
+        les jours de l’année.
       </p>
 
       <div class="groupe-btn hero__cta">
-        <a href={`tel:${CONTACT.phone}`} class="btn btn-or btn-large" data-evt="tel-hero">
-          <Icone nom="phone" taille={19} />
+        <a href={`tel:${CONTACT.phone}`} class="btn btn-appel btn-large" data-evt="tel-hero">
+          <Icone nom="phone" taille={18} />
           {CONTACT.phoneDisplay}
         </a>
         <a
           href={`https://wa.me/${CONTACT.whatsapp}?text=${encodeURIComponent('Bonjour, je souhaite réserver un taxi.')}`}
-          class="btn btn-whatsapp btn-large"
+          class="btn btn-contour btn-large"
           rel="noopener"
           target="_blank"
           data-evt="whatsapp-hero"
         >
-          <Icone nom="whatsapp" taille={19} />
+          <Icone nom="whatsapp" taille={18} />
           WhatsApp
         </a>
       </div>
 
-      <ul class="hero__points">
-        <li><Icone nom="check" taille={16} /> Sans avance de frais sur prescription</li>
-        <li><Icone nom="check" taille={16} /> Prix annoncé avant le départ</li>
-        <li><Icone nom="check" taille={16} /> 7j/7, jours fériés inclus</li>
-      </ul>
+      <dl class="hero__chiffres">
+        <div>
+          <dt>24h/24</dt>
+          <dd>7j/7, jours fériés inclus</dd>
+        </div>
+        <div>
+          <dt>0 €</dt>
+          <dd>à avancer sur prescription</dd>
+        </div>
+        <div>
+          <dt>7 places</dt>
+          <dd>van Mercedes Classe V</dd>
+        </div>
+      </dl>
     </div>
 
     <div class="hero__simu">
-      <Simulateur compact titre="Combien va me coûter ma course ?" />
+      <Simulateur compact titre="Estimer ma course" />
     </div>
   </div>
 </section>
 
 <style>
   .hero {
-    position: relative;
-    padding-block: clamp(2.5rem, 6vw, 5rem) clamp(3rem, 7vw, 6rem);
-    overflow: hidden;
-    isolation: isolate;
-  }
-
-  .hero__fond {
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-  }
-
-  .hero__halo {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(90px);
-    opacity: 0.5;
-  }
-
-  .hero__halo--1 {
-    width: min(620px, 85vw);
-    height: min(620px, 85vw);
-    top: -28%;
-    right: -14%;
-    background: radial-gradient(circle, rgba(255, 194, 51, 0.34), transparent 68%);
-  }
-
-  .hero__halo--2 {
-    width: min(520px, 75vw);
-    height: min(520px, 75vw);
-    bottom: -34%;
-    left: -16%;
-    background: radial-gradient(circle, rgba(107, 168, 255, 0.16), transparent 68%);
-  }
-
-  /* Trame fine, évoque le damier taxi sans le citer littéralement. */
-  .hero__grille {
-    position: absolute;
-    inset: 0;
-    background-image: linear-gradient(rgba(255, 255, 255, 0.028) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.028) 1px, transparent 1px);
-    background-size: 62px 62px;
-    mask-image: radial-gradient(ellipse 85% 65% at 50% 30%, #000 20%, transparent 78%);
+    padding-block: clamp(2.75rem, 6vw, 4.75rem);
   }
 
   .hero__inner {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 0.92fr);
-    gap: clamp(2rem, 5vw, 4rem);
-    align-items: center;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    gap: clamp(2.25rem, 5vw, 4.25rem);
+    align-items: start;
   }
 
-  .hero__badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.45rem 0.95rem;
-    border-radius: var(--r-full);
-    background: rgba(255, 194, 51, 0.11);
-    border: 1px solid rgba(255, 194, 51, 0.28);
-    color: var(--or-clair);
-    font-size: 0.815rem;
-    font-weight: 600;
-    letter-spacing: -0.005em;
-    margin-bottom: 1.5rem;
-  }
-
-  h1 .accent {
-    background: linear-gradient(105deg, var(--or-clair), var(--or) 55%, var(--or-sombre));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+  .hero h1 {
+    max-width: 15ch;
   }
 
   .hero__accroche {
-    font-size: clamp(1.02rem, 2vw, 1.18rem);
-    color: var(--texte-doux);
-    max-width: 52ch;
-    margin-top: 1.4rem;
-    line-height: 1.62;
+    font-size: clamp(1.05rem, 1.8vw, 1.19rem);
+    color: var(--texte-2);
+    max-width: 45ch;
+    margin-top: 1.85rem;
+    line-height: 1.68;
   }
 
   .hero__cta {
-    margin-top: 2rem;
+    margin-top: 2.35rem;
   }
 
-  .hero__points {
-    list-style: none;
-    padding: 0;
-    margin-top: 1.9rem;
+  .hero__chiffres {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem 1.5rem;
+    gap: 1.5rem 2.75rem;
+    margin-top: 3.25rem;
+    padding-top: 1.85rem;
+    border-top: 1px solid var(--filet);
   }
 
-  .hero__points li {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    font-size: 0.88rem;
-    color: var(--texte-faible);
+  .hero__chiffres dt {
+    font-family: var(--font-titre);
+    font-size: 2rem;
+    color: var(--encre);
+    line-height: 1.1;
   }
 
-  .hero__points :global(svg) {
-    color: var(--succes);
-    flex-shrink: 0;
+  .hero__chiffres dd {
+    margin: 0.2rem 0 0;
+    font-size: 0.84rem;
+    color: var(--texte-3);
   }
 
-  @media (max-width: 980px) {
+  @media (max-width: 1000px) {
     .hero__inner {
       grid-template-columns: 1fr;
     }

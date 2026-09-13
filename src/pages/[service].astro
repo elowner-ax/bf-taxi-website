@@ -37,6 +37,10 @@ const ariane = [
 ];
 
 const estMedical = service.categorie === 'medical';
+
+// Les quatre arguments d'un service suivent toujours le même ordre : prise en
+// charge, couverture, régularité, accompagnement.
+const ICONES_POINTS = ['euro', 'building', 'calendar', 'hands'];
 ---
 
 <Base
@@ -60,20 +64,20 @@ const estMedical = service.categorie === 'medical';
       <p class="tete__accroche">{service.accroche}</p>
 
       <div class="groupe-btn tete__cta">
-        <a href={`tel:${CONTACT.phone}`} class="btn btn-or btn-large" data-evt="tel-service">
+        <a href={`tel:${CONTACT.phone}`} class="btn btn-appel btn-large" data-evt="tel-service">
           <Icone nom="phone" taille={19} />
           {CONTACT.phoneDisplay}
         </a>
         <a
           href={`https://wa.me/${CONTACT.whatsapp}?text=${encodeURIComponent(`Bonjour, je souhaite un renseignement concernant : ${service.navLabel}.`)}`}
-          class="btn btn-whatsapp btn-large"
+          class="btn btn-contour btn-large"
           rel="noopener"
           target="_blank"
         >
           <Icone nom="whatsapp" taille={19} />
           WhatsApp
         </a>
-        <a href="/devis/" class="btn btn-fantome btn-large">
+        <a href="/devis/" class="btn btn-contour btn-large">
           <Icone nom="doc" taille={19} />
           Devis gratuit
         </a>
@@ -91,15 +95,13 @@ const estMedical = service.categorie === 'medical';
   </section>
 
   <!-- Arguments -->
-  <section class="section-sombre-2 section-fine">
+  <section class="section-ivoire section-fine">
     <div class="conteneur">
       <div class="grille grille-4">
         {
           service.points.map((point, i) => (
             <div class="point reveal" style={`transition-delay:${i * 70}ms`}>
-              <span class="point__puce">
-                <Icone nom="check" taille={14} />
-              </span>
+              <Icone nom={ICONES_POINTS[i] ?? 'check'} taille={26} class="point__icone" />
               <h2>{point.titre}</h2>
               <p>{point.texte}</p>
             </div>
@@ -138,20 +140,20 @@ const estMedical = service.categorie === 'medical';
         <div class="encart encart--contact">
           <h2>Réserver ce service</h2>
           <p>Réponse immédiate par téléphone, {OPENING_HOURS.humanShort}.</p>
-          <a href={`tel:${CONTACT.phone}`} class="btn btn-or">
+          <a href={`tel:${CONTACT.phone}`} class="btn btn-appel">
             <Icone nom="phone" taille={18} />
             {CONTACT.phoneDisplay}
           </a>
           <a
             href={`https://wa.me/${CONTACT.whatsapp}`}
-            class="btn btn-whatsapp"
+            class="btn btn-contour"
             rel="noopener"
             target="_blank"
           >
             <Icone nom="whatsapp" taille={18} />
             Écrire sur WhatsApp
           </a>
-          <a href="/devis/" class="btn btn-fantome">
+          <a href="/devis/" class="btn btn-contour">
             <Icone nom="doc" taille={18} />
             Demande de devis
           </a>
@@ -205,7 +207,7 @@ const estMedical = service.categorie === 'medical';
   <!-- Simulateur sur les services à prix libre -->
   {
     !estMedical && (
-      <section class="section section-sombre-2">
+      <section class="section section-ivoire">
         <div class="conteneur conteneur-etroit">
           <div class="reveal">
             <Simulateur titre="Estimez le prix de votre trajet" />
@@ -216,7 +218,7 @@ const estMedical = service.categorie === 'medical';
   }
 
   <!-- FAQ -->
-  <section class="section section-claire">
+  <section class="section section-ivoire">
     <div class="conteneur conteneur-etroit">
       <p class="surtitre reveal">Questions fréquentes</p>
       <div class="reveal">
@@ -263,7 +265,7 @@ const estMedical = service.categorie === 'medical';
     left: 42%;
     width: min(720px, 100vw);
     height: min(560px, 80vw);
-    background: radial-gradient(circle, rgba(255, 194, 51, 0.22), transparent 66%);
+    background: radial-gradient(circle, var(--filet), transparent 66%);
     filter: blur(70px);
     pointer-events: none;
   }
@@ -279,7 +281,7 @@ const estMedical = service.categorie === 'medical';
 
   .tete__accroche {
     font-size: clamp(1.02rem, 2vw, 1.2rem);
-    color: var(--texte-doux);
+    color: var(--texte-2);
     max-width: 56ch;
     margin-top: 1.15rem;
   }
@@ -288,67 +290,55 @@ const estMedical = service.categorie === 'medical';
     margin-top: 1.9rem;
   }
 
+  /* Réponse directe, reprise telle quelle par les moteurs : le filet chaud
+     la détache du reste sans la transformer en encadré publicitaire. */
   .resume {
-    margin-top: 2.5rem;
-    padding: 1.35rem 1.5rem;
-    border-radius: var(--r-lg);
-    border: 1px solid rgba(255, 194, 51, 0.26);
-    background: linear-gradient(140deg, rgba(255, 194, 51, 0.1), rgba(255, 194, 51, 0.022));
-    max-width: 78ch;
+    margin-top: 2.4rem;
+    padding: 1.5rem 1.85rem;
+    background: var(--ivoire);
+    border-left: 3px solid var(--chaud);
+    max-width: 80ch;
   }
 
   .resume__label {
     display: inline-flex;
     align-items: center;
     gap: 0.45rem;
-    font-size: 0.76rem;
-    font-weight: 700;
-    letter-spacing: 0.13em;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: var(--or);
+    color: var(--chaud);
     margin-bottom: 0.6rem;
   }
 
   .resume p:last-child {
-    color: var(--texte-doux);
-    line-height: 1.7;
+    color: var(--texte-2);
+    line-height: 1.75;
+    font-size: 1.01rem;
   }
 
   .section-fine {
     padding-block: clamp(2.25rem, 5vw, 3.25rem);
-    border-block: 1px solid var(--bord);
+    border-block: 1px solid var(--filet);
   }
 
-  .point {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 0.5rem 0.8rem;
-    align-items: start;
-  }
-
-  .point__puce {
-    display: grid;
-    place-items: center;
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    background: rgba(255, 194, 51, 0.14);
-    border: 1px solid rgba(255, 194, 51, 0.28);
-    color: var(--or);
-    grid-row: span 2;
+  .point :global(.point__icone) {
+    color: var(--encre);
+    stroke-width: 1.4;
+    margin-bottom: 0.9rem;
   }
 
   .point h2 {
-    font-family: var(--font-display);
-    font-size: 1rem;
-    align-self: center;
+    font-family: var(--font-titre);
+    font-size: 1.22rem;
+    margin-bottom: 0.5rem;
   }
 
   .point p {
-    grid-column: 2;
-    font-size: 0.89rem;
-    color: var(--texte-faible);
-    line-height: 1.6;
+    font-size: 0.9rem;
+    color: var(--texte-2);
+    line-height: 1.62;
   }
 
   /* Corps de page + colonne latérale */
@@ -382,33 +372,32 @@ const estMedical = service.categorie === 'medical';
 
   .encart {
     padding: 1.5rem;
-    border-radius: var(--r-lg);
-    border: 1px solid var(--bord);
-    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--filet);
+    background: var(--blanc);
   }
 
   .encart h2 {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    font-family: var(--font-display);
+    font-family: var(--font-titre);
     font-size: 1.02rem;
     margin-bottom: 0.7rem;
   }
 
   .encart h2 :global(svg) {
-    color: var(--or);
+    color: var(--chaud);
   }
 
   .encart p {
     font-size: 0.9rem;
-    color: var(--texte-faible);
+    color: var(--texte-3);
     line-height: 1.6;
   }
 
   .encart--contact {
-    background: linear-gradient(155deg, rgba(255, 194, 51, 0.11), rgba(255, 194, 51, 0.02));
-    border-color: rgba(255, 194, 51, 0.26);
+    background: var(--ivoire);
+    border-color: var(--encre);
     display: grid;
     gap: 0.6rem;
   }
@@ -428,7 +417,7 @@ const estMedical = service.categorie === 'medical';
 
   .encart__note {
     padding-top: 0.85rem;
-    border-top: 1px solid var(--bord);
+    border-top: 1px solid var(--filet);
     font-size: 0.83rem !important;
   }
 
@@ -459,7 +448,7 @@ const estMedical = service.categorie === 'medical';
     margin-top: 0.85rem;
     font-size: 0.87rem;
     font-weight: 620;
-    color: var(--or);
+    color: var(--chaud);
     transition: gap var(--transition);
   }
 
@@ -474,13 +463,13 @@ const estMedical = service.categorie === 'medical';
   .villes-liens {
     margin-top: 3rem;
     padding-top: 2rem;
-    border-top: 1px solid var(--bord);
+    border-top: 1px solid var(--filet);
   }
 
   .villes-liens h3 {
     font-size: 0.95rem;
-    font-family: var(--font-display);
-    color: var(--texte-doux);
+    font-family: var(--font-titre);
+    color: var(--texte-2);
     margin-bottom: 1rem;
   }
 
@@ -496,16 +485,16 @@ const estMedical = service.categorie === 'medical';
     display: inline-block;
     padding: 0.35rem 0.8rem;
     border-radius: var(--r-full);
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid var(--bord);
+    background: var(--blanc);
+    border: 1px solid var(--filet);
     font-size: 0.83rem;
-    color: var(--texte-faible);
+    color: var(--texte-3);
     transition: color var(--transition), border-color var(--transition);
   }
 
   .villes-liens a:hover {
-    color: var(--or-clair);
-    border-color: rgba(255, 194, 51, 0.35);
+    color: var(--chaud);
+    border-color: var(--filet);
   }
 
   @media (max-width: 940px) {

@@ -18,7 +18,7 @@ export const SITE = {
   tagline: 'Taxi conventionné CPAM à Saint-Étienne et dans toute la Loire',
   /** Baseline courte réutilisée en meta description et en partage social. */
   shortDescription:
-    "Taxi conventionné CPAM à Saint-Étienne : transport médical assis, transferts aéroports et gares, longue distance. Tesla Model 3 et van Mercedes Classe V 8 places, 7j/7.",
+    "Taxi conventionné CPAM à Saint-Étienne : transport médical assis, transferts aéroports et gares, longue distance. Tesla Model 3 et van Mercedes Classe V 7 places, 7j/7.",
   founded: '2019', // TODO : année réelle de création.
 } as const;
 
@@ -85,7 +85,7 @@ export const VEHICLES: Vehicle[] = [
   {
     slug: 'tesla-model-3',
     name: 'Tesla Model 3',
-    model: 'Berline 100 % électrique — blanche',
+    model: 'Berline blanche',
     seats: 4,
     luggage: '2 valises + 2 bagages cabine',
     highlights: [
@@ -101,7 +101,7 @@ export const VEHICLES: Vehicle[] = [
   {
     slug: 'mercedes-classe-v',
     name: 'Mercedes Classe V',
-    model: 'Van spacieux jusqu’à 7 passagers',
+    model: 'Van à portes coulissantes',
     seats: 7,
     luggage: '7 à 8 valises + bagages cabine',
     highlights: [
