@@ -27,13 +27,13 @@ concurrency:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 jobs:
   build:
     name: Construction
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
 
@@ -63,6 +63,11 @@ jobs:
     name: Mise en ligne
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      # Requises par actions/deploy-pages. GitHub ne les accorde qu'une fois
+      # Pages activé dans Settings → Pages → Source : GitHub Actions.
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
