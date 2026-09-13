@@ -162,13 +162,21 @@ const urlApiAdresse = urlRechercheBase();
               </label>
 
               <label class="champ">
-                <span class="champ__label">Véhicule souhaité</span>
-                <select name="vehicule">
-                  <option value="indifferent">Peu importe</option>
-                  {VEHICLES.map((v) => <option value={v.name}>{v.name} — {v.model}</option>)}
+                <span class="champ__label">Bagages <small>valises et sacs de soute</small></span>
+                <select name="bagages">
+                  <option value="0">Aucun</option>
+                  {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => <option value={String(n)}>{n} bagage{n > 1 ? 's' : ''}</option>)}
                 </select>
               </label>
             </div>
+
+            <label class="champ">
+              <span class="champ__label">Véhicule souhaité</span>
+              <select name="vehicule">
+                <option value="indifferent">Peu importe — vous choisissez selon nos disponibilités</option>
+                {VEHICLES.map((v) => <option value={v.name}>{v.name} — {v.seats} passagers, {v.luggage}</option>)}
+              </select>
+            </label>
 
             <label class="case">
               <input type="checkbox" name="conventionne" value="oui" />
@@ -685,10 +693,10 @@ const urlApiAdresse = urlRechercheBase();
       }
     }
 
-    const passagers = params.get('passagers');
-    if (passagers) {
-      const select = form.elements.namedItem('passagers');
-      if (select instanceof HTMLSelectElement) select.value = passagers;
+    for (const nom of ['passagers', 'bagages']) {
+      const valeur = params.get(nom);
+      const select = form.elements.namedItem(nom);
+      if (valeur && select instanceof HTMLSelectElement) select.value = valeur;
     }
 
     if (params.get('sens') === 'ar') {

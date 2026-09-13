@@ -13,7 +13,7 @@
  */
 import Icone from './Icone.astro';
 import BoutonRappel from './BoutonRappel.astro';
-import { CONTACT } from '../data/site.ts';
+import { CONTACT, CAPACITES } from '../data/site.ts';
 import { TARIFS, TARIF_CONSTANTS, DESTINATIONS, ARRETE } from '../data/tarifs.ts';
 import { COORDONNEES } from '../data/geo.ts';
 import { urlRechercheBase } from '../lib/adresses.ts';
@@ -42,6 +42,7 @@ const donnees = {
   raccourcis: RACCOURCIS,
   whatsapp: CONTACT.whatsapp,
   urlApi: urlRechercheBase(),
+  capacites: CAPACITES,
 };
 ---
 
@@ -135,14 +136,27 @@ const donnees = {
       </div>
     </fieldset>
 
-    <div class="champ">
-      <label class="champ__label" for="simu-passagers">Passagers</label>
-      <div class="champ__saisie">
-        <select id="simu-passagers" data-champ="passagers">
-          {[1, 2, 3, 4, 5, 6, 7].map((n) => <option value={n}>{n} passager{n > 1 ? 's' : ''}</option>)}
-        </select>
+    <div class="champ champ--duo">
+      <div>
+        <label class="champ__label" for="simu-passagers">Passagers</label>
+        <div class="champ__saisie">
+          <select id="simu-passagers" data-champ="passagers">
+            {[1, 2, 3, 4, 5, 6, 7].map((n) => <option value={n}>{n} passager{n > 1 ? 's' : ''}</option>)}
+          </select>
+        </div>
+      </div>
+      <div>
+        <label class="champ__label" for="simu-bagages">Bagages</label>
+        <div class="champ__saisie">
+          <select id="simu-bagages" data-champ="bagages">
+            <option value="0">Aucun</option>
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => <option value={n}>{n} bagage{n > 1 ? 's' : ''}</option>)}
+          </select>
+        </div>
       </div>
     </div>
+
+    <p class="simu__vehicule" data-simu-vehicule hidden></p>
   </div>
 
   <!-- Résultat -->
@@ -165,9 +179,24 @@ const donnees = {
       <p class="simu__explication" data-simu-explication></p>
     </details>
 
+    <details class="simu__nav" data-simu-nav hidden>
+      <summary>Itinéraire</summary>
+      <div class="simu__nav-liens">
+        <a href="#" data-nav="waze" rel="noopener" target="_blank">
+          <Icone nom="route" taille={16} /> Rejoindre le départ (Waze)
+        </a>
+        <a href="#" data-nav="maps" rel="noopener" target="_blank">
+          <Icone nom="map" taille={16} /> Rejoindre le départ (Maps)
+        </a>
+        <a href="#" data-nav="trajet" rel="noopener" target="_blank">
+          <Icone nom="arrow" taille={16} /> Voir la course entière
+        </a>
+      </div>
+    </details>
+
     <p class="simu__note">
-      Indicatif : seul le taximètre fait foi à l’arrivée. Tarifs réglementés par l’{ARRETE.reference}
-      {ARRETE.dateDisplay}. <strong>En transport conventionné CPAM, vous ne réglez rien</strong> :
+      Indicatif : seul le taximètre fait foi à l’arrivée. Tarifs réglementés par
+      l’{ARRETE.reference} {ARRETE.dateDisplay}. <strong>En transport conventionné CPAM, vous ne réglez rien</strong> :
       la course est facturée directement à l’Assurance Maladie.
     </p>
 
@@ -555,6 +584,82 @@ const donnees = {
     display: none;
   }
 
+  /* Recommandation de véhicule, juste sous les deux sélecteurs. */
+  .simu__vehicule {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.7rem 0.9rem;
+    background: var(--blanc);
+    border-left: 2px solid var(--encre);
+    font-size: 0.85rem;
+    color: var(--texte-2);
+    line-height: 1.55;
+  }
+
+  .simu__nav {
+    margin-top: 1rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--filet);
+  }
+
+  .simu__nav summary {
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--texte-2);
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+
+  .simu__nav summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .simu__nav summary::before {
+    content: '+';
+    display: grid;
+    place-items: center;
+    width: 17px;
+    height: 17px;
+    border: 1px solid currentColor;
+    font-size: 0.8rem;
+    line-height: 1;
+  }
+
+  .simu__nav[open] summary::before {
+    content: '−';
+  }
+
+  .simu__nav-liens {
+    display: grid;
+    gap: 0.4rem;
+    margin-top: 0.8rem;
+  }
+
+  .simu__nav-liens a {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--filet);
+    font-size: 0.86rem;
+    color: var(--texte-2);
+    transition: border-color var(--transition), color var(--transition);
+  }
+
+  .simu__nav-liens a:hover {
+    border-color: var(--encre);
+    color: var(--encre);
+  }
+
+  .simu__nav-liens :global(svg) {
+    color: var(--encre);
+    flex-shrink: 0;
+  }
+
   .simu__rappel {
     display: flex;
     flex-wrap: wrap;
@@ -592,6 +697,7 @@ const donnees = {
 <script>
   import { brancherAutocompletion, type Point } from '../lib/autocomplete.ts';
   import { estTarifNuit, tarifApplicable } from '../data/tarifs.ts';
+  import { blocNavigation, lienWaze, lienMaps, lienItineraire } from '../lib/navigation.ts';
 
   for (const racine of document.querySelectorAll<HTMLElement>('[data-simu]')) {
     const balise = racine.querySelector<HTMLScriptElement>('[data-simu-donnees]');
@@ -608,6 +714,7 @@ const donnees = {
       raccourcis: Point[];
       whatsapp: string;
       urlApi: string;
+      capacites: { berline: { passagers: number; bagages: number }; van: { passagers: number; bagages: number } };
     };
 
     const $ = <T extends Element>(s: string) => racine.querySelector<T>(s);
@@ -620,6 +727,7 @@ const donnees = {
     const champDate = $<HTMLInputElement>('[data-champ="date"]')!;
     const champHeure = $<HTMLInputElement>('[data-champ="heure"]')!;
     const champPassagers = $<HTMLSelectElement>('[data-champ="passagers"]')!;
+    const champBagages = $<HTMLSelectElement>('[data-champ="bagages"]')!;
 
     // Par défaut : maintenant, arrondi au quart d'heure suivant.
     const maintenant = new Date();
@@ -692,6 +800,16 @@ const donnees = {
       const allerRetour =
         racine.querySelector<HTMLInputElement>('input[name="sens"]:checked')?.value === 'ar';
       const passagers = Number(champPassagers.value) || 1;
+      const bagages = Number(champBagages.value) || 0;
+
+      // Orientation vers le bon véhicule : mieux vaut le dire à la
+      // réservation que de le découvrir au chargement du coffre.
+      const vehicule = $<HTMLElement>('[data-simu-vehicule]')!;
+      const van = passagers > d.capacites.berline.passagers || bagages > d.capacites.berline.bagages;
+      vehicule.hidden = false;
+      vehicule.textContent = van
+        ? `Avec ${passagers} passager${passagers > 1 ? 's' : ''} et ${bagages} bagage${bagages > 1 ? 's' : ''}, nous enverrons le van Mercedes 7 places. Le tarif au kilomètre est le même que pour la berline.`
+        : `La berline Tesla Model 3 convient : jusqu’à ${d.capacites.berline.passagers} passagers et ${d.capacites.berline.bagages} grandes valises. Au-delà, nous envoyons le van.`;
 
       const priseEnCharge = new Date(`${champDate.value}T${champHeure.value || '12:00'}`);
       const dateValide = !Number.isNaN(priseEnCharge.getTime());
@@ -759,10 +877,21 @@ const donnees = {
         `Prise en charge : ${dateValide ? priseEnCharge.toLocaleString('fr-FR', { dateStyle: 'full', timeStyle: 'short' }) : 'à définir'}\n` +
         `Trajet : ${allerRetour ? 'aller-retour' : 'aller simple'}\n` +
         `Passagers : ${passagers}\n` +
-        `Estimation vue sur le site : ${euros(total)}`;
+        `Bagages : ${bagages || 'aucun'}\n` +
+        `Véhicule adapté : ${van ? 'van Mercedes 7 places' : 'berline Tesla Model 3'}\n` +
+        `Estimation vue sur le site : ${euros(total)}\n` +
+        blocNavigation(a, b);
 
       $<HTMLAnchorElement>('[data-simu-wa]')!.href =
         `https://wa.me/${d.whatsapp}?text=${encodeURIComponent(resume)}`;
+
+      /* Liens de navigation : le chauffeur clique au lieu de ressaisir
+         l'adresse dans son GPS. */
+      const nav = $<HTMLDetailsElement>('[data-simu-nav]')!;
+      nav.hidden = false;
+      $<HTMLAnchorElement>('[data-nav="waze"]')!.href = lienWaze(a);
+      $<HTMLAnchorElement>('[data-nav="maps"]')!.href = lienMaps(a);
+      $<HTMLAnchorElement>('[data-nav="trajet"]')!.href = lienItineraire(a, b);
 
       const lienDevis = $<HTMLAnchorElement>('[data-simu-devis]');
       if (lienDevis) {
@@ -773,6 +902,7 @@ const donnees = {
           heure: champHeure.value,
           sens: allerRetour ? 'ar' : 'aller',
           passagers: String(passagers),
+          bagages: String(bagages),
           estimation: String(total),
         });
         lienDevis.href = `/devis/?${params}`;

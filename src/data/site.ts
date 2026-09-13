@@ -120,6 +120,23 @@ export const VEHICLES: Vehicle[] = [
   },
 ];
 
+/**
+ * Capacités retenues pour orienter vers le bon véhicule.
+ * Un client qui part en vacances à quatre avec quatre valises ne rentre pas
+ * dans la berline : mieux vaut le lui dire au moment de la réservation que
+ * de le découvrir sur le trottoir.
+ */
+export const CAPACITES = {
+  berline: { passagers: 4, bagages: 2 },
+  van: { passagers: 7, bagages: 8 },
+} as const;
+
+/** Véhicule adapté à un nombre de passagers et de bagages. */
+export function vehiculeConseille(passagers: number, bagages: number): 'berline' | 'van' {
+  const { berline } = CAPACITES;
+  return passagers > berline.passagers || bagages > berline.bagages ? 'van' : 'berline';
+}
+
 /** Arguments de réassurance affichés sur la page d'accueil. */
 export const TRUST_POINTS = [
   {
