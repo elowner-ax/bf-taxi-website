@@ -7,214 +7,381 @@
 <body>
 <x-dc>
 <helmet>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300&family=Instrument+Sans:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Instrument+Sans:wght@400;500;600&display=swap">
   <style>
     body { margin: 0; background: #ffffff; color: #16181c;
       font-family: 'Instrument Sans', 'Helvetica Neue', Arial, sans-serif;
-      font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+      font-size: 16px; line-height: 1.62; -webkit-font-smoothing: antialiased; }
     a { color: #1c3d5a; text-decoration: none; }
-    a:hover { color: #0f2739; }
+    a:hover { color: #12283c; }
     h1, h2, h3 { margin: 0; font-family: 'Newsreader', Georgia, serif; font-weight: 400;
       letter-spacing: -0.015em; line-height: 1.08; }
     p { margin: 0; text-wrap: pretty; }
-    .rule { height: 1px; background: #e4e0d8; border: 0; margin: 0; }
     .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.16em;
       text-transform: uppercase; color: #6f6a5e; }
+    .rule { height: 1px; background: #e4e0d8; border: 0; margin: 0; }
   </style>
 </helmet>
 
 <div style="width: 1280px; background: #ffffff">
 
-  <!-- Barre d'annonce -->
-  <div style="display: flex; align-items: center; justify-content: center; gap: 10px; padding: 10px 0; background: {{accent}}; color: #ffffff; font-size: 13px; letter-spacing: 0.01em">
+  <!-- Bandeau conventionnement -->
+  <div style="display: flex; align-items: center; justify-content: center; gap: 10px; padding: 11px 0; background: {{encre}}; color: #ffffff; font-size: 13.5px">
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4.5 6v5.5c0 4.4 3.2 8.3 7.5 9.5 4.3-1.2 7.5-5.1 7.5-9.5V6L12 3Z"/><path d="m9 12 2 2 4-4"/></svg>
     <span>Conventionné par l’Assurance Maladie — transport médical sans avance de frais</span>
   </div>
 
   <!-- En-tête -->
-  <header style="display: flex; align-items: center; justify-content: space-between; padding: 26px 72px; border-bottom: 1px solid #e4e0d8">
-    <div style="display: flex; align-items: baseline; gap: 12px">
-      <span style="font-family: 'Newsreader', Georgia, serif; font-size: 27px; letter-spacing: -0.02em; color: #16181c">BF Taxi</span>
-      <span class="eyebrow" style="font-size: 11.5px">Saint-Étienne</span>
+  <header style="display: flex; align-items: center; justify-content: space-between; padding: 24px 72px; border-bottom: 1px solid #e4e0d8">
+    <div style="display: flex; align-items: baseline; gap: 13px">
+      <span style="font-family: 'Newsreader', Georgia, serif; font-size: 28px; letter-spacing: -0.02em">BF Taxi</span>
+      <span class="eyebrow" style="font-size: 11.5px">Saint-Étienne · Loire</span>
     </div>
-    <nav style="display: flex; align-items: center; gap: 34px; font-size: 14.5px; color: #4a4a44">
+    <nav style="display: flex; align-items: center; gap: 30px; font-size: 14.5px; color: #4a4a44">
       <a href="#">Transport médical</a>
       <a href="#">Aéroports &amp; gares</a>
       <a href="#">Tarifs</a>
       <a href="#">Véhicules</a>
-      <a href="#">Contact</a>
+      <a href="#">Zones</a>
     </nav>
-    <a href="#" style="display: flex; align-items: center; gap: 9px; padding: 11px 20px; border: 1px solid {{accent}}; border-radius: 2px; font-size: 14.5px; font-weight: 600; color: {{accent}}">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M6.6 3.5h3l1.5 4-2 1.4a11 11 0 0 0 5 5l1.4-2 4 1.5v3a1.9 1.9 0 0 1-2.1 1.9A16.4 16.4 0 0 1 4.7 5.6 1.9 1.9 0 0 1 6.6 3.5Z"/></svg>
-      07 82 33 34 45
-    </a>
+    <div style="display: flex; align-items: center; gap: 10px">
+      <a href="#" style="padding: 11px 18px; border: 1px solid #d6d2c8; border-radius: 2px; font-size: 14.5px; font-weight: 500; color: #16181c">Devis</a>
+      <a href="#" style="display: flex; align-items: center; gap: 9px; padding: 12px 20px; background: {{chaud}}; color: #ffffff; border-radius: 2px; font-size: 14.5px; font-weight: 600">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6.6 3.5h3l1.5 4-2 1.4a11 11 0 0 0 5 5l1.4-2 4 1.5v3a1.9 1.9 0 0 1-2.1 1.9A16.4 16.4 0 0 1 4.7 5.6 1.9 1.9 0 0 1 6.6 3.5Z"/></svg>
+        07 82 33 34 45
+      </a>
+    </div>
   </header>
 
   <!-- Hero -->
-  <section style="display: grid; grid-template-columns: 1.12fr 0.88fr; gap: 72px; padding: 82px 72px 74px; align-items: start">
+  <section style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 68px; padding: 78px 72px 72px; align-items: start">
     <div>
       <p class="eyebrow" style="margin-bottom: 26px">Taxi conventionné · Loire 42</p>
-      <h1 style="font-size: 70px; max-width: 11ch">
+      <h1 style="font-size: 72px; max-width: 15ch">
         Votre taxi à<br>Saint-Étienne,<br>
-        <em style="font-style: italic; font-weight: 300; color: {{accent}}">24 heures sur 24.</em>
+        <em style="font-style: italic; font-weight: 300; color: {{encre}}">24 heures sur 24.</em>
       </h1>
-      <p style="margin-top: 30px; font-size: 18.5px; line-height: 1.65; color: #55564f; max-width: 46ch">
+      <p style="margin-top: 30px; font-size: 19px; line-height: 1.68; color: #55564f; max-width: 45ch">
         Transport médical conventionné CPAM, transferts vers les aéroports et les gares, trajets
-        longue distance. Une berline Tesla Model 3 et un van Mercedes 7 places, disponibles
-        tous les jours de l’année.
+        longue distance. Une berline Tesla Model 3 et un van Mercedes 7 places, disponibles tous
+        les jours de l’année.
       </p>
 
       <div style="display: flex; gap: 12px; margin-top: 38px">
-        <a href="#" style="display: flex; align-items: center; gap: 10px; padding: 17px 30px; background: {{accent}}; color: #ffffff; border-radius: 2px; font-size: 16px; font-weight: 600">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M6.6 3.5h3l1.5 4-2 1.4a11 11 0 0 0 5 5l1.4-2 4 1.5v3a1.9 1.9 0 0 1-2.1 1.9A16.4 16.4 0 0 1 4.7 5.6 1.9 1.9 0 0 1 6.6 3.5Z"/></svg>
+        <a href="#" style="display: flex; align-items: center; gap: 10px; padding: 18px 32px; background: {{chaud}}; color: #ffffff; border-radius: 2px; font-size: 16.5px; font-weight: 600">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6.6 3.5h3l1.5 4-2 1.4a11 11 0 0 0 5 5l1.4-2 4 1.5v3a1.9 1.9 0 0 1-2.1 1.9A16.4 16.4 0 0 1 4.7 5.6 1.9 1.9 0 0 1 6.6 3.5Z"/></svg>
           07 82 33 34 45
         </a>
-        <a href="#" style="display: flex; align-items: center; gap: 10px; padding: 17px 28px; border: 1px solid #d6d2c8; border-radius: 2px; font-size: 16px; font-weight: 500; color: #16181c">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 20.5 5 16.2A8 8 0 1 1 8 19.2l-4.5 1.3Z"/></svg>
+        <a href="#" style="display: flex; align-items: center; gap: 10px; padding: 18px 28px; border: 1px solid #d6d2c8; border-radius: 2px; font-size: 16.5px; font-weight: 500; color: #16181c">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 20.5 5 16.2A8 8 0 1 1 8 19.2l-4.5 1.3Z"/></svg>
           WhatsApp
         </a>
       </div>
 
-      <div style="display: flex; gap: 46px; margin-top: 52px; padding-top: 30px; border-top: 1px solid #e4e0d8">
+      <div style="display: flex; gap: 44px; margin-top: 52px; padding-top: 30px; border-top: 1px solid #e4e0d8">
         <div>
-          <p style="font-family: 'Newsreader', Georgia, serif; font-size: 31px; color: {{accent}}">24h/24</p>
+          <p style="font-family: 'Newsreader', Georgia, serif; font-size: 32px; color: {{encre}}">24h/24</p>
           <p style="font-size: 13.5px; color: #6f6a5e; margin-top: 3px">7j/7, jours fériés inclus</p>
         </div>
         <div>
-          <p style="font-family: 'Newsreader', Georgia, serif; font-size: 31px; color: {{accent}}">0 €</p>
+          <p style="font-family: 'Newsreader', Georgia, serif; font-size: 32px; color: {{encre}}">0 €</p>
           <p style="font-size: 13.5px; color: #6f6a5e; margin-top: 3px">à avancer sur prescription</p>
         </div>
         <div>
-          <p style="font-family: 'Newsreader', Georgia, serif; font-size: 31px; color: {{accent}}">7 places</p>
+          <p style="font-family: 'Newsreader', Georgia, serif; font-size: 32px; color: {{encre}}">7 places</p>
           <p style="font-size: 13.5px; color: #6f6a5e; margin-top: 3px">van Mercedes Classe V</p>
         </div>
       </div>
     </div>
 
-    <!-- Estimation -->
-    <div style="border: 1px solid #e4e0d8; background: #faf9f6; padding: 34px 32px">
-      <p class="eyebrow" style="margin-bottom: 8px">Estimation immédiate</p>
-      <h2 style="font-size: 26px; margin-bottom: 6px">Combien coûtera ma course ?</h2>
-      <p style="font-size: 13.5px; color: #8a8578; line-height: 1.55">
-        Calcul basé sur les tarifs préfectoraux de la Loire, arrêté du 23 février 2026.
-      </p>
+    <!-- Estimation : grille ligne à ligne, prix lisible de loin -->
+    <div style="border: 1px solid #d9d5cb; background: #faf9f6">
+      <div style="display: flex; align-items: baseline; justify-content: space-between; padding: 26px 30px 18px; border-bottom: 1px solid {{encre}}">
+        <h2 style="font-size: 25px">Estimer ma course</h2>
+        <span class="eyebrow" style="font-size: 11px">Tarifs préfecture 42</span>
+      </div>
 
-      <div style="display: grid; gap: 16px; margin-top: 26px">
-        <div>
-          <p style="font-size: 12.5px; font-weight: 600; color: #55564f; margin-bottom: 7px">Départ</p>
-          <div style="display: flex; align-items: center; justify-content: space-between; padding: 13px 15px; background: #ffffff; border: 1px solid #ddd9d0; font-size: 15px">
-            <span>Saint-Étienne</span>
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#a5a096" stroke-width="1.8" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+      <div style="padding: 4px 30px 0">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 0; border-bottom: 1px solid #e4e0d8">
+          <span class="eyebrow" style="font-size: 11px; width: 88px; flex-shrink: 0">Départ</span>
+          <span style="font-size: 15.5px; font-weight: 500; text-align: right">Saint-Étienne</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9d988c" stroke-width="1.9" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 0; border-bottom: 1px solid #e4e0d8">
+          <span class="eyebrow" style="font-size: 11px; width: 88px; flex-shrink: 0">Arrivée</span>
+          <span style="font-size: 15.5px; font-weight: 500; text-align: right">Aéroport Lyon-Saint-Exupéry</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9d988c" stroke-width="1.9" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 0; border-bottom: 1px solid #e4e0d8">
+          <span class="eyebrow" style="font-size: 11px; width: 88px; flex-shrink: 0">Trajet</span>
+          <div style="display: flex; gap: 6px">
+            <span style="padding: 8px 16px; background: {{encre}}; color: #ffffff; font-size: 13.5px; font-weight: 600">Aller</span>
+            <span style="padding: 8px 16px; border: 1px solid #d9d5cb; background: #ffffff; font-size: 13.5px; color: #55564f">Aller-retour</span>
           </div>
         </div>
-        <div>
-          <p style="font-size: 12.5px; font-weight: 600; color: #55564f; margin-bottom: 7px">Destination</p>
-          <div style="display: flex; align-items: center; justify-content: space-between; padding: 13px 15px; background: #ffffff; border: 1px solid #ddd9d0; font-size: 15px">
-            <span>Aéroport Lyon-Saint-Exupéry</span>
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#a5a096" stroke-width="1.8" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
-          </div>
-        </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px">
-          <div>
-            <p style="font-size: 12.5px; font-weight: 600; color: #55564f; margin-bottom: 7px">Trajet</p>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; border: 1px solid #ddd9d0; background: #ffffff">
-              <span style="padding: 11px 4px; text-align: center; font-size: 13.5px; background: {{accent}}; color: #ffffff">Aller</span>
-              <span style="padding: 11px 4px; text-align: center; font-size: 13.5px; color: #55564f">A/R</span>
-            </div>
-          </div>
-          <div>
-            <p style="font-size: 12.5px; font-weight: 600; color: #55564f; margin-bottom: 7px">Horaire</p>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; border: 1px solid #ddd9d0; background: #ffffff">
-              <span style="padding: 11px 4px; text-align: center; font-size: 13.5px; background: {{accent}}; color: #ffffff">Jour</span>
-              <span style="padding: 11px 4px; text-align: center; font-size: 13.5px; color: #55564f">Nuit</span>
-            </div>
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 0">
+          <span class="eyebrow" style="font-size: 11px; width: 88px; flex-shrink: 0">Horaire</span>
+          <div style="display: flex; gap: 6px">
+            <span style="padding: 8px 16px; background: {{encre}}; color: #ffffff; font-size: 13.5px; font-weight: 600">Jour</span>
+            <span style="padding: 8px 16px; border: 1px solid #d9d5cb; background: #ffffff; font-size: 13.5px; color: #55564f">Nuit / dim.</span>
           </div>
         </div>
       </div>
 
-      <div style="margin-top: 26px; padding-top: 24px; border-top: 1px solid #e4e0d8">
-        <p class="eyebrow" style="color: {{accent}}; margin-bottom: 6px">Estimation</p>
-        <p style="font-family: 'Newsreader', Georgia, serif; font-size: 52px; line-height: 1; color: #16181c">148,80 €</p>
-        <p style="font-size: 13.5px; color: #8a8578; margin-top: 9px">85 km · 1 h 05 · tarif C, aller simple de jour</p>
-        <p style="font-size: 12.5px; color: #7e796e; margin-top: 14px; line-height: 1.5">
-          Indicatif : seul le taximètre fait foi. En transport conventionné, vous ne réglez rien.
+      <div style="padding: 26px 30px 28px; background: #ffffff; border-top: 1px solid {{encre}}">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px">
+          <div>
+            <p class="eyebrow" style="font-size: 11px; color: {{chaud}}; margin-bottom: 5px">Estimation</p>
+            <p style="font-family: 'Newsreader', Georgia, serif; font-size: 58px; line-height: 1">148,80 €</p>
+          </div>
+          <div style="text-align: right; font-size: 13.5px; color: #6f6a5e; line-height: 1.5">
+            <p>85 km</p>
+            <p>1 h 05</p>
+            <p>Tarif C</p>
+          </div>
+        </div>
+        <p style="font-size: 12.5px; color: #7e796e; margin-top: 16px; line-height: 1.55">
+          Indicatif : seul le taximètre fait foi. En transport conventionné, vous ne réglez rien.
         </p>
+        <a href="#" style="display: block; margin-top: 20px; padding: 15px; background: #16181c; color: #ffffff; text-align: center; font-size: 15px; font-weight: 600; border-radius: 2px">
+          Demander un devis écrit
+        </a>
       </div>
-
-      <a href="#" style="display: block; margin-top: 22px; padding: 15px; background: #16181c; color: #ffffff; text-align: center; font-size: 15px; font-weight: 600; border-radius: 2px">
-        Demander un devis écrit
-      </a>
     </div>
   </section>
 
-  <hr class="rule">
-
   <!-- Services -->
-  <section style="padding: 74px 72px; background: #faf9f6">
-    <div style="display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 46px">
+  <section style="padding: 74px 72px; background: #faf9f6; border-top: 1px solid #e4e0d8">
+    <div style="display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 44px">
       <div>
         <p class="eyebrow" style="margin-bottom: 16px">Nos prestations</p>
-        <h2 style="font-size: 42px; max-width: 16ch">Le transport de soins, et tout le reste</h2>
+        <h2 style="font-size: 43px; max-width: 16ch">Le transport de soins, et tout le reste</h2>
       </div>
-      <a href="#" style="font-size: 15px; font-weight: 600; border-bottom: 1px solid {{accent}}; padding-bottom: 2px">Voir les 11 services</a>
+      <a href="#" style="font-size: 15px; font-weight: 600; border-bottom: 1px solid {{chaud}}; color: {{chaud}}; padding-bottom: 2px">Voir les 11 services</a>
     </div>
 
     <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: #e4e0d8; border: 1px solid #e4e0d8">
       <div style="background: #ffffff; padding: 32px 28px 34px">
-        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 22px"><path d="M12 3 4.5 6v5.5c0 4.4 3.2 8.3 7.5 9.5 4.3-1.2 7.5-5.1 7.5-9.5V6L12 3Z"/><path d="m9 12 2 2 4-4"/></svg>
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="{{encre}}" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 22px"><path d="M12 3 4.5 6v5.5c0 4.4 3.2 8.3 7.5 9.5 4.3-1.2 7.5-5.1 7.5-9.5V6L12 3Z"/><path d="m9 12 2 2 4-4"/></svg>
         <h3 style="font-size: 21px; margin-bottom: 10px">Conventionné CPAM</h3>
         <p style="font-size: 14.5px; color: #6b6c63; line-height: 1.6">Dialyse, oncologie, consultations, hospitalisations. Sur prescription, vous n’avancez aucun frais.</p>
-        <p style="font-size: 13px; font-weight: 600; color: {{accent}}; margin-top: 20px">Transport médical →</p>
+        <p style="font-size: 13px; font-weight: 600; color: {{chaud}}; margin-top: 20px">Transport médical →</p>
       </div>
       <div style="background: #ffffff; padding: 32px 28px 34px">
-        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 22px"><path d="M10.5 19.5 12 22l1.5-2.5v-4l7 2.2v-2.4l-7-4.6V5.5a1.5 1.5 0 0 0-3 0v5.2l-7 4.6v2.4l7-2.2v4Z"/></svg>
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="{{encre}}" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 22px"><path d="M10.5 19.5 12 22l1.5-2.5v-4l7 2.2v-2.4l-7-4.6V5.5a1.5 1.5 0 0 0-3 0v5.2l-7 4.6v2.4l7-2.2v4Z"/></svg>
         <h3 style="font-size: 21px; margin-bottom: 10px">Aéroports</h3>
         <p style="font-size: 14.5px; color: #6b6c63; line-height: 1.6">Lyon-Saint-Exupéry en 1 h 05, Genève, Clermont-Ferrand et Bouthéon. Prix fixé avant le départ.</p>
-        <p style="font-size: 13px; font-weight: 600; color: {{accent}}; margin-top: 20px">Transferts aéroport →</p>
+        <p style="font-size: 13px; font-weight: 600; color: {{chaud}}; margin-top: 20px">Transferts aéroport →</p>
       </div>
       <div style="background: #ffffff; padding: 32px 28px 34px">
-        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 22px"><rect x="5" y="3" width="14" height="13" rx="3"/><path d="M5 10.5h14M8.5 20l-2 2M15.5 20l2 2"/></svg>
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="{{encre}}" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 22px"><rect x="5" y="3" width="14" height="13" rx="3"/><path d="M5 10.5h14M8.5 20l-2 2M15.5 20l2 2"/></svg>
         <h3 style="font-size: 21px; margin-bottom: 10px">Gares</h3>
         <p style="font-size: 14.5px; color: #6b6c63; line-height: 1.6">Châteaucreux, Part-Dieu, Perrache. Nous suivons l’horaire réel de votre train.</p>
-        <p style="font-size: 13px; font-weight: 600; color: {{accent}}; margin-top: 20px">Transferts gare →</p>
+        <p style="font-size: 13px; font-weight: 600; color: {{chaud}}; margin-top: 20px">Transferts gare →</p>
       </div>
       <div style="background: #ffffff; padding: 32px 28px 34px">
-        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 22px"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20.5c0-3.6 2.9-6.5 6.5-6.5s6.5 2.9 6.5 6.5M16 5.3a3.2 3.2 0 0 1 0 6M17.5 14.4c2.4.7 4 2.9 4 5.4"/></svg>
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="{{encre}}" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 22px"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20.5c0-3.6 2.9-6.5 6.5-6.5s6.5 2.9 6.5 6.5M16 5.3a3.2 3.2 0 0 1 0 6M17.5 14.4c2.4.7 4 2.9 4 5.4"/></svg>
         <h3 style="font-size: 21px; margin-bottom: 10px">Groupes et van</h3>
         <p style="font-size: 14.5px; color: #6b6c63; line-height: 1.6">Jusqu’à 7 passagers avec leurs bagages. Sièges enfants fournis sur demande.</p>
-        <p style="font-size: 13px; font-weight: 600; color: {{accent}}; margin-top: 20px">Van 7 places →</p>
+        <p style="font-size: 13px; font-weight: 600; color: {{chaud}}; margin-top: 20px">Van 7 places →</p>
       </div>
     </div>
   </section>
 
-  <hr class="rule">
+  <!-- Véhicules -->
+  <section style="padding: 76px 72px">
+    <p class="eyebrow" style="margin-bottom: 16px">Nos véhicules</p>
+    <h2 style="font-size: 43px; margin-bottom: 44px; max-width: 18ch">Une berline électrique, un van sept places</h2>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 28px">
+      <div style="border: 1px solid #e4e0d8">
+        <div style="padding: 32px 36px 10px; background: #faf9f6; border-bottom: 1px solid #e4e0d8">
+          <svg viewBox="0 0 420 170" style="width: 100%; height: auto">
+            <path d="M32 122c-4-15 2-25 14-29l44-12c14-17 34-27 60-29 30-2 54 6 72 21l52 10c22 4 36 13 42 25 3 6 2 12-4 14H40c-5 0-7-4-8-11Z" fill="#ffffff" stroke="{{encre}}" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M104 82c12-15 30-24 52-25 24-1 44 7 58 19l-14 6-96 2Z" fill="#eef2f6" stroke="{{encre}}" stroke-width="1.4"/>
+            <path d="M158 57v25" stroke="{{encre}}" stroke-width="1.2" opacity="0.5"/>
+            <circle cx="112" cy="122" r="23" fill="#ffffff" stroke="{{encre}}" stroke-width="2"/>
+            <circle cx="112" cy="122" r="10" fill="none" stroke="{{encre}}" stroke-width="1.4" opacity="0.55"/>
+            <circle cx="290" cy="122" r="23" fill="#ffffff" stroke="{{encre}}" stroke-width="2"/>
+            <circle cx="290" cy="122" r="10" fill="none" stroke="{{encre}}" stroke-width="1.4" opacity="0.55"/>
+            <path d="M322 100h26" stroke="{{chaud}}" stroke-width="3" stroke-linecap="round"/>
+            <path d="M24 148h372" stroke="#e4e0d8" stroke-width="2"/>
+          </svg>
+        </div>
+        <div style="padding: 28px 36px 32px">
+          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px">
+            <h3 style="font-size: 26px">Tesla Model 3</h3>
+            <span style="font-size: 12.5px; font-weight: 600; color: {{chaud}}; border: 1px solid {{chaud}}; padding: 4px 10px">100 % électrique</span>
+          </div>
+          <p style="font-size: 14.5px; color: #6f6a5e; margin-top: 6px">Berline blanche · 4 passagers · 2 valises</p>
+          <p style="font-size: 15px; color: #55564f; line-height: 1.7; margin-top: 16px">
+            Pas de vibrations, pas d’odeur de carburant, un habitacle silencieux : des conditions
+            nettement plus supportables au retour d’une dialyse ou d’une chimiothérapie.
+          </p>
+        </div>
+      </div>
+
+      <div style="border: 1px solid #e4e0d8">
+        <div style="padding: 32px 36px 10px; background: #faf9f6; border-bottom: 1px solid #e4e0d8">
+          <svg viewBox="0 0 420 170" style="width: 100%; height: auto">
+            <path d="M30 122V64c0-12 9-21 21-21h156c10 0 19 4 25 11l33 40 44 8c17 3 27 11 30 21 2 7-2 11-9 11H38c-5 0-8-4-8-12Z" fill="#ffffff" stroke="{{encre}}" stroke-width="2" stroke-linejoin="round"/>
+            <rect x="48" y="57" width="57" height="32" rx="4" fill="#eef2f6" stroke="{{encre}}" stroke-width="1.4"/>
+            <rect x="113" y="57" width="57" height="32" rx="4" fill="#eef2f6" stroke="{{encre}}" stroke-width="1.4"/>
+            <path d="M178 57h24l25 32h-49Z" fill="#eef2f6" stroke="{{encre}}" stroke-width="1.4" stroke-linejoin="round"/>
+            <path d="M48 97h122" stroke="{{encre}}" stroke-width="1.4" opacity="0.45" stroke-linecap="round"/>
+            <circle cx="100" cy="122" r="23" fill="#ffffff" stroke="{{encre}}" stroke-width="2"/>
+            <circle cx="100" cy="122" r="10" fill="none" stroke="{{encre}}" stroke-width="1.4" opacity="0.55"/>
+            <circle cx="288" cy="122" r="23" fill="#ffffff" stroke="{{encre}}" stroke-width="2"/>
+            <circle cx="288" cy="122" r="10" fill="none" stroke="{{encre}}" stroke-width="1.4" opacity="0.55"/>
+            <path d="M330 104h26" stroke="{{chaud}}" stroke-width="3" stroke-linecap="round"/>
+            <path d="M24 148h372" stroke="#e4e0d8" stroke-width="2"/>
+          </svg>
+        </div>
+        <div style="padding: 28px 36px 32px">
+          <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 12px">
+            <h3 style="font-size: 26px">Mercedes Classe V</h3>
+            <span style="font-size: 12.5px; font-weight: 600; color: {{chaud}}; border: 1px solid {{chaud}}; padding: 4px 10px">7 places</span>
+          </div>
+          <p style="font-size: 14.5px; color: #6f6a5e; margin-top: 6px">Van · 7 passagers · 7 à 8 valises</p>
+          <p style="font-size: 15px; color: #55564f; line-height: 1.7; margin-top: 16px">
+            Portes coulissantes larges et seuil bas : la montée à bord se fait sans se baisser,
+            avec des enfants, des personnes âgées ou une aide à la marche.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Déroulement -->
+  <section style="padding: 72px 72px 76px; background: {{encre}}; color: #ffffff">
+    <p class="eyebrow" style="color: #a9c0d4; margin-bottom: 16px">Comment réserver</p>
+    <h2 style="font-size: 43px; margin-bottom: 46px">Quatre étapes, pas une de plus</h2>
+
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px">
+      <div>
+        <p style="font-family: 'Newsreader', Georgia, serif; font-size: 40px; color: {{chaud}}; line-height: 1">01</p>
+        <div style="height: 1px; background: rgba(255,255,255,0.28); margin: 18px 0 18px"></div>
+        <h3 style="font-size: 21px; margin-bottom: 9px">Vous appelez</h3>
+        <p style="font-size: 14.5px; color: #cfdbe5; line-height: 1.65">Téléphone, WhatsApp ou formulaire. Date, heure, adresse de départ et destination.</p>
+      </div>
+      <div>
+        <p style="font-family: 'Newsreader', Georgia, serif; font-size: 40px; color: {{chaud}}; line-height: 1">02</p>
+        <div style="height: 1px; background: rgba(255,255,255,0.28); margin: 18px 0 18px"></div>
+        <h3 style="font-size: 21px; margin-bottom: 9px">Nous confirmons</h3>
+        <p style="font-size: 14.5px; color: #cfdbe5; line-height: 1.65">Créneau, véhicule et prix estimé, avant toute réservation ferme.</p>
+      </div>
+      <div>
+        <p style="font-family: 'Newsreader', Georgia, serif; font-size: 40px; color: {{chaud}}; line-height: 1">03</p>
+        <div style="height: 1px; background: rgba(255,255,255,0.28); margin: 18px 0 18px"></div>
+        <h3 style="font-size: 21px; margin-bottom: 9px">Nous venons</h3>
+        <p style="font-size: 14.5px; color: #cfdbe5; line-height: 1.65">Prise en charge à votre porte, à l’heure convenue, et accompagnement jusqu’à l’accueil.</p>
+      </div>
+      <div>
+        <p style="font-family: 'Newsreader', Georgia, serif; font-size: 40px; color: {{chaud}}; line-height: 1">04</p>
+        <div style="height: 1px; background: rgba(255,255,255,0.28); margin: 18px 0 18px"></div>
+        <h3 style="font-size: 21px; margin-bottom: 9px">Vous réglez — ou pas</h3>
+        <p style="font-size: 14.5px; color: #cfdbe5; line-height: 1.65">Carte, espèces ou virement. Avec une prescription, vous ne réglez rien.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Zones -->
+  <section style="padding: 74px 72px">
+    <div style="display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 36px">
+      <div>
+        <p class="eyebrow" style="margin-bottom: 16px">Zones desservies</p>
+        <h2 style="font-size: 43px; max-width: 18ch">Saint-Étienne, la Loire et bien au-delà</h2>
+      </div>
+      <a href="#" style="font-size: 15px; font-weight: 600; border-bottom: 1px solid {{chaud}}; color: {{chaud}}; padding-bottom: 2px">Les 16 communes</a>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px">
+      <a href="#" style="display: flex; align-items: baseline; justify-content: space-between; padding: 15px 18px; border: 1px solid #e4e0d8; font-size: 15px"><span>Saint-Étienne</span><span style="font-size: 12.5px; color: #6f6a5e">42000</span></a>
+      <a href="#" style="display: flex; align-items: baseline; justify-content: space-between; padding: 15px 18px; border: 1px solid #e4e0d8; font-size: 15px"><span>Saint-Chamond</span><span style="font-size: 12.5px; color: #6f6a5e">14 km</span></a>
+      <a href="#" style="display: flex; align-items: baseline; justify-content: space-between; padding: 15px 18px; border: 1px solid #e4e0d8; font-size: 15px"><span>Firminy</span><span style="font-size: 12.5px; color: #6f6a5e">18 km</span></a>
+      <a href="#" style="display: flex; align-items: baseline; justify-content: space-between; padding: 15px 18px; border: 1px solid #e4e0d8; font-size: 15px"><span>Rive-de-Gier</span><span style="font-size: 12.5px; color: #6f6a5e">27 km</span></a>
+      <a href="#" style="display: flex; align-items: baseline; justify-content: space-between; padding: 15px 18px; border: 1px solid #e4e0d8; font-size: 15px"><span>Montbrison</span><span style="font-size: 12.5px; color: #6f6a5e">38 km</span></a>
+      <a href="#" style="display: flex; align-items: baseline; justify-content: space-between; padding: 15px 18px; border: 1px solid #e4e0d8; font-size: 15px"><span>Andrézieux-Bouthéon</span><span style="font-size: 12.5px; color: #6f6a5e">15 km</span></a>
+      <a href="#" style="display: flex; align-items: baseline; justify-content: space-between; padding: 15px 18px; border: 1px solid #e4e0d8; font-size: 15px"><span>Saint-Priest-en-Jarez</span><span style="font-size: 12.5px; color: #6f6a5e">6 km</span></a>
+      <a href="#" style="display: flex; align-items: baseline; justify-content: space-between; padding: 15px 18px; border: 1px solid #e4e0d8; font-size: 15px"><span>Roanne</span><span style="font-size: 12.5px; color: #6f6a5e">88 km</span></a>
+    </div>
+  </section>
 
   <!-- Bande finale -->
-  <section style="display: grid; grid-template-columns: 1fr auto; gap: 60px; align-items: center; padding: 62px 72px">
+  <section style="display: grid; grid-template-columns: 1fr auto; gap: 56px; align-items: center; padding: 62px 72px; background: #faf9f6; border-block: 1px solid #e4e0d8">
     <div>
-      <h2 style="font-size: 38px; margin-bottom: 12px">Besoin d’un taxi maintenant ?</h2>
+      <h2 style="font-size: 40px; margin-bottom: 12px">Besoin d’un taxi maintenant ?</h2>
       <p style="font-size: 16.5px; color: #55564f; max-width: 52ch">
         Un appel suffit. Nous organisons votre trajet en conventionné comme en course classique,
         à Saint-Étienne et dans toute la Loire.
       </p>
     </div>
     <div style="display: flex; gap: 12px">
-      <a href="#" style="display: flex; align-items: center; gap: 10px; padding: 18px 32px; background: {{accent}}; color: #ffffff; font-size: 16px; font-weight: 600; border-radius: 2px">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M6.6 3.5h3l1.5 4-2 1.4a11 11 0 0 0 5 5l1.4-2 4 1.5v3a1.9 1.9 0 0 1-2.1 1.9A16.4 16.4 0 0 1 4.7 5.6 1.9 1.9 0 0 1 6.6 3.5Z"/></svg>
+      <a href="#" style="display: flex; align-items: center; gap: 10px; padding: 19px 34px; background: {{chaud}}; color: #ffffff; font-size: 16.5px; font-weight: 600; border-radius: 2px">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6.6 3.5h3l1.5 4-2 1.4a11 11 0 0 0 5 5l1.4-2 4 1.5v3a1.9 1.9 0 0 1-2.1 1.9A16.4 16.4 0 0 1 4.7 5.6 1.9 1.9 0 0 1 6.6 3.5Z"/></svg>
         07 82 33 34 45
       </a>
-      <a href="#" style="padding: 18px 30px; border: 1px solid #d6d2c8; font-size: 16px; font-weight: 500; color: #16181c; border-radius: 2px">Devis en ligne</a>
+      <a href="#" style="padding: 19px 30px; border: 1px solid #d6d2c8; background: #ffffff; font-size: 16.5px; font-weight: 500; color: #16181c; border-radius: 2px">Devis en ligne</a>
     </div>
   </section>
+
+  <!-- Pied de page -->
+  <footer style="padding: 56px 72px 44px; background: #ffffff">
+    <div style="display: grid; grid-template-columns: 1.2fr 1fr 1fr 1fr; gap: 48px">
+      <div>
+        <p style="font-family: 'Newsreader', Georgia, serif; font-size: 26px; margin-bottom: 14px">BF Taxi</p>
+        <p style="font-size: 14px; color: #6b6c63; line-height: 1.65; max-width: 34ch">
+          Taxi conventionné CPAM à Saint-Étienne et dans toute la Loire. Transport médical,
+          aéroports, gares et longue distance, 24h/24.
+        </p>
+        <p style="font-size: 17px; font-weight: 600; color: {{chaud}}; margin-top: 18px">07 82 33 34 45</p>
+      </div>
+      <div>
+        <p class="eyebrow" style="font-size: 11px; margin-bottom: 14px">Transport médical</p>
+        <div style="display: grid; gap: 9px; font-size: 14px; color: #55564f">
+          <a href="#">Conventionné CPAM</a>
+          <a href="#">Dialyse</a>
+          <a href="#">Oncologie</a>
+          <a href="#">Hospitalisation</a>
+          <a href="#">Mobilité réduite</a>
+        </div>
+      </div>
+      <div>
+        <p class="eyebrow" style="font-size: 11px; margin-bottom: 14px">Transferts</p>
+        <div style="display: grid; gap: 9px; font-size: 14px; color: #55564f">
+          <a href="#">Aéroport Lyon</a>
+          <a href="#">Genève &amp; Clermont</a>
+          <a href="#">Gares</a>
+          <a href="#">Longue distance</a>
+          <a href="#">Van 7 places</a>
+        </div>
+      </div>
+      <div>
+        <p class="eyebrow" style="font-size: 11px; margin-bottom: 14px">Informations</p>
+        <div style="display: grid; gap: 9px; font-size: 14px; color: #55564f">
+          <a href="#">Tarifs et simulateur</a>
+          <a href="#">Demande de devis</a>
+          <a href="#">Zones desservies</a>
+          <a href="#">Questions fréquentes</a>
+          <a href="#">Contact</a>
+        </div>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 40px; padding-top: 22px; border-top: 1px solid #e4e0d8; font-size: 13px; color: #6f6a5e">
+      <span>© 2026 BF Taxi. Tous droits réservés.</span>
+      <span style="display: flex; gap: 24px"><a href="#">Mentions légales</a><a href="#">Confidentialité</a><a href="#">Plan du site</a></span>
+    </div>
+  </footer>
 
 </div>
 </x-dc>
 
-<script data-dc-script data-props='{"accent":{"editor":"color","default":"#1c3d5a","options":["#1c3d5a","#2f4f3e","#6b3f2a","#16181c"],"section":"Couleurs"}}'>
+<script data-dc-script data-props='{"encre":{"editor":"color","default":"#1c3d5a","options":["#1c3d5a","#233b33","#2e2a3f","#16181c"],"section":"Couleurs"},"chaud":{"editor":"color","default":"#a8580f","options":["#a8580f","#9a5a24","#8a6a12","#b04a2a"],"section":"Couleurs"}}'>
 class Component extends DCLogic {
   renderVals() {
     return {
-      accent: this.props.accent ?? '#1c3d5a',
+      encre: this.props.encre ?? '#1c3d5a',
+      chaud: this.props.chaud ?? '#a8580f',
     };
   }
 }
