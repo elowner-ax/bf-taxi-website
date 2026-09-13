@@ -9,6 +9,11 @@
  * possible.
  */
 
+import { TARIFS, TARIF_CONSTANTS } from './tarifs.ts';
+
+/** Formate un montant pour l'insérer dans une phrase. */
+const eur = (n: number) => n.toFixed(2).replace('.', ',');
+
 export type ItemFaq = {
   question: string;
   reponse: string;
@@ -38,8 +43,7 @@ export const FAQ_GENERALE: ItemFaq[] = [
   },
   {
     question: 'Combien coûte une course de taxi à Saint-Étienne ?',
-    reponse:
-      "Les tarifs sont fixés par arrêté préfectoral, identiques pour tous les taxis de la Loire : 2,60 € de prise en charge, puis 0,86 €/km en aller-retour de jour (tarif A) et 1,72 €/km en aller simple de jour (tarif C), les tarifs de nuit, du dimanche et des jours fériés étant majorés. Le minimum de perception est de 8 €. Notre simulateur en ligne calcule une estimation à partir de cette grille.",
+    reponse: `Les tarifs sont fixés par arrêté préfectoral, identiques pour tous les taxis de la Loire : ${eur(TARIF_CONSTANTS.priseEnCharge)} € de prise en charge, puis ${eur(TARIFS.A.parKm)} €/km en aller-retour de jour (tarif A) et ${eur(TARIFS.C.parKm)} €/km en aller simple de jour (tarif C), les tarifs de nuit, du dimanche et des jours fériés étant majorés. Le minimum de perception est de ${eur(TARIF_CONSTANTS.minimumPerception)} €. Notre simulateur en ligne calcule une estimation à partir de vos adresses réelles.`,
     categorie: 'tarifs',
   },
   {
@@ -74,8 +78,7 @@ export const FAQ_GENERALE: ItemFaq[] = [
   },
   {
     question: 'Combien de personnes peut prendre le van ?',
-    reponse:
-      "Le van Mercedes Classe V transporte jusqu'à 7 passagers avec leurs bagages. Au-delà de 3 passagers, un supplément réglementaire de 1,83 € par personne supplémentaire s'applique, conformément à l'arrêté préfectoral de la Loire.",
+    reponse: `Le van Mercedes Classe V transporte jusqu'à 7 passagers avec leurs bagages. Au-delà de 3 passagers, un supplément réglementaire de ${eur(TARIF_CONSTANTS.supplement4ePassager)} € par personne supplémentaire s'applique, conformément à l'arrêté préfectoral de la Loire.`,
     categorie: 'vehicules',
   },
   {
@@ -110,8 +113,7 @@ export const FAQ_GENERALE: ItemFaq[] = [
   },
   {
     question: 'Attendez-vous pendant mon rendez-vous médical ?',
-    reponse:
-      "Pour un rendez-vous court, nous pouvons rester sur place ; l'attente est alors comptée au tarif horaire de 24,60 € fixé par l'arrêté préfectoral. Pour une consultation ou une cure longue, nous repartons et revenons à votre appel, ce qui évite de facturer une attente inutile.",
+    reponse: `Pour un rendez-vous court, nous pouvons rester sur place ; l'attente est alors comptée au tarif horaire de ${eur(TARIF_CONSTANTS.tarifHoraire)} € fixé par l'arrêté préfectoral. Pour une consultation ou une cure longue, nous repartons et revenons à votre appel, ce qui évite de facturer une attente inutile.`,
     categorie: 'reservation',
   },
   {

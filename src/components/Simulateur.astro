@@ -1,38 +1,47 @@
 ---
 /**
- * Simulateur de tarif, calculé intégralement côté navigateur à partir de la
- * grille préfectorale. Aucune API, aucun appel réseau : le site reste
- * statique et l'estimation s'affiche instantanément.
+ * Simulateur de tarif.
  *
- * L'estimation est présentée comme indicative — c'est une obligation autant
- * qu'une précaution : seul le taximètre fait foi en fin de course.
+ * Deux principes :
+ *  – le visiteur saisit de vraies adresses, complétées par la Base Adresse
+ *    Nationale (cf. src/lib/adresses.ts) ;
+ *  – il n'a pas à savoir s'il est en tarif jour ou nuit : cela se déduit de
+ *    l'heure de prise en charge, comme le fait le taximètre.
+ *
+ * Le calcul reste entièrement dans le navigateur : aucune donnée de trajet
+ * n'est transmise ni conservée.
  */
 import Icone from './Icone.astro';
+import BoutonRappel from './BoutonRappel.astro';
 import { CONTACT } from '../data/site.ts';
-import { TARIFS, TARIF_CONSTANTS, DESTINATIONS, GROUPES_DESTINATION, ARRETE } from '../data/tarifs.ts';
-import { VILLES } from '../data/villes.ts';
+import { TARIFS, TARIF_CONSTANTS, DESTINATIONS, ARRETE } from '../data/tarifs.ts';
 import { COORDONNEES } from '../data/geo.ts';
+import { urlRechercheBase } from '../lib/adresses.ts';
 
 interface Props {
-  /** Version compacte destinée au bandeau d'accueil. */
+  /** Version resserrée pour le bandeau d'accueil. */
   compact?: boolean;
   titre?: string;
 }
 
-const { compact = false, titre = 'Estimez votre course en 10 secondes' } = Astro.props;
+const { compact = false, titre = 'Estimer ma course' } = Astro.props;
 
-const groupes = (Object.keys(GROUPES_DESTINATION) as (keyof typeof GROUPES_DESTINATION)[]).map(
-  (cle) => ({ cle, label: GROUPES_DESTINATION[cle], items: DESTINATIONS.filter((d) => d.groupe === cle) })
-);
+// Raccourcis : points que la Base Adresse Nationale situe mal (terminaux,
+// entrées de service) et qui représentent l'essentiel des demandes.
+const RACCOURCIS = ['aeroport-lyon-saint-exupery', 'gare-chateaucreux', 'chu-hopital-nord', 'aeroport-saint-etienne-boutheon']
+  .map((slug) => {
+    const d = DESTINATIONS.find((x) => x.slug === slug);
+    const c = COORDONNEES[slug];
+    return d && c ? { label: d.label, court: d.label.split(' (')[0].replace('Aéroport ', '').replace('Gare de ', ''), lat: c.lat, lon: c.lon } : null;
+  })
+  .filter((x): x is NonNullable<typeof x> => x !== null);
 
-// Données transmises au script client : une seule source de vérité, sérialisée.
 const donnees = {
   tarifs: TARIFS,
   constantes: TARIF_CONSTANTS,
-  destinations: DESTINATIONS,
-  coordonnees: COORDONNEES,
-  villes: VILLES.map((v) => ({ slug: v.slug, nom: v.nom })),
+  raccourcis: RACCOURCIS,
   whatsapp: CONTACT.whatsapp,
+  urlApi: urlRechercheBase(),
 };
 ---
 
@@ -44,65 +53,105 @@ const donnees = {
     <span class="simu__source">Tarifs préfecture 42</span>
   </div>
 
-  <form class="simu__form" data-simu-form>
-    <label class="ligne">
-      <span class="ligne__label">Départ</span>
-      <select name="depart" data-champ="depart">
-        {VILLES.map((v) => <option value={v.slug} selected={v.slug === 'saint-etienne'}>{v.nom}</option>)}
-      </select>
-    </label>
+  <div class="simu__form">
+    <!-- Départ -->
+    <div class="champ">
+      <label class="champ__label" for="simu-depart">Départ</label>
+      <div class="champ__saisie">
+        <Icone nom="map" taille={16} class="champ__icone" />
+        <input
+          type="text"
+          id="simu-depart"
+          data-adresse="depart"
+          placeholder="Votre adresse de départ"
+          autocomplete="off"
+          role="combobox"
+          aria-expanded="false"
+          aria-autocomplete="list"
+          aria-controls="liste-depart"
+        />
+        <button type="button" class="champ__vider" data-vider="depart" hidden aria-label="Effacer le départ">
+          <Icone nom="close" taille={15} />
+        </button>
+      </div>
+      <ul class="suggestions" id="liste-depart" data-liste="depart" role="listbox" hidden></ul>
+    </div>
 
-    <label class="ligne">
-      <span class="ligne__label">Arrivée</span>
-      <select name="arrivee" data-champ="arrivee">
+    <!-- Arrivée -->
+    <div class="champ">
+      <label class="champ__label" for="simu-arrivee">Destination</label>
+      <div class="champ__saisie">
+        <Icone nom="map" taille={16} class="champ__icone" />
+        <input
+          type="text"
+          id="simu-arrivee"
+          data-adresse="arrivee"
+          placeholder="Adresse, gare, hôpital, aéroport…"
+          autocomplete="off"
+          role="combobox"
+          aria-expanded="false"
+          aria-autocomplete="list"
+          aria-controls="liste-arrivee"
+        />
+        <button type="button" class="champ__vider" data-vider="arrivee" hidden aria-label="Effacer la destination">
+          <Icone nom="close" taille={15} />
+        </button>
+      </div>
+      <ul class="suggestions" id="liste-arrivee" data-liste="arrivee" role="listbox" hidden></ul>
+
+      <div class="raccourcis">
         {
-          groupes.map((g) => (
-            <optgroup label={g.label}>
-              {g.items.map((d) => (
-                <option value={d.slug} selected={d.slug === 'aeroport-lyon-saint-exupery'}>
-                  {d.label}
-                </option>
-              ))}
-            </optgroup>
+          RACCOURCIS.map((r) => (
+            <button type="button" data-raccourci={JSON.stringify(r)}>
+              {r.court}
+            </button>
           ))
         }
-        <optgroup label="Autre">
-          <option value="__libre">Autre destination (saisir la distance)</option>
-        </optgroup>
-      </select>
-    </label>
+      </div>
+    </div>
 
-    <label class="ligne" data-champ-libre hidden>
-      <span class="ligne__label">Distance</span>
-      <input type="number" name="kmLibre" min="1" max="1500" step="1" value="50" data-champ="kmLibre" />
-    </label>
+    <!-- Prise en charge -->
+    <div class="champ champ--duo">
+      <div>
+        <label class="champ__label" for="simu-date">Date</label>
+        <div class="champ__saisie">
+          <input type="date" id="simu-date" data-champ="date" />
+        </div>
+      </div>
+      <div>
+        <label class="champ__label" for="simu-heure">Heure de prise en charge</label>
+        <div class="champ__saisie">
+          <input type="time" id="simu-heure" data-champ="heure" />
+        </div>
+      </div>
+    </div>
 
-    <fieldset class="ligne">
-      <legend class="ligne__label">Trajet</legend>
+    <!-- Type de course -->
+    <fieldset class="champ">
+      <legend class="champ__label">Type de course</legend>
       <div class="segment">
-        <label><input type="radio" name="sens" value="aller" checked data-champ="sens" /><span>Aller</span></label>
+        <label><input type="radio" name="sens" value="aller" checked data-champ="sens" /><span>Aller simple</span></label>
         <label><input type="radio" name="sens" value="ar" data-champ="sens" /><span>Aller-retour</span></label>
       </div>
     </fieldset>
 
-    <fieldset class="ligne">
-      <legend class="ligne__label">Horaire</legend>
-      <div class="segment">
-        <label><input type="radio" name="moment" value="jour" checked data-champ="moment" /><span>Jour</span></label>
-        <label><input type="radio" name="moment" value="nuit" data-champ="moment" /><span>Nuit / dim.</span></label>
+    <div class="champ">
+      <label class="champ__label" for="simu-passagers">Passagers</label>
+      <div class="champ__saisie">
+        <select id="simu-passagers" data-champ="passagers">
+          {[1, 2, 3, 4, 5, 6, 7].map((n) => <option value={n}>{n} passager{n > 1 ? 's' : ''}</option>)}
+        </select>
       </div>
-    </fieldset>
+    </div>
+  </div>
 
-    <label class="ligne ligne--derniere">
-      <span class="ligne__label">Passagers</span>
-      <select name="passagers" data-champ="passagers">
-        {[1, 2, 3, 4, 5, 6, 7].map((n) => <option value={n}>{n} passager{n > 1 ? 's' : ''}</option>)}
-      </select>
-    </label>
-  </form>
-
+  <!-- Résultat -->
   <div class="simu__resultat" data-simu-resultat aria-live="polite">
-    <div class="simu__prix">
+    <p class="simu__invite" data-simu-invite>
+      Renseignez un départ et une destination pour obtenir une estimation.
+    </p>
+
+    <div class="simu__prix" data-simu-prix hidden>
       <div>
         <p class="simu__label">Estimation</p>
         <p class="simu__montant" data-simu-total>—</p>
@@ -110,14 +159,15 @@ const donnees = {
       <p class="simu__meta" data-simu-meta></p>
     </div>
 
-    <details class="simu__detail">
+    <details class="simu__detail" data-simu-details hidden>
       <summary>Voir le détail du calcul</summary>
       <ul data-simu-lignes></ul>
+      <p class="simu__explication" data-simu-explication></p>
     </details>
 
     <p class="simu__note">
-      Indicatif : seul le taximètre fait foi à l’arrivée. Calcul basé sur l’{ARRETE.reference} du
-      {' '}{ARRETE.dateDisplay}. <strong>En transport conventionné CPAM, vous ne réglez rien</strong> :
+      Indicatif : seul le taximètre fait foi à l’arrivée. Tarifs réglementés par l’{ARRETE.reference}
+      {ARRETE.dateDisplay}. <strong>En transport conventionné CPAM, vous ne réglez rien</strong> :
       la course est facturée directement à l’Assurance Maladie.
     </p>
 
@@ -128,10 +178,13 @@ const donnees = {
       <a href="#" class="btn btn-contour" data-simu-wa rel="noopener" target="_blank">
         <Icone nom="whatsapp" taille={17} /> Envoyer sur WhatsApp
       </a>
-      <a href="/devis/" class="btn btn-noir simu__devis" data-simu-devis>
-        Demander un devis écrit
-      </a>
+      <a href="/devis/" class="btn btn-noir simu__devis" data-simu-devis>Demander un devis écrit</a>
     </div>
+
+    <p class="simu__rappel">
+      Pas envie de tout remplir&nbsp;?
+      <BoutonRappel variante="lien" libelle="Faites-vous rappeler" />
+    </p>
   </div>
 </div>
 
@@ -146,12 +199,12 @@ const donnees = {
     align-items: baseline;
     justify-content: space-between;
     gap: 1rem;
-    padding: 1.6rem 1.75rem 1.1rem;
+    padding: 1.5rem 1.75rem 1.1rem;
     border-bottom: 1px solid var(--encre);
   }
 
   .simu__entete h2 {
-    font-size: clamp(1.3rem, 2.4vw, 1.55rem);
+    font-size: clamp(1.3rem, 2.4vw, 1.5rem);
   }
 
   .simu__source {
@@ -163,74 +216,161 @@ const donnees = {
     white-space: nowrap;
   }
 
-  /* Une ligne par information : le bloc se lit comme un tableau. */
   .simu__form {
-    padding: 0 1.75rem;
+    padding: 1.25rem 1.75rem 1.5rem;
+    display: grid;
+    gap: 1.1rem;
   }
 
-  .ligne {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 0.9rem 0;
+  .champ {
+    position: relative;
+    display: grid;
+    gap: 0.4rem;
     border: 0;
-    border-bottom: 1px solid var(--filet);
+    padding: 0;
     margin: 0;
     min-width: 0;
   }
 
-  .ligne--derniere {
-    border-bottom: 0;
+  .champ--duo {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
   }
 
-  .ligne__label {
+  .champ__label {
     font-size: 0.7rem;
     font-weight: 600;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--texte-3);
-    flex-shrink: 0;
     padding: 0;
   }
 
-  .ligne select,
-  .ligne input {
+  .champ__saisie {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    background: var(--blanc);
+    border: 1px solid var(--filet-fort);
+    padding-inline: 0.85rem;
+    transition: border-color var(--transition);
+  }
+
+  .champ__saisie:focus-within {
+    border-color: var(--encre);
+    outline: 2px solid var(--chaud);
+    outline-offset: -2px;
+  }
+
+  .champ__saisie :global(.champ__icone) {
+    color: var(--texte-3);
+    flex-shrink: 0;
+  }
+
+  .champ__saisie input,
+  .champ__saisie select {
     flex: 1;
     min-width: 0;
-    max-width: 64%;
-    padding: 0.45rem 1.5rem 0.45rem 0;
+    padding: 0.8rem 0;
     background: transparent;
     border: 0;
     color: var(--texte);
-    font-size: 0.94rem;
-    font-weight: 500;
-    text-align: right;
-    text-align-last: right;
+    font-size: 0.96rem;
+    font-family: inherit;
+  }
+
+  .champ__saisie input:focus,
+  .champ__saisie select:focus {
+    outline: none;
+  }
+
+  .champ__saisie select {
     appearance: none;
+    cursor: pointer;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='15' viewBox='0 0 24 24' fill='none' stroke='%239d988c' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right center;
-    cursor: pointer;
+    padding-right: 1.4rem;
   }
 
-  .ligne input {
-    background-image: none;
-    padding-right: 0;
-    cursor: text;
+  .champ__vider {
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    color: var(--texte-3);
+    flex-shrink: 0;
   }
 
-  .ligne select:focus,
-  .ligne input:focus {
-    outline: 2px solid var(--chaud);
-    outline-offset: 2px;
-  }
-
-  .ligne option,
-  .ligne optgroup {
-    background: var(--blanc);
+  .champ__vider:hover {
     color: var(--texte);
-    text-align: left;
+  }
+
+  /* Liste d'autocomplétion */
+  .suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 40;
+    list-style: none;
+    margin: 2px 0 0;
+    padding: 0;
+    background: var(--blanc);
+    border: 1px solid var(--encre);
+    max-height: 260px;
+    overflow-y: auto;
+  }
+
+  .suggestions li {
+    padding: 0.7rem 0.9rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border-bottom: 1px solid var(--filet-doux);
+    line-height: 1.4;
+  }
+
+  .suggestions li:last-child {
+    border-bottom: 0;
+  }
+
+  .suggestions li:hover,
+  .suggestions li[aria-selected='true'] {
+    background: var(--ivoire);
+  }
+
+  .suggestions li small {
+    display: block;
+    color: var(--texte-3);
+    font-size: 0.79rem;
+    margin-top: 0.1rem;
+  }
+
+  .suggestions li[data-etat] {
+    cursor: default;
+    color: var(--texte-3);
+    font-style: italic;
+  }
+
+  .raccourcis {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: 0.2rem;
+  }
+
+  .raccourcis button {
+    padding: 0.3rem 0.65rem;
+    border: 1px solid var(--filet-fort);
+    background: var(--blanc);
+    font-size: 0.78rem;
+    color: var(--texte-2);
+    transition: border-color var(--transition), color var(--transition);
+  }
+
+  .raccourcis button:hover {
+    border-color: var(--encre);
+    color: var(--encre);
   }
 
   .segment {
@@ -240,6 +380,7 @@ const donnees = {
 
   .segment label {
     position: relative;
+    flex: 1;
   }
 
   .segment input {
@@ -251,14 +392,14 @@ const donnees = {
 
   .segment span {
     display: block;
-    padding: 0.5rem 1rem;
+    text-align: center;
+    padding: 0.62rem 0.8rem;
     border: 1px solid var(--filet-fort);
     background: var(--blanc);
-    font-size: 0.84rem;
+    font-size: 0.87rem;
     font-weight: 500;
     color: var(--texte-2);
     cursor: pointer;
-    white-space: nowrap;
     transition: background-color var(--transition), color var(--transition),
       border-color var(--transition);
   }
@@ -275,11 +416,17 @@ const donnees = {
     outline-offset: 2px;
   }
 
-  /* Le prix doit se lire de loin : c'est la raison d'être du bloc. */
+  /* Résultat */
   .simu__resultat {
-    padding: 1.5rem 1.75rem 1.75rem;
+    padding: 1.4rem 1.75rem 1.65rem;
     background: var(--blanc);
     border-top: 1px solid var(--encre);
+  }
+
+  .simu__invite {
+    font-size: 0.92rem;
+    color: var(--texte-3);
+    line-height: 1.6;
   }
 
   .simu__prix {
@@ -295,12 +442,12 @@ const donnees = {
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--chaud);
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.25rem;
   }
 
   .simu__montant {
     font-family: var(--font-titre);
-    font-size: clamp(2.4rem, 6vw, 3.4rem);
+    font-size: clamp(2.4rem, 6vw, 3.3rem);
     line-height: 1;
     color: var(--texte);
   }
@@ -310,12 +457,12 @@ const donnees = {
     color: var(--texte-3);
     text-align: right;
     line-height: 1.5;
-    max-width: 42%;
+    max-width: 45%;
   }
 
   .simu__detail {
-    margin-top: 1.15rem;
-    padding-top: 0.9rem;
+    margin-top: 1.1rem;
+    padding-top: 0.85rem;
     border-top: 1px solid var(--filet);
   }
 
@@ -377,6 +524,20 @@ const donnees = {
     font-weight: 600;
   }
 
+  .simu__explication {
+    margin-top: 0.9rem;
+    padding: 0.8rem 1rem;
+    background: var(--ivoire);
+    border-left: 2px solid var(--chaud);
+    font-size: 0.83rem;
+    color: var(--texte-2);
+    line-height: 1.65;
+  }
+
+  .simu__explication:empty {
+    display: none;
+  }
+
   .simu__note {
     font-size: 0.78rem;
     color: var(--texte-4);
@@ -387,27 +548,33 @@ const donnees = {
   .simu__actions {
     display: grid;
     gap: 0.6rem;
-    margin-top: 1.35rem;
+    margin-top: 1.3rem;
   }
 
   .simu--compact .simu__devis {
     display: none;
   }
 
+  .simu__rappel {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    margin-top: 1rem;
+    font-size: 0.87rem;
+    color: var(--texte-3);
+  }
+
   @media (max-width: 560px) {
-    .ligne {
-      flex-wrap: wrap;
-      gap: 0.35rem;
+    .simu__entete,
+    .simu__form,
+    .simu__resultat {
+      padding-inline: 1.15rem;
     }
 
-    .ligne select,
-    .ligne input {
-      flex-basis: 100%;
-      max-width: 100%;
-      width: 100%;
-      text-align: left;
-      text-align-last: left;
-      font-size: 1rem;
+    .champ--duo {
+      grid-template-columns: 1fr;
     }
 
     .simu__prix {
@@ -422,115 +589,126 @@ const donnees = {
   }
 </style>
 
-
 <script>
-  type Tarif = { key: string; parKm: number; label: string; court: string };
+  import { brancherAutocompletion, type Point } from '../lib/autocomplete.ts';
+  import { estTarifNuit, tarifApplicable } from '../data/tarifs.ts';
 
-  const racines = document.querySelectorAll<HTMLElement>('[data-simu]');
-
-  for (const racine of racines) {
+  for (const racine of document.querySelectorAll<HTMLElement>('[data-simu]')) {
     const balise = racine.querySelector<HTMLScriptElement>('[data-simu-donnees]');
     if (!balise?.textContent) continue;
 
     const d = JSON.parse(balise.textContent) as {
-      tarifs: Record<string, Tarif>;
+      tarifs: Record<string, { key: string; parKm: number; label: string; court: string }>;
       constantes: {
         priseEnCharge: number;
         tarifHoraire: number;
         minimumPerception: number;
         supplement4ePassager: number;
       };
-      destinations: { slug: string; label: string; km: number; minutes: number }[];
-      coordonnees: Record<string, { lat: number; lon: number }>;
-      villes: { slug: string; nom: string }[];
+      raccourcis: Point[];
       whatsapp: string;
+      urlApi: string;
     };
 
-    const $ = <T extends Element>(sel: string) => racine.querySelector<T>(sel);
-    const champ = (nom: string) => racine.querySelector<HTMLInputElement | HTMLSelectElement>(`[data-champ="${nom}"]`);
-
-    const selDepart = champ('depart') as HTMLSelectElement;
-    const selArrivee = champ('arrivee') as HTMLSelectElement;
-    const selPassagers = champ('passagers') as HTMLSelectElement;
-    const champLibre = $<HTMLElement>('[data-champ-libre]');
-    const inputLibre = champ('kmLibre') as HTMLInputElement;
-    const elTotal = $<HTMLElement>('[data-simu-total]');
-    const elMeta = $<HTMLElement>('[data-simu-meta]');
-    const elLignes = $<HTMLElement>('[data-simu-lignes]');
-    const lienWa = $<HTMLAnchorElement>('[data-simu-wa]');
-    const lienDevis = $<HTMLAnchorElement>('[data-simu-devis]');
-
+    const $ = <T extends Element>(s: string) => racine.querySelector<T>(s);
     const euros = (n: number) =>
       new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(n);
 
-    /* Même méthode que src/data/geo.ts — cf. le commentaire de ce fichier. */
+    /* Les points retenus pour chaque extrémité du trajet. */
+    const points: Record<string, Point | null> = { depart: null, arrivee: null };
+
+    const champDate = $<HTMLInputElement>('[data-champ="date"]')!;
+    const champHeure = $<HTMLInputElement>('[data-champ="heure"]')!;
+    const champPassagers = $<HTMLSelectElement>('[data-champ="passagers"]')!;
+
+    // Par défaut : maintenant, arrondi au quart d'heure suivant.
+    const maintenant = new Date();
+    maintenant.setMinutes(Math.ceil(maintenant.getMinutes() / 15) * 15, 0, 0);
+    champDate.value = `${maintenant.getFullYear()}-${String(maintenant.getMonth() + 1).padStart(2, '0')}-${String(maintenant.getDate()).padStart(2, '0')}`;
+    champHeure.value = `${String(maintenant.getHours()).padStart(2, '0')}:${String(maintenant.getMinutes()).padStart(2, '0')}`;
+    champDate.min = champDate.value;
+
+    /* --- Distance ---------------------------------------------------------
+       Même méthode que src/data/geo.ts : orthodromie × coefficient de
+       sinuosité calibré sur des trajets réels au départ de Saint-Étienne. */
     const COEFF_ROUTE = 1.32;
     const rad = (deg: number) => (deg * Math.PI) / 180;
 
-    function distanceEstimee(a: string, b: string): number | null {
-      const p1 = d.coordonnees[a];
-      const p2 = d.coordonnees[b];
-      if (!p1 || !p2) return null;
-      const dLat = rad(p2.lat - p1.lat);
-      const dLon = rad(p2.lon - p1.lon);
+    function distance(a: Point, b: Point): number {
+      const dLat = rad(b.lat - a.lat);
+      const dLon = rad(b.lon - a.lon);
       const h =
         Math.sin(dLat / 2) ** 2 +
-        Math.cos(rad(p1.lat)) * Math.cos(rad(p2.lat)) * Math.sin(dLon / 2) ** 2;
+        Math.cos(rad(a.lat)) * Math.cos(rad(b.lat)) * Math.sin(dLon / 2) ** 2;
       const km = 2 * 6371 * Math.asin(Math.sqrt(h)) * COEFF_ROUTE;
       return km < 50 ? Math.max(1, Math.round(km)) : Math.round(km / 5) * 5;
     }
 
-    function valeurRadio(nom: string): string {
-      const coché = racine.querySelector<HTMLInputElement>(`input[name="${nom}"]:checked`);
-      return coché?.value ?? '';
+    /* --- Autocomplétion --------------------------------------------------- */
+    function brancherAdresse(cle: 'depart' | 'arrivee') {
+      return brancherAutocompletion({
+        input: racine.querySelector<HTMLInputElement>(`[data-adresse="${cle}"]`)!,
+        liste: racine.querySelector<HTMLElement>(`[data-liste="${cle}"]`)!,
+        vider: racine.querySelector<HTMLButtonElement>(`[data-vider="${cle}"]`),
+        urlApi: d.urlApi,
+        onChoix: (p) => {
+          points[cle] = p;
+          calculer();
+        },
+      });
     }
 
+    brancherAdresse('depart');
+    const choisirArrivee = brancherAdresse('arrivee');
+
+    for (const b of racine.querySelectorAll<HTMLButtonElement>('[data-raccourci]')) {
+      b.addEventListener('click', () => {
+        const p = JSON.parse(b.dataset.raccourci!) as Point;
+        choisirArrivee(p);
+      });
+    }
+
+    /* --- Calcul ----------------------------------------------------------- */
     function calculer() {
-      const depart = selDepart.value;
-      const arrivee = selArrivee.value;
-      const libre = arrivee === '__libre';
+      const invite = $<HTMLElement>('[data-simu-invite]')!;
+      const prix = $<HTMLElement>('[data-simu-prix]')!;
+      const details = $<HTMLDetailsElement>('[data-simu-details]')!;
 
-      if (champLibre) champLibre.hidden = !libre;
+      const a = points.depart;
+      const b = points.arrivee;
 
-      // Distance : table de référence pour les trajets courants au départ de
-      // Saint-Étienne, estimation géodésique sinon.
-      let km: number | null;
-      let source: 'table' | 'estimation' | 'saisie';
-      const enTable = d.destinations.find((x) => x.slug === arrivee);
-
-      if (libre) {
-        km = Math.max(1, Number(inputLibre?.value) || 1);
-        source = 'saisie';
-      } else if (depart === 'saint-etienne' && enTable) {
-        km = enTable.km;
-        source = 'table';
-      } else {
-        km = distanceEstimee(depart, arrivee);
-        source = 'estimation';
-      }
-
-      if (km === null) {
-        if (elTotal) elTotal.textContent = '—';
-        if (elMeta) elMeta.textContent = 'Trajet non estimable en ligne : appelez-nous.';
+      if (!a || !b) {
+        invite.hidden = false;
+        prix.hidden = true;
+        details.hidden = true;
         return;
       }
 
-      const allerRetour = valeurRadio('sens') === 'ar';
-      const nuit = valeurRadio('moment') === 'nuit';
-      const passagers = Number(selPassagers.value) || 1;
+      invite.hidden = true;
+      prix.hidden = false;
+      details.hidden = false;
 
-      // A/B : aller-retour (le véhicule ne revient pas à vide).
-      // C/D : aller simple, prix au km doublé pour couvrir le retour à vide.
-      const cle = allerRetour ? (nuit ? 'B' : 'A') : nuit ? 'D' : 'C';
+      const km = distance(a, b);
+      const allerRetour =
+        racine.querySelector<HTMLInputElement>('input[name="sens"]:checked')?.value === 'ar';
+      const passagers = Number(champPassagers.value) || 1;
+
+      const priseEnCharge = new Date(`${champDate.value}T${champHeure.value || '12:00'}`);
+      const dateValide = !Number.isNaN(priseEnCharge.getTime());
+      const moment = dateValide ? priseEnCharge : new Date();
+
+      const cle = tarifApplicable(moment, allerRetour);
       const tarif = d.tarifs[cle];
+      const nuit = estTarifNuit(moment);
 
-      // Sur un aller-retour, le taximètre compte les deux sens.
+      // Sur un aller-retour, le client est à bord dans les deux sens : le
+      // taximètre compte les deux trajets, au tarif réduit correspondant.
       const kmFactures = allerRetour ? km * 2 : km;
 
-      const lignes: { label: string; montant: number }[] = [
+      const lignes = [
         { label: 'Prise en charge', montant: d.constantes.priseEnCharge },
         {
-          label: `${kmFactures} km au ${tarif.label} (${tarif.parKm.toFixed(2)} €/km)`,
+          label: `${kmFactures} km au ${tarif.label} (${tarif.parKm.toFixed(2).replace('.', ',')} €/km)`,
           montant: kmFactures * tarif.parKm,
         },
       ];
@@ -551,52 +729,56 @@ const donnees = {
         total += sup;
       }
 
-      if (elTotal) elTotal.textContent = euros(Math.round(total * 100) / 100);
+      total = Math.round(total * 100) / 100;
 
-      const nomArrivee = libre
-        ? 'destination libre'
-        : (d.destinations.find((x) => x.slug === arrivee)?.label ?? arrivee);
-      const nomDepart = d.villes.find((v) => v.slug === depart)?.nom ?? depart;
-      const duree = source === 'table' ? enTable?.minutes : Math.round((km / 65) * 60);
-      const precision = source === 'table' ? '' : ' environ';
+      $<HTMLElement>('[data-simu-total]')!.textContent = euros(total);
 
-      if (elMeta) {
-        elMeta.textContent =
-          `${km} km${precision}${allerRetour ? ' × 2 (aller-retour)' : ''}` +
-          (duree ? ` · ${duree} min de trajet` : '') +
-          ` · ${tarif.court}`;
-      }
+      const duree = Math.max(5, Math.round((km / 60) * 60));
+      $<HTMLElement>('[data-simu-meta]')!.textContent =
+        `${km} km environ${allerRetour ? ' × 2 (aller-retour)' : ''} · ${duree} min de trajet · ` +
+        (nuit ? 'tarif nuit, dimanche ou jour férié' : 'tarif de journée');
 
-      if (elLignes) {
-        elLignes.innerHTML = lignes
-          .map((l) => `<li><span>${l.label}</span><b>${euros(Math.round(l.montant * 100) / 100)}</b></li>`)
-          .join('');
-      }
+      $<HTMLElement>('[data-simu-lignes]')!.innerHTML = lignes
+        .map(
+          (l) =>
+            `<li><span>${l.label}</span><b>${euros(Math.round(l.montant * 100) / 100)}</b></li>`
+        )
+        .join('');
 
-      // Les CTA reprennent le trajet simulé : le client n'a rien à ressaisir.
+      // Le prix identique entre aller simple et aller-retour surprend : il
+      // vaut mieux l'expliquer que de laisser croire à une erreur.
+      $<HTMLElement>('[data-simu-explication]')!.textContent = allerRetour
+        ? `Pourquoi le même prix qu’un aller simple ? Sur un aller-retour, vous êtes à bord dans les deux sens : le compteur tourne sur ${kmFactures} km, mais au ${tarif.label}, deux fois moins cher au kilomètre. Sur un aller simple, il ne compte que ${km} km, au tarif plein qui couvre le retour à vide du véhicule. Le kilométrage parcouru étant le même, le montant l’est aussi. Un temps d’attente sur place serait en revanche facturé ${d.constantes.tarifHoraire.toFixed(2).replace('.', ',')} € de l’heure.`
+        : `Le ${tarif.label} s’applique aux courses aller simple : il intègre le retour à vide du véhicule, que vous ne payez donc pas en plus. Si vous rentrez avec nous, même plusieurs heures plus tard, signalez-le — le tarif aller-retour est plus avantageux dès qu’il y a de l’attente.`;
+
+      /* Les boutons reprennent le trajet : rien à ressaisir. */
       const resume =
         `Bonjour, je souhaite réserver un taxi.\n` +
-        `Départ : ${nomDepart}\n` +
-        `Destination : ${nomArrivee}\n` +
-        `Trajet : ${allerRetour ? 'aller-retour' : 'aller simple'}, ${nuit ? 'nuit / dimanche ou jour férié' : 'en journée'}\n` +
+        `Départ : ${a.label}\n` +
+        `Destination : ${b.label}\n` +
+        `Prise en charge : ${dateValide ? priseEnCharge.toLocaleString('fr-FR', { dateStyle: 'full', timeStyle: 'short' }) : 'à définir'}\n` +
+        `Trajet : ${allerRetour ? 'aller-retour' : 'aller simple'}\n` +
         `Passagers : ${passagers}\n` +
-        `Estimation vue sur le site : ${euros(Math.round(total * 100) / 100)}`;
+        `Estimation vue sur le site : ${euros(total)}`;
 
-      if (lienWa) lienWa.href = `https://wa.me/${d.whatsapp}?text=${encodeURIComponent(resume)}`;
+      $<HTMLAnchorElement>('[data-simu-wa]')!.href =
+        `https://wa.me/${d.whatsapp}?text=${encodeURIComponent(resume)}`;
 
+      const lienDevis = $<HTMLAnchorElement>('[data-simu-devis]');
       if (lienDevis) {
         const params = new URLSearchParams({
-          depart: nomDepart,
-          arrivee: nomArrivee,
+          depart: a.label,
+          arrivee: b.label,
+          date: champDate.value,
+          heure: champHeure.value,
           sens: allerRetour ? 'ar' : 'aller',
           passagers: String(passagers),
-          estimation: String(Math.round(total * 100) / 100),
+          estimation: String(total),
         });
         lienDevis.href = `/devis/?${params}`;
       }
     }
 
-    racine.addEventListener('input', calculer);
     racine.addEventListener('change', calculer);
     calculer();
   }

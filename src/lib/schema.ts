@@ -189,7 +189,7 @@ export function schemaTarifs() {
     '@context': 'https://schema.org',
     '@type': 'PriceSpecification',
     name: `Tarifs taxi réglementés — ${ARRETE.departement}`,
-    description: `Tarifs maximaux fixés par l'${ARRETE.reference} du ${ARRETE.dateDisplay}. Prise en charge ${TARIF_CONSTANTS.priseEnCharge.toFixed(2)} €, minimum de perception ${TARIF_CONSTANTS.minimumPerception.toFixed(2)} €, tarif horaire d'attente ${TARIF_CONSTANTS.tarifHoraire.toFixed(2)} €. Tarif A ${TARIFS.A.parKm.toFixed(2)} €/km, tarif B ${TARIFS.B.parKm.toFixed(2)} €/km, tarif C ${TARIFS.C.parKm.toFixed(2)} €/km, tarif D ${TARIFS.D.parKm.toFixed(2)} €/km.`,
+    description: `Tarifs maximaux fixés par l'${ARRETE.reference} ${ARRETE.dateDisplay}. Prise en charge ${TARIF_CONSTANTS.priseEnCharge.toFixed(2)} €, minimum de perception ${TARIF_CONSTANTS.minimumPerception.toFixed(2)} €, tarif horaire d'attente ${TARIF_CONSTANTS.tarifHoraire.toFixed(2)} €. Tarif A ${TARIFS.A.parKm.toFixed(2)} €/km, tarif B ${TARIFS.B.parKm.toFixed(2)} €/km, tarif C ${TARIFS.C.parKm.toFixed(2)} €/km, tarif D ${TARIFS.D.parKm.toFixed(2)} €/km.`,
     priceCurrency: 'EUR',
     valueAddedTaxIncluded: true,
   };

@@ -4,7 +4,7 @@ import Icone from '../components/Icone.astro';
 import FilAriane from '../components/FilAriane.astro';
 import { CONTACT, OPENING_HOURS, VEHICLES } from '../data/site.ts';
 import { SERVICES } from '../data/services.ts';
-import { VILLES } from '../data/villes.ts';
+import { urlRechercheBase } from '../lib/adresses.ts';
 
 const ariane = [
   { nom: 'Accueil', url: '/' },
@@ -14,6 +14,7 @@ const ariane = [
 // Endpoint de réception, injecté au build depuis la variable d'environnement.
 // Vide en l'absence de configuration : le formulaire bascule alors sur WhatsApp.
 const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
+const urlApiAdresse = urlRechercheBase();
 ---
 
 <Base
@@ -71,7 +72,7 @@ const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
       </div>
 
       <div class="devis__form-zone">
-        <form class="formulaire" data-devis-form novalidate data-endpoint={endpoint}>
+        <form class="formulaire" data-devis-form novalidate data-endpoint={endpoint} data-api-adresse={urlApiAdresse}>
           <!-- Piège à robots : invisible, laissé vide par un humain. -->
           <div class="pot-de-miel" aria-hidden="true">
             <label>Ne pas remplir<input type="text" name="site_web" tabindex="-1" autocomplete="off" /></label>
@@ -90,33 +91,42 @@ const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
             </label>
 
             <div class="champ__duo">
-              <label class="champ">
-                <span class="champ__label">Adresse de départ *</span>
+              <div class="champ champ--adresse">
+                <label class="champ__label" for="devis-depart">Adresse de départ *</label>
                 <input
                   type="text"
+                  id="devis-depart"
                   name="depart"
                   required
-                  list="communes"
-                  placeholder="Ville, rue ou établissement"
+                  placeholder="Numéro, rue et commune"
                   autocomplete="off"
+                  role="combobox"
+                  aria-expanded="false"
+                  aria-autocomplete="list"
+                  aria-controls="devis-liste-depart"
+                  data-adresse="depart"
                 />
-              </label>
+                <ul class="suggestions" id="devis-liste-depart" data-liste="depart" role="listbox" hidden></ul>
+              </div>
 
-              <label class="champ">
-                <span class="champ__label">Destination *</span>
+              <div class="champ champ--adresse">
+                <label class="champ__label" for="devis-arrivee">Destination *</label>
                 <input
                   type="text"
+                  id="devis-arrivee"
                   name="arrivee"
                   required
-                  placeholder="Ville, aéroport, hôpital…"
+                  placeholder="Adresse, gare, hôpital, aéroport…"
                   autocomplete="off"
+                  role="combobox"
+                  aria-expanded="false"
+                  aria-autocomplete="list"
+                  aria-controls="devis-liste-arrivee"
+                  data-adresse="arrivee"
                 />
-              </label>
+                <ul class="suggestions" id="devis-liste-arrivee" data-liste="arrivee" role="listbox" hidden></ul>
+              </div>
             </div>
-
-            <datalist id="communes">
-              {VILLES.map((v) => <option value={`${v.nom} (${v.codePostal})`}></option>)}
-            </datalist>
 
             <div class="champ__duo">
               <label class="champ">
@@ -341,6 +351,55 @@ const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
   .champ {
     display: grid;
     gap: 0.4rem;
+  }
+
+  .champ--adresse {
+    position: relative;
+  }
+
+  .suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 40;
+    list-style: none;
+    margin: 2px 0 0;
+    padding: 0;
+    background: var(--blanc);
+    border: 1px solid var(--encre);
+    max-height: 250px;
+    overflow-y: auto;
+  }
+
+  .suggestions li {
+    padding: 0.7rem 0.9rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border-bottom: 1px solid var(--filet-doux);
+    line-height: 1.4;
+  }
+
+  .suggestions li:last-child {
+    border-bottom: 0;
+  }
+
+  .suggestions li:hover,
+  .suggestions li[aria-selected='true'] {
+    background: var(--ivoire);
+  }
+
+  .suggestions li small {
+    display: block;
+    color: var(--texte-3);
+    font-size: 0.79rem;
+    margin-top: 0.1rem;
+  }
+
+  .suggestions li[data-etat] {
+    cursor: default;
+    color: var(--texte-3);
+    font-style: italic;
   }
 
   .champ__duo {
@@ -590,6 +649,7 @@ const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
 
 <script>
   import { formaterDemande, CHAMPS_OBLIGATOIRES, type DemandeDevis } from '../lib/leads.ts';
+  import { brancherAutocompletion } from '../lib/autocomplete.ts';
 
   const form = document.querySelector<HTMLFormElement>('[data-devis-form]');
   if (form) {
@@ -610,6 +670,20 @@ const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
     };
     affecter('depart', params.get('depart'));
     affecter('arrivee', params.get('arrivee'));
+    affecter('date', params.get('date'));
+    affecter('heure', params.get('heure'));
+
+    // Autocomplétion sur les deux adresses, comme dans le simulateur.
+    const urlApi = form.dataset.apiAdresse ?? '';
+    if (urlApi) {
+      for (const cle of ['depart', 'arrivee']) {
+        const input = form.querySelector<HTMLInputElement>(`[data-adresse="${cle}"]`);
+        const liste = form.querySelector<HTMLElement>(`[data-liste="${cle}"]`);
+        if (input && liste) {
+          brancherAutocompletion({ input, liste, urlApi, onChoix: () => {} });
+        }
+      }
+    }
 
     const passagers = params.get('passagers');
     if (passagers) {

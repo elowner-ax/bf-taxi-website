@@ -1,0 +1,448 @@
+---
+/**
+ * Bouton « Être rappelé » et sa fenêtre de saisie.
+ *
+ * Sert les visiteurs qui ne veulent ni remplir un devis, ni appeler tout de
+ * suite : deux champs, c'est tout. C'est souvent le cas des demandes
+ * particulières (fauteuil, bagages hors normes, trajet à organiser) qu'il est
+ * plus simple d'expliquer de vive voix.
+ *
+ * La fenêtre s'appuie sur <dialog>, natif : fermeture par Échap, focus piégé
+ * et fond inerte sans une ligne de JavaScript pour les gérer.
+ */
+import Icone from './Icone.astro';
+import { CONTACT } from '../data/site.ts';
+
+interface Props {
+  /** Rendu du bouton déclencheur. */
+  variante?: 'contour' | 'lien' | 'encre';
+  libelle?: string;
+}
+
+const { variante = 'contour', libelle = 'Être rappelé' } = Astro.props;
+
+const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
+
+const classes = {
+  contour: 'btn btn-contour',
+  encre: 'btn btn-encre',
+  lien: 'rappel__lien',
+};
+---
+
+<button type="button" class={classes[variante]} data-ouvrir-rappel>
+  <Icone nom="phone" taille={variante === 'lien' ? 15 : 17} />
+  {libelle}
+</button>
+
+<dialog class="rappel" data-rappel data-endpoint={endpoint}>
+  <form method="dialog" class="rappel__fermer-zone">
+    <button class="rappel__fermer" aria-label="Fermer">
+      <Icone nom="close" taille={20} />
+    </button>
+  </form>
+
+  <div class="rappel__contenu" data-rappel-vue="formulaire">
+    <h2>On vous rappelle</h2>
+    <p class="rappel__intro">
+      Laissez votre numéro : nous vous rappelons pour organiser votre trajet. Utile si votre
+      demande sort de l’ordinaire — fauteuil, bagages volumineux, trajet à caler avec un
+      rendez-vous médical.
+    </p>
+
+    <form class="rappel__form" data-rappel-form novalidate>
+      <div class="pot-de-miel" aria-hidden="true">
+        <label>Ne pas remplir<input type="text" name="societe" tabindex="-1" autocomplete="off" /></label>
+      </div>
+
+      <label class="rappel__champ">
+        <span>Votre nom *</span>
+        <input type="text" name="nom" required autocomplete="name" placeholder="Prénom et nom" />
+      </label>
+
+      <label class="rappel__champ">
+        <span>Votre téléphone *</span>
+        <input
+          type="tel"
+          name="telephone"
+          required
+          autocomplete="tel"
+          inputmode="tel"
+          placeholder="06 12 34 56 78"
+        />
+      </label>
+
+      <fieldset class="rappel__champ">
+        <legend>Quand vous rappeler&nbsp;?</legend>
+        <div class="rappel__creneaux">
+          <label><input type="radio" name="creneau" value="dès que possible" checked /><span>Dès que possible</span></label>
+          <label><input type="radio" name="creneau" value="ce matin" /><span>Ce matin</span></label>
+          <label><input type="radio" name="creneau" value="cet après-midi" /><span>Cet après-midi</span></label>
+          <label><input type="radio" name="creneau" value="en soirée" /><span>En soirée</span></label>
+        </div>
+      </fieldset>
+
+      <label class="rappel__champ">
+        <span>Votre demande <small>facultatif</small></span>
+        <textarea name="message" rows="2" placeholder="Trajet, date, besoin particulier…"></textarea>
+      </label>
+
+      <label class="rappel__case">
+        <input type="checkbox" name="consentement" required />
+        <span>
+          J’accepte d’être rappelé au numéro indiqué. *
+          <a href="/politique-de-confidentialite/">Confidentialité</a>
+        </span>
+      </label>
+
+      <p class="rappel__erreur" data-rappel-erreur hidden role="alert"></p>
+
+      <button type="submit" class="btn btn-appel btn-large rappel__envoi">
+        <span data-rappel-libelle>Demander à être rappelé</span>
+      </button>
+
+      <p class="rappel__ou">
+        Ou appelez directement : <a href={`tel:${CONTACT.phone}`}>{CONTACT.phoneDisplay}</a>
+      </p>
+    </form>
+  </div>
+
+  <div class="rappel__contenu rappel__succes" data-rappel-vue="succes" hidden>
+    <span class="rappel__coche"><Icone nom="check" taille={30} /></span>
+    <h2>Demande envoyée</h2>
+    <p>
+      Nous vous rappelons dans les meilleurs délais. Si c’est urgent, n’hésitez pas à composer le
+      <a href={`tel:${CONTACT.phone}`}>{CONTACT.phoneDisplay}</a>.
+    </p>
+    <form method="dialog">
+      <button class="btn btn-contour">Fermer</button>
+    </form>
+  </div>
+</dialog>
+
+<style>
+  .rappel__lien {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--chaud);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .rappel__lien:hover {
+    color: var(--chaud-fonce);
+  }
+
+  .rappel {
+    width: min(460px, calc(100vw - 2rem));
+    padding: 0;
+    border: 1px solid var(--encre);
+    background: var(--blanc);
+    color: var(--texte);
+  }
+
+  .rappel::backdrop {
+    background: rgba(22, 24, 28, 0.55);
+  }
+
+  .rappel__fermer-zone {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.6rem;
+    margin: 0;
+  }
+
+  .rappel__fermer {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    color: var(--texte-3);
+  }
+
+  .rappel__fermer:hover {
+    color: var(--texte);
+  }
+
+  .rappel__contenu {
+    padding: 1.9rem 1.75rem 1.75rem;
+  }
+
+  .rappel h2 {
+    font-size: 1.7rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .rappel__intro {
+    font-size: 0.92rem;
+    color: var(--texte-2);
+    line-height: 1.62;
+    margin-bottom: 1.4rem;
+  }
+
+  .rappel__form {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .pot-de-miel {
+    position: absolute;
+    left: -9999px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .rappel__champ {
+    display: grid;
+    gap: 0.35rem;
+    border: 0;
+    padding: 0;
+    margin: 0;
+  }
+
+  .rappel__champ > span,
+  .rappel__champ legend {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--texte-2);
+    padding: 0;
+  }
+
+  .rappel__champ small {
+    font-weight: 400;
+    color: var(--texte-3);
+  }
+
+  .rappel__champ input[type='text'],
+  .rappel__champ input[type='tel'],
+  .rappel__champ textarea {
+    width: 100%;
+    padding: 0.8rem 0.9rem;
+    border: 1px solid var(--filet-fort);
+    background: var(--blanc);
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--texte);
+    border-radius: var(--r);
+  }
+
+  .rappel__champ textarea {
+    resize: vertical;
+    line-height: 1.6;
+  }
+
+  .rappel__champ input:focus,
+  .rappel__champ textarea:focus {
+    outline: 2px solid var(--chaud);
+    outline-offset: -1px;
+    border-color: var(--encre);
+  }
+
+  .rappel__creneaux {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.4rem;
+  }
+
+  .rappel__creneaux label {
+    position: relative;
+  }
+
+  .rappel__creneaux input {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+    cursor: pointer;
+  }
+
+  .rappel__creneaux span {
+    display: block;
+    text-align: center;
+    padding: 0.6rem 0.4rem;
+    border: 1px solid var(--filet-fort);
+    font-size: 0.85rem;
+    color: var(--texte-2);
+    cursor: pointer;
+    transition: background-color var(--transition), color var(--transition),
+      border-color var(--transition);
+  }
+
+  .rappel__creneaux input:checked + span {
+    background: var(--encre);
+    border-color: var(--encre);
+    color: var(--blanc);
+    font-weight: 600;
+  }
+
+  .rappel__creneaux input:focus-visible + span {
+    outline: 2px solid var(--chaud);
+    outline-offset: 2px;
+  }
+
+  .rappel__case {
+    display: flex;
+    gap: 0.7rem;
+    align-items: flex-start;
+    font-size: 0.85rem;
+    color: var(--texte-2);
+    line-height: 1.55;
+  }
+
+  .rappel__case input {
+    width: 18px;
+    height: 18px;
+    margin-top: 0.15rem;
+    accent-color: var(--encre);
+    flex-shrink: 0;
+  }
+
+  .rappel__case a {
+    color: var(--chaud);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .rappel__erreur {
+    padding: 0.8rem 1rem;
+    background: var(--ivoire);
+    border-left: 3px solid var(--alerte);
+    color: var(--alerte);
+    font-size: 0.87rem;
+  }
+
+  .rappel__envoi[disabled] {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  .rappel__ou {
+    text-align: center;
+    font-size: 0.84rem;
+    color: var(--texte-3);
+  }
+
+  .rappel__ou a {
+    color: var(--chaud);
+    font-weight: 600;
+  }
+
+  .rappel__succes {
+    text-align: center;
+  }
+
+  .rappel__coche {
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 1.1rem;
+    border: 1px solid var(--succes);
+    color: var(--succes);
+    border-radius: 50%;
+  }
+
+  .rappel__succes p {
+    color: var(--texte-2);
+    line-height: 1.65;
+    margin-bottom: 1.5rem;
+  }
+
+  .rappel__succes a {
+    color: var(--chaud);
+    font-weight: 600;
+  }
+</style>
+
+<script>
+  import { formaterDemande } from '../lib/leads.ts';
+
+  for (const declencheur of document.querySelectorAll<HTMLButtonElement>('[data-ouvrir-rappel]')) {
+    const dialogue = declencheur.nextElementSibling as HTMLDialogElement | null;
+    if (!dialogue?.matches('[data-rappel]')) continue;
+
+    declencheur.addEventListener('click', () => dialogue.showModal());
+
+    const form = dialogue.querySelector<HTMLFormElement>('[data-rappel-form]');
+    if (!form) continue;
+
+    const erreur = dialogue.querySelector<HTMLElement>('[data-rappel-erreur]');
+    const bouton = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+    const libelle = dialogue.querySelector<HTMLElement>('[data-rappel-libelle]');
+    const vueForm = dialogue.querySelector<HTMLElement>('[data-rappel-vue="formulaire"]');
+    const vueSucces = dialogue.querySelector<HTMLElement>('[data-rappel-vue="succes"]');
+    const endpoint = dialogue.dataset.endpoint?.trim() ?? '';
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (erreur) erreur.hidden = true;
+
+      const donnees = Object.fromEntries(new FormData(form)) as Record<string, string>;
+
+      // Un robot remplit aussi les champs qu'il ne voit pas.
+      if (donnees.societe) return;
+
+      if (!donnees.nom?.trim() || !donnees.telephone?.trim() || !donnees.consentement) {
+        if (erreur) {
+          erreur.textContent = 'Merci d’indiquer votre nom, votre téléphone et d’accepter d’être rappelé.';
+          erreur.hidden = false;
+        }
+        return;
+      }
+
+      const texte =
+        'Demande de rappel — bftaxi.fr\n\n' +
+        formaterDemande({
+          prestation: 'Demande de rappel',
+          nom: donnees.nom,
+          telephone: donnees.telephone,
+          message: [donnees.creneau ? `À rappeler : ${donnees.creneau}` : '', donnees.message]
+            .filter(Boolean)
+            .join('\n'),
+        });
+
+      if (bouton) bouton.disabled = true;
+      if (libelle) libelle.textContent = 'Envoi…';
+
+      const reussite = () => {
+        if (vueForm) vueForm.hidden = true;
+        if (vueSucces) vueSucces.hidden = false;
+      };
+
+      if (endpoint) {
+        try {
+          const r = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            body: JSON.stringify({ ...donnees, texte, source: 'bftaxi.fr/rappel' }),
+          });
+          if (r.ok) {
+            reussite();
+            return;
+          }
+          throw new Error(String(r.status));
+        } catch {
+          if (erreur) {
+            erreur.textContent =
+              'L’envoi automatique a échoué. Nous ouvrons WhatsApp avec votre demande — sinon, appelez-nous.';
+            erreur.hidden = false;
+          }
+        }
+      }
+
+      // Repli : la demande part par WhatsApp, déjà rédigée.
+      window.open(
+        `https://wa.me/33782333445?text=${encodeURIComponent(texte)}`,
+        '_blank',
+        'noopener'
+      );
+
+      if (bouton) bouton.disabled = false;
+      if (libelle) libelle.textContent = 'Demander à être rappelé';
+      if (!endpoint) reussite();
+    });
+  }
+</script>

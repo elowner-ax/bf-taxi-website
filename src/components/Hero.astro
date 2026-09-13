@@ -1,7 +1,8 @@
 ---
 import Icone from './Icone.astro';
 import Simulateur from './Simulateur.astro';
-import { CONTACT } from '../data/site.ts';
+import BoutonRappel from '../components/BoutonRappel.astro';
+import { SITE, CONTACT } from '../data/site.ts';
 ---
 
 <section class="hero">
@@ -35,7 +36,10 @@ import { CONTACT } from '../data/site.ts';
           <Icone nom="whatsapp" taille={18} />
           WhatsApp
         </a>
+        <BoutonRappel variante="lien" libelle="Être rappelé" />
       </div>
+
+      <p class="hero__slogan">{SITE.slogan}</p>
 
       <dl class="hero__chiffres">
         <div>
@@ -85,6 +89,14 @@ import { CONTACT } from '../data/site.ts';
 
   .hero__cta {
     margin-top: 2.35rem;
+  }
+
+  .hero__slogan {
+    margin-top: 1.5rem;
+    font-family: var(--font-titre);
+    font-style: italic;
+    font-size: 1.08rem;
+    color: var(--encre);
   }
 
   .hero__chiffres {

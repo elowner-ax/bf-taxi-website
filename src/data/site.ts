@@ -11,11 +11,15 @@ export const SITE = {
   /** Raison sociale commerciale affichée partout. */
   name: 'BF Taxi',
   /** Dénomination légale — TODO : reprendre l'intitulé exact du Kbis. */
-  legalName: 'BF Taxi',
+  legalName: 'BF Taxi', // TODO : reprendre l'intitulé exact du Kbis.
   url: 'https://bftaxi.fr',
   locale: 'fr_FR',
   lang: 'fr',
   tagline: 'Taxi conventionné CPAM à Saint-Étienne et dans toute la Loire',
+  /** BF = Baroutile Family. Le sigle n'est pas parlant seul : il est toujours
+   *  développé la première fois qu'il apparaît sur une page. */
+  slogan: 'Baroutile Family Taxi — une entreprise familiale à votre service',
+  sloganCourt: 'Une entreprise familiale à votre service',
   /** Baseline courte réutilisée en meta description et en partage social. */
   shortDescription:
     "Taxi conventionné CPAM à Saint-Étienne : transport médical assis, transferts aéroports et gares, longue distance. Tesla Model 3 et van Mercedes Classe V 7 places, 7j/7.",

@@ -1,3 +1,8 @@
+import { TARIFS, TARIF_CONSTANTS } from './tarifs.ts';
+
+/** Formate un montant pour l'insérer dans une phrase. */
+const eur = (n: number) => n.toFixed(2).replace('.', ',');
+
 /**
  * Pages de services — chaque entrée génère une page à plat (`/slug/`).
  *
@@ -508,8 +513,7 @@ export const SERVICES: Service[] = [
     faq: [
       {
         question: 'Combien coûte un taxi de Saint-Étienne à l’aéroport de Lyon ?',
-        reponse:
-          "Le trajet fait environ 85 km. Au tarif C de l'arrêté préfectoral de la Loire (aller simple de jour, 1,72 €/km), l'estimation se situe autour de 150 € auxquels s'ajoute la prise en charge. Les tarifs de nuit, du dimanche et des jours fériés relèvent du tarif D et sont plus élevés. Utilisez notre simulateur pour obtenir une estimation immédiate, ou demandez-nous un forfait ferme.",
+        reponse: `Le trajet fait environ 85 km. Au tarif C de l'arrêté préfectoral de la Loire (aller simple de jour, ${eur(TARIFS.C.parKm)} €/km), l'estimation se situe autour de ${Math.round(85 * TARIFS.C.parKm + TARIF_CONSTANTS.priseEnCharge)} € prise en charge comprise. Les tarifs de nuit, du dimanche et des jours fériés relèvent du tarif D et sont plus élevés. Utilisez notre simulateur pour obtenir une estimation à partir de votre adresse exacte, ou demandez-nous un forfait ferme.`,
       },
       {
         question: 'Que se passe-t-il si mon vol a du retard ?',
@@ -824,8 +828,7 @@ export const SERVICES: Service[] = [
     faq: [
       {
         question: 'Combien de passagers peut prendre le van ?',
-        reponse:
-          "Jusqu'à 7 passagers en plus du chauffeur. Au-delà de 3 passagers adultes, un supplément réglementaire de 1,83 € par personne supplémentaire s'applique, conformément à l'arrêté préfectoral de la Loire.",
+        reponse: `Jusqu'à 7 passagers en plus du chauffeur. Au-delà de 3 passagers adultes, un supplément réglementaire de ${eur(TARIF_CONSTANTS.supplement4ePassager)} € par personne supplémentaire s'applique, conformément à l'arrêté préfectoral de la Loire.`,
       },
       {
         question: 'Le van coûte-t-il plus cher que la berline ?',
@@ -856,8 +859,7 @@ export const SERVICES: Service[] = [
     categorie: 'confort',
     icon: 'clock',
     accroche: 'Un véhicule et un chauffeur réservés pour vous, le temps qu’il faut.',
-    reponseCourte:
-      "BF Taxi propose la mise à disposition d'un véhicule avec chauffeur à l'heure ou à la journée à Saint-Étienne et dans la Loire. Le tarif horaire réglementé dans la Loire est de 24,60 €. Cette formule convient aux tournées professionnelles, aux événements et aux journées à rendez-vous multiples.",
+    reponseCourte: `BF Taxi propose la mise à disposition d'un véhicule avec chauffeur à l'heure ou à la journée à Saint-Étienne et dans la Loire. Le tarif horaire réglementé dans la Loire est de ${eur(TARIF_CONSTANTS.tarifHoraire)} €. Cette formule convient aux tournées professionnelles, aux événements et aux journées à rendez-vous multiples.`,
     intro: [
       "Certaines journées ne se découpent pas en courses : une tournée commerciale avec six rendez-vous, un mariage avec des rotations, une visite de site sur plusieurs communes.",
       "Dans ces cas, plutôt que de réserver et payer chaque trajet séparément, nous bloquons le véhicule et le chauffeur sur la plage horaire que vous nous indiquez.",
@@ -869,7 +871,7 @@ export const SERVICES: Service[] = [
       },
       {
         titre: 'Tarif horaire réglementé',
-        texte: '24,60 € de l’heure dans la Loire, selon l’arrêté préfectoral en vigueur.',
+        texte: `${eur(TARIF_CONSTANTS.tarifHoraire)} € de l’heure dans la Loire, selon l’arrêté préfectoral en vigueur.`,
       },
       {
         titre: 'Itinéraire modifiable',
@@ -897,7 +899,7 @@ export const SERVICES: Service[] = [
       {
         titre: 'Comment ça se facture ?',
         paragraphes: [
-          "La mise à disposition s'appuie sur le tarif horaire fixé par l'arrêté préfectoral de la Loire, soit 24,60 € de l'heure. Lorsque le véhicule roule, c'est la distance parcourue qui est comptée au tarif kilométrique ; lorsqu'il attend, c'est le tarif horaire qui s'applique. Le taximètre effectue ce basculement automatiquement.",
+          `La mise à disposition s'appuie sur le tarif horaire fixé par l'arrêté préfectoral de la Loire, soit ${eur(TARIF_CONSTANTS.tarifHoraire)} € de l'heure. Lorsque le véhicule roule, c'est la distance parcourue qui est comptée au tarif kilométrique ; lorsqu'il attend, c'est le tarif horaire qui s'applique. Le taximètre effectue ce basculement automatiquement.`,
           "Pour une journée complète ou un événement, nous pouvons convenir d'un forfait global à l'avance, ce qui vous donne un budget ferme et vous évite d'avoir à surveiller le détail.",
         ],
       },

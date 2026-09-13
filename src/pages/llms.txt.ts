@@ -43,7 +43,7 @@ export const GET: APIRoute = () => {
     '',
     '## Tarifs réglementés dans la Loire',
     '',
-    `Les tarifs des taxis sont plafonnés par arrêté préfectoral et identiques chez tous les taxis du département. Source : ${ARRETE.reference} du ${ARRETE.dateDisplay}.`,
+    `Les tarifs des taxis sont plafonnés par arrêté préfectoral et identiques chez tous les taxis du département. Source : ${ARRETE.reference} ${ARRETE.dateDisplay} pour la ${ARRETE.departement}.`,
     '',
     `- Prise en charge : ${TARIF_CONSTANTS.priseEnCharge.toFixed(2)} €`,
     `- Minimum de perception : ${TARIF_CONSTANTS.minimumPerception.toFixed(2)} €`,

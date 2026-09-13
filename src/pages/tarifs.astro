@@ -52,13 +52,16 @@ const constantes = [
       <p class="tete__accroche">
         Les prix des courses de taxi ne sont pas fixés par nous : ils sont plafonnés par la
         préfecture de la Loire. Ils sont donc identiques chez tous les taxis du département.
-        Voici la grille en vigueur, et de quoi estimer votre course en quelques secondes.
+        Voici la grille en vigueur, et de quoi estimer votre course à partir de vos adresses
+        réelles — le tarif de jour ou de nuit se déduit de l’heure de prise en charge, comme le
+        fait le taximètre.
       </p>
 
       <p class="source">
         <Icone nom="doc" taille={16} />
-        Source : {ARRETE.reference} du {ARRETE.dateDisplay} — {ARRETE.departement}. Il s’agit de
-        tarifs <strong>maximaux</strong>.
+        Source : {ARRETE.reference} {ARRETE.dateDisplay} pour le département de
+        la {ARRETE.departement}. Ce sont des tarifs <strong>maximaux</strong> : le taximètre du
+        véhicule fait seul foi.
       </p>
     </div>
   </section>
@@ -111,11 +114,16 @@ const constantes = [
         <div>
           <h3>Pourquoi l’aller simple coûte-t-il le double au kilomètre ?</h3>
           <p>
-            Parce qu’il intègre le retour à vide du véhicule. Sur un aller-retour, le chauffeur
-            vous ramène : les kilomètres du retour sont facturés mais au tarif réduit. Sur un aller
-            simple, il rentre seul, et ce trajet non facturé est répercuté sur le prix au
-            kilomètre. <strong>Conséquence pratique : si vous revenez avec nous, même plusieurs
-            heures plus tard, dites-le à la réservation — c’est nettement moins cher.</strong>
+            Parce qu’il intègre le retour à vide du véhicule. Sur un aller simple, le chauffeur
+            rentre seul : ces kilomètres non facturés sont répercutés sur le prix au kilomètre.
+            Sur un aller-retour, vous êtes à bord dans les deux sens, le compteur tourne donc sur
+            deux fois plus de kilomètres, mais à un tarif deux fois moindre.
+          </p>
+          <p>
+            <strong>Conséquence : à kilométrage égal, un aller-retour coûte le même prix qu’un
+            aller simple.</strong> Ce n’est pas une erreur d’affichage — c’est la logique de
+            l’arrêté, et elle vous est favorable. Seul un temps d’attente sur place s’ajoute,
+            facturé au tarif horaire.
           </p>
         </div>
       </div>

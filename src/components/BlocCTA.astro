@@ -1,5 +1,6 @@
 ---
 import Icone from './Icone.astro';
+import BoutonRappel from './BoutonRappel.astro';
 import { CONTACT } from '../data/site.ts';
 
 interface Props {
@@ -28,6 +29,7 @@ const {
         {CONTACT.phoneDisplay}
       </a>
       <a href="/devis/" class="btn btn-contour btn-large">Devis en ligne</a>
+      <BoutonRappel variante="contour" libelle="Être rappelé" />
     </div>
   </div>
 </section>
