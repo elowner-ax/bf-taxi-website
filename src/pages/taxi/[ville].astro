@@ -1,0 +1,467 @@
+---
+import Base from '../../layouts/Base.astro';
+import Icone from '../../components/Icone.astro';
+import FilAriane from '../../components/FilAriane.astro';
+import Faq from '../../components/Faq.astro';
+import BlocCTA from '../../components/BlocCTA.astro';
+import CarteService from '../../components/CarteService.astro';
+import Simulateur from '../../components/Simulateur.astro';
+import { CONTACT, OPENING_HOURS } from '../../data/site.ts';
+import { VILLES, type Ville } from '../../data/villes.ts';
+import { SERVICES, servicesParCategorie } from '../../data/services.ts';
+import { TARIFS, TARIF_CONSTANTS, euros } from '../../data/tarifs.ts';
+import { schemaVille, schemaFaq } from '../../lib/schema.ts';
+
+export function getStaticPaths() {
+  return VILLES.map((ville) => ({
+    params: { ville: ville.slug },
+    props: { ville },
+  }));
+}
+
+interface Props {
+  ville: Ville;
+}
+
+const { ville } = Astro.props;
+
+const voisines = VILLES.filter((v) => v.slug !== ville.slug).slice(0, 8);
+const servicesMedical = servicesParCategorie('medical').slice(0, 4);
+const servicesTransfert = [...servicesParCategorie('transfert'), ...servicesParCategorie('confort')].slice(0, 4);
+
+const ariane = [
+  { nom: 'Accueil', url: '/' },
+  { nom: 'Zones desservies', url: '/taxi/' },
+  { nom: ville.nom, url: `/taxi/${ville.slug}/` },
+];
+
+// FAQ propre à la commune : les réponses reprennent ses chiffres réels.
+const faqVille = [
+  {
+    question: `Desservez-vous ${ville.nom} en taxi conventionné CPAM ?`,
+    reponse: `Oui. BF Taxi est conventionné par l'Assurance Maladie et intervient ${ville.nomAvecPreposition} (${ville.codePostal}) pour tous les transports médicaux prescrits : consultations, examens, hospitalisations, dialyse et séances d'oncologie. Avec une prescription médicale de transport et votre carte Vitale, vous n'avancez aucun frais.`,
+  },
+  {
+    question: `Combien de temps faut-il pour rejoindre Saint-Étienne depuis ${ville.nom} ?`,
+    reponse:
+      ville.distanceKm === 0
+        ? `Les trajets à l'intérieur de Saint-Étienne prennent en général de 10 à 25 minutes selon les quartiers et l'heure. Les axes du centre-ville et les abords du CHU sont les plus sensibles aux heures de pointe.`
+        : `Comptez environ ${ville.tempsMinutes} minutes pour parcourir les ${ville.distanceKm} km qui séparent ${ville.nom} du centre de Saint-Étienne, hors heures de pointe. Nous intégrons systématiquement une marge de sécurité au calcul de l'heure de départ.`,
+  },
+  {
+    question: `Faut-il réserver à l'avance ${ville.nomAvecPreposition} ?`,
+    reponse:
+      ville.distanceKm <= 10
+        ? `${ville.nom} étant tout proche de notre secteur d'activité principal, nous pouvons souvent intervenir dans l'heure. Pour un rendez-vous médical, un train ou un vol, réservez tout de même la veille afin que le créneau soit garanti.`
+        : `Nous recommandons de réserver la veille pour ${ville.nom}, et vingt-quatre heures à l'avance pour tout départ avant 6h du matin. Le temps d'approche depuis Saint-Étienne doit être intégré à notre planning de la journée.`,
+  },
+  {
+    question: `Quels sont les tarifs d'un taxi ${ville.nomAvecPreposition} ?`,
+    reponse: `Les tarifs sont réglementés et identiques pour tous les taxis de la Loire : ${euros(TARIF_CONSTANTS.priseEnCharge)} de prise en charge, puis ${TARIFS.A.parKm.toFixed(2)} €/km en aller-retour de jour et ${TARIFS.C.parKm.toFixed(2)} €/km en aller simple de jour, avec un minimum de perception de ${euros(TARIF_CONSTANTS.minimumPerception)}. Les tarifs de nuit, du dimanche et des jours fériés sont majorés. En transport conventionné, c'est l'Assurance Maladie qui règle.`,
+  },
+];
+---
+
+<Base
+  titre={`Taxi ${ville.nom} (${ville.codePostal}) — Conventionné CPAM 24h/24 | BF Taxi`}
+  description={`Taxi conventionné CPAM ${ville.nomAvecPreposition} : transport médical, gares, aéroports et longue distance. Tesla Model 3 et van 7 places, 7j/7. Réservation au ${CONTACT.phoneDisplay}.`}
+  canonical={`/taxi/${ville.slug}/`}
+  filAriane={ariane}
+  schemas={[schemaVille(ville), schemaFaq(faqVille)]}
+>
+  <FilAriane elements={ariane} />
+
+  <section class="tete">
+    <div class="tete__halo" aria-hidden="true"></div>
+    <div class="conteneur">
+      <p class="badge">
+        <Icone nom="map" taille={15} />
+        {ville.codePostal} · {ville.population}
+      </p>
+      <h1>Taxi {ville.nomAvecPreposition.replace(/^à |^au /, '')} — conventionné CPAM</h1>
+      <p class="tete__accroche">{ville.intro}</p>
+
+      <div class="groupe-btn tete__cta">
+        <a href={`tel:${CONTACT.phone}`} class="btn btn-or btn-large" data-evt="tel-ville">
+          <Icone nom="phone" taille={19} />
+          {CONTACT.phoneDisplay}
+        </a>
+        <a
+          href={`https://wa.me/${CONTACT.whatsapp}?text=${encodeURIComponent(`Bonjour, je souhaite réserver un taxi à ${ville.nom}.`)}`}
+          class="btn btn-whatsapp btn-large"
+          rel="noopener"
+          target="_blank"
+        >
+          <Icone nom="whatsapp" taille={19} />
+          WhatsApp
+        </a>
+        <a href="/devis/" class="btn btn-fantome btn-large">
+          <Icone nom="doc" taille={19} />
+          Devis gratuit
+        </a>
+      </div>
+
+      <dl class="chiffres">
+        <div>
+          <dt>Distance de Saint-Étienne</dt>
+          <dd>{ville.distanceKm === 0 ? 'Centre-ville' : `${ville.distanceKm} km`}</dd>
+        </div>
+        <div>
+          <dt>Temps de trajet</dt>
+          <dd>{ville.tempsMinutes === 0 ? '10 à 25 min' : `${ville.tempsMinutes} min`}</dd>
+        </div>
+        <div>
+          <dt>Disponibilité</dt>
+          <dd>{OPENING_HOURS.humanShort}</dd>
+        </div>
+        <div>
+          <dt>Code postal</dt>
+          <dd>{ville.codePostal}</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="conteneur corps">
+      <div class="corps__texte prose">
+        <h2>Le taxi {ville.nomAvecPreposition.replace(/^à |^au /, '')} au quotidien</h2>
+        <p>{ville.contexte}</p>
+        <p>{ville.specificite}</p>
+
+        <h2>Trajets les plus demandés depuis {ville.nom}</h2>
+        <ul class="trajets">
+          {
+            ville.trajetsFrequents.map((t) => (
+              <li>
+                <Icone nom="route" taille={17} />
+                <span>
+                  <strong>{t.destination}</strong>
+                  <small>environ {t.km} km</small>
+                </span>
+              </li>
+            ))
+          }
+        </ul>
+
+        <h2>Établissements de santé desservis</h2>
+        <p>
+          Nous déposons à l’entrée des services, et non sur le parking visiteurs. Voici les
+          structures que nous desservons le plus souvent depuis {ville.nom} :
+        </p>
+        <ul class="liste-check">
+          {ville.etablissementsSante.map((e) => <li>{e}</li>)}
+        </ul>
+
+        <h2>Communes voisines également desservies</h2>
+        <p>
+          Notre secteur d’intervention couvre {ville.nom} et l’ensemble des communes limitrophes,
+          dont {ville.communesProches.join(', ')}.
+        </p>
+      </div>
+
+      <aside class="corps__aside">
+        <div class="encart encart--contact">
+          <h2>Réserver {ville.nomAvecPreposition}</h2>
+          <p>Disponible {OPENING_HOURS.humanShort}, jours fériés inclus.</p>
+          <a href={`tel:${CONTACT.phone}`} class="btn btn-or">
+            <Icone nom="phone" taille={18} />
+            {CONTACT.phoneDisplay}
+          </a>
+          <a href={`https://wa.me/${CONTACT.whatsapp}`} class="btn btn-whatsapp" rel="noopener" target="_blank">
+            <Icone nom="whatsapp" taille={18} />
+            WhatsApp
+          </a>
+        </div>
+
+        <div class="encart">
+          <h2><Icone nom="shield" taille={17} /> Conventionné CPAM</h2>
+          <p>
+            Sur prescription médicale, vos trajets de soins depuis {ville.nom} sont pris en charge
+            par l’Assurance Maladie. Vous n’avancez aucun frais.
+          </p>
+          <a href="/taxi-conventionne-cpam/" class="encart__lien">
+            Comment ça marche <Icone nom="arrow" taille={15} />
+          </a>
+        </div>
+
+        <div class="encart">
+          <h2><Icone nom="map" taille={17} /> Autres communes</h2>
+          <ul class="encart__villes">
+            {voisines.map((v) => <li><a href={`/taxi/${v.slug}/`}>{v.nom}</a></li>)}
+          </ul>
+          <a href="/taxi/" class="encart__lien">
+            Toutes les zones <Icone nom="arrow" taille={15} />
+          </a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section section-sombre-2">
+    <div class="conteneur">
+      <p class="surtitre reveal">Nos prestations {ville.nomAvecPreposition}</p>
+      <h2 class="reveal">Transport médical conventionné</h2>
+      <div class="grille grille-4 marge-haut">
+        {servicesMedical.map((s, i) => (
+          <div class="reveal" style={`transition-delay:${i * 60}ms`}>
+            <CarteService service={s} />
+          </div>
+        ))}
+      </div>
+
+      <h2 class="reveal marge-haut-large">Transferts et déplacements</h2>
+      <div class="grille grille-4 marge-haut">
+        {servicesTransfert.map((s, i) => (
+          <div class="reveal" style={`transition-delay:${i * 60}ms`}>
+            <CarteService service={s} />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="conteneur conteneur-etroit">
+      <div class="reveal">
+        <Simulateur titre={`Estimez votre course depuis ${ville.nom}`} />
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-claire">
+    <div class="conteneur conteneur-etroit">
+      <p class="surtitre reveal">Questions fréquentes</p>
+      <div class="reveal">
+        <Faq items={faqVille} titre={`Taxi ${ville.nomAvecPreposition.replace(/^à |^au /, '')} : vos questions`} />
+      </div>
+    </div>
+  </section>
+
+  <BlocCTA
+    titre={`Un taxi ${ville.nomAvecPreposition} ?`}
+    texte={`Appelez-nous : nous organisons votre trajet depuis ${ville.nom}, en conventionné comme en course classique, ${OPENING_HOURS.humanShort}.`}
+  />
+</Base>
+
+<style>
+  .tete {
+    position: relative;
+    padding-block: clamp(1.75rem, 4vw, 3rem) clamp(2.5rem, 5vw, 3.75rem);
+    overflow: hidden;
+  }
+
+  .tete__halo {
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: min(680px, 100vw);
+    height: min(520px, 80vw);
+    background: radial-gradient(circle, rgba(255, 194, 51, 0.2), transparent 66%);
+    filter: blur(70px);
+    pointer-events: none;
+  }
+
+  .tete > .conteneur {
+    position: relative;
+  }
+
+  .tete h1 {
+    margin-top: 1.1rem;
+    font-size: clamp(2.05rem, 5.4vw, 3.6rem);
+  }
+
+  .tete__accroche {
+    font-size: clamp(1.02rem, 2vw, 1.18rem);
+    color: var(--texte-doux);
+    max-width: 62ch;
+    margin-top: 1.15rem;
+    line-height: 1.65;
+  }
+
+  .tete__cta {
+    margin-top: 1.9rem;
+  }
+
+  .chiffres {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1px;
+    margin-top: 2.5rem;
+    background: var(--bord);
+    border: 1px solid var(--bord);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+  }
+
+  .chiffres > div {
+    background: var(--noir-2);
+    padding: 1.1rem 1.3rem;
+  }
+
+  .chiffres dt {
+    font-size: 0.76rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--texte-faible);
+  }
+
+  .chiffres dd {
+    margin: 0.35rem 0 0;
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--or);
+  }
+
+  .corps {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: start;
+  }
+
+  .corps__texte h2:first-child {
+    margin-top: 0;
+  }
+
+  .trajets {
+    list-style: none;
+    padding: 0 !important;
+    display: grid !important;
+    gap: 0.6rem !important;
+  }
+
+  .trajets li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 1.1rem;
+    border-radius: var(--r-md);
+    border: 1px solid var(--bord);
+    background: rgba(255, 255, 255, 0.025);
+  }
+
+  .trajets :global(svg) {
+    color: var(--or);
+    flex-shrink: 0;
+  }
+
+  .trajets span {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.35;
+  }
+
+  .trajets strong {
+    font-size: 0.96rem;
+  }
+
+  .trajets small {
+    font-size: 0.8rem;
+    color: var(--texte-faible);
+  }
+
+  .corps__aside {
+    position: sticky;
+    top: 6rem;
+    display: grid;
+    gap: 1rem;
+  }
+
+  .encart {
+    padding: 1.5rem;
+    border-radius: var(--r-lg);
+    border: 1px solid var(--bord);
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .encart h2 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-display);
+    font-size: 1.02rem;
+    margin-bottom: 0.7rem;
+  }
+
+  .encart h2 :global(svg) {
+    color: var(--or);
+  }
+
+  .encart p {
+    font-size: 0.9rem;
+    color: var(--texte-faible);
+    line-height: 1.6;
+  }
+
+  .encart--contact {
+    background: linear-gradient(155deg, rgba(255, 194, 51, 0.11), rgba(255, 194, 51, 0.02));
+    border-color: rgba(255, 194, 51, 0.26);
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  .encart--contact .btn {
+    width: 100%;
+  }
+
+  .encart__villes {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: 0.3rem;
+  }
+
+  .encart__villes a {
+    display: inline-block;
+    padding: 0.28rem 0.65rem;
+    border-radius: var(--r-full);
+    background: rgba(255, 255, 255, 0.045);
+    border: 1px solid var(--bord);
+    font-size: 0.8rem;
+    color: var(--texte-faible);
+    transition: color var(--transition), border-color var(--transition);
+  }
+
+  .encart__villes a:hover {
+    color: var(--or-clair);
+    border-color: rgba(255, 194, 51, 0.35);
+  }
+
+  .encart__lien {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.85rem;
+    font-size: 0.87rem;
+    font-weight: 620;
+    color: var(--or);
+    transition: gap var(--transition);
+  }
+
+  .encart__lien:hover {
+    gap: 0.7rem;
+  }
+
+  .marge-haut {
+    margin-top: clamp(1.75rem, 3.5vw, 2.5rem);
+  }
+
+  .marge-haut-large {
+    margin-top: clamp(2.5rem, 5vw, 3.5rem);
+  }
+
+  @media (max-width: 940px) {
+    .corps {
+      grid-template-columns: 1fr;
+    }
+
+    .corps__aside {
+      position: static;
+    }
+  }
+</style>

@@ -1,0 +1,170 @@
+---
+import Base from '../layouts/Base.astro';
+import Icone from '../components/Icone.astro';
+import FilAriane from '../components/FilAriane.astro';
+import BlocCTA from '../components/BlocCTA.astro';
+import Vehicules from '../components/Vehicules.astro';
+import { SITE, ADDRESS, OPENING_HOURS } from '../data/site.ts';
+
+const ariane = [
+  { nom: 'Accueil', url: '/' },
+  { nom: 'À propos', url: '/a-propos/' },
+];
+
+const engagements = [
+  {
+    icone: 'clock',
+    titre: 'L’heure, c’est l’heure',
+    texte:
+      'Une convocation à 7h30 ne se négocie pas. Nous calculons l’heure de départ sur le trajet réel, avec la marge nécessaire, et nous arrivons en avance plutôt qu’à la minute.',
+  },
+  {
+    icone: 'euro',
+    titre: 'Le prix avant le départ',
+    texte:
+      'Sur les trajets à prix libre, vous savez combien vous allez payer avant de monter. Pas de découverte désagréable au compteur en fin de course.',
+  },
+  {
+    icone: 'hands',
+    titre: 'De porte à porte',
+    texte:
+      'Nous venons sonner, nous portons ce qui doit l’être, nous accompagnons jusqu’à l’accueil du service. Déposer sur le parking, ce n’est pas notre définition du transport.',
+  },
+  {
+    icone: 'shield',
+    titre: 'Dire les choses franchement',
+    texte:
+      'Si votre situation relève de l’ambulance ou d’un véhicule TPMR que nous n’avons pas, nous vous le disons et nous vous orientons. Mieux vaut une course perdue qu’un transport inadapté.',
+  },
+];
+---
+
+<Base
+  titre={`À propos — ${SITE.name}, taxi conventionné à Saint-Étienne`}
+  description="BF Taxi, artisan taxi conventionné CPAM à Saint-Étienne : transport médical assis, transferts et longue distance avec une Tesla Model 3 et un van Mercedes Classe V."
+  canonical="/a-propos/"
+  filAriane={ariane}
+>
+  <FilAriane elements={ariane} />
+
+  <section class="tete">
+    <div class="conteneur">
+      <p class="surtitre">À propos</p>
+      <h1>Un artisan taxi, deux véhicules, une région</h1>
+      <p class="tete__accroche">
+        BF Taxi est une entreprise artisanale de taxi basée à {ADDRESS.city}. Nous assurons le
+        transport médical conventionné, les transferts vers les aéroports et les gares, et les
+        trajets longue distance dans toute la France.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section-haut-court">
+    <div class="conteneur conteneur-etroit prose">
+      <h2>Ce que veut dire « artisan taxi »</h2>
+      <p>
+        Cela signifie que la personne qui répond au téléphone est aussi celle qui conduit. Il n’y a
+        pas de centrale d’appel, pas de standard qui redistribue les courses à un chauffeur
+        inconnu, pas de sous-traitance. Quand vous réservez un trajet régulier — une dialyse, une
+        série de séances de radiothérapie — vous retrouvez la même personne à chaque fois.
+      </p>
+      <p>
+        Sur des transports qui s’étalent parfois sur des mois, cette continuité change beaucoup de
+        choses. Nous finissons par connaître votre étage, la porte qui coince, le jour de la
+        semaine où vous êtes le plus fatigué, et si vous préférez qu’on parle ou pas.
+      </p>
+
+      <h2>Le conventionnement CPAM</h2>
+      <p>
+        Être conventionné par l’Assurance Maladie n’est pas un label commercial : c’est un
+        agrément délivré par la caisse primaire, qui engage sur des tarifs négociés et sur la
+        facturation en tiers payant. Concrètement, avec une prescription médicale de transport,
+        vous ne réglez rien et nous facturons directement votre caisse.
+      </p>
+      <p>
+        Ce conventionnement représente l’essentiel de notre activité : dialyse, oncologie,
+        consultations, entrées et sorties d’hospitalisation, rééducation. C’est aussi ce qui
+        structure notre organisation, avec des plannings récurrents calés sur les protocoles de
+        soins.
+      </p>
+
+      <h2>Le reste du temps</h2>
+      <p>
+        Les transferts vers l’aéroport Lyon-Saint-Exupéry, la gare de Châteaucreux, Genève ou
+        Clermont-Ferrand constituent notre seconde activité. S’y ajoutent les mises à disposition
+        pour les entreprises et les événements, et les trajets longue distance, souvent liés à un
+        impératif que le train ne permet pas de tenir.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section-sombre-2">
+    <div class="conteneur">
+      <p class="surtitre reveal">Nos engagements</p>
+      <h2 class="reveal">Quatre choses sur lesquelles nous ne transigeons pas</h2>
+
+      <div class="grille grille-2 marge-haut">
+        {
+          engagements.map((eng, i) => (
+            <div class="carte reveal" style={`transition-delay:${i * 70}ms`}>
+              <span class="icone-carte">
+                <Icone nom={eng.icone} taille={21} />
+              </span>
+              <h3>{eng.titre}</h3>
+              <p>{eng.texte}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="conteneur">
+      <p class="surtitre reveal">La flotte</p>
+      <h2 class="reveal">Deux véhicules complémentaires</h2>
+      <p class="intro-section reveal">
+        Entretenus, récents et non-fumeurs. Le choix dépend du nombre de passagers, du volume de
+        bagages et du confort recherché — nous en décidons avec vous à la réservation.
+      </p>
+      <div class="marge-haut">
+        <Vehicules />
+      </div>
+    </div>
+  </section>
+
+  <BlocCTA
+    titre="Une question avant de réserver ?"
+    texte={`Appelez-nous, ${OPENING_HOURS.humanShort}. Nous renseignons volontiers, même si le trajet n'est pas pour nous.`}
+  />
+</Base>
+
+<style>
+  .tete {
+    padding-block: clamp(1.75rem, 4vw, 3rem) clamp(1rem, 2vw, 1.5rem);
+  }
+
+  .tete h1 {
+    max-width: 20ch;
+  }
+
+  .tete__accroche {
+    font-size: clamp(1.02rem, 2vw, 1.15rem);
+    color: var(--texte-doux);
+    max-width: 66ch;
+    margin-top: 1.2rem;
+    line-height: 1.7;
+  }
+
+  .section-haut-court {
+    padding-top: clamp(1.5rem, 3vw, 2.5rem);
+  }
+
+  .prose h2:first-child {
+    margin-top: 0;
+  }
+
+  .marge-haut {
+    margin-top: clamp(1.75rem, 3.5vw, 2.5rem);
+  }
+</style>

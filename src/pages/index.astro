@@ -1,0 +1,372 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import Icone from '../components/Icone.astro';
+import CarteService from '../components/CarteService.astro';
+import Vehicules from '../components/Vehicules.astro';
+import Faq from '../components/Faq.astro';
+import BlocCTA from '../components/BlocCTA.astro';
+import { SITE, TRUST_POINTS, CONTACT } from '../data/site.ts';
+import { SERVICES, servicesParCategorie } from '../data/services.ts';
+import { VILLES } from '../data/villes.ts';
+import { FAQ_GENERALE } from '../data/faq.ts';
+import { schemaFaq } from '../lib/schema.ts';
+
+const medical = servicesParCategorie('medical');
+const autres = [...servicesParCategorie('transfert'), ...servicesParCategorie('confort')];
+const faqAccueil = FAQ_GENERALE.slice(0, 6);
+
+const etapes = [
+  {
+    titre: 'Vous appelez ou écrivez',
+    texte: 'Téléphone, WhatsApp ou formulaire en ligne. Indiquez la date, l’heure et les deux adresses.',
+    icone: 'phone',
+  },
+  {
+    titre: 'Nous confirmons',
+    texte: 'Créneau, véhicule et prix estimé vous sont confirmés immédiatement, avant toute réservation ferme.',
+    icone: 'check',
+  },
+  {
+    titre: 'Nous venons vous chercher',
+    texte: 'Prise en charge à l’adresse convenue, à l’heure convenue. Nous vous prévenons à notre arrivée.',
+    icone: 'car',
+  },
+  {
+    titre: 'Vous réglez — ou pas',
+    texte: 'Carte, espèces ou virement. En transport conventionné avec prescription, vous ne réglez rien.',
+    icone: 'euro',
+  },
+];
+---
+
+<Base
+  titre={`Taxi Saint-Étienne 24h/24 — Conventionné CPAM | ${SITE.name}`}
+  description={SITE.shortDescription}
+  canonical="/"
+  schemas={[schemaFaq(faqAccueil)]}
+>
+  <Hero />
+
+  <!-- Réassurance -->
+  <section class="section-sombre-2 section-fine">
+    <div class="conteneur">
+      <div class="grille grille-4">
+        {
+          TRUST_POINTS.map((point, i) => (
+            <div class="reassurance reveal" style={`transition-delay:${i * 70}ms`}>
+              <span class="icone-carte">
+                <Icone nom={point.icon} taille={21} />
+              </span>
+              <h2>{point.title}</h2>
+              <p>{point.text}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Transport médical : le pilier -->
+  <section class="section">
+    <div class="conteneur">
+      <div class="entete-section reveal">
+        <div>
+          <p class="surtitre">Transport médical conventionné</p>
+          <h2>Agréé par l’Assurance Maladie</h2>
+          <p class="intro-section">
+            Avec une prescription médicale de transport, vos trajets de soins sont pris en charge
+            par la CPAM. Nous facturons directement votre caisse : vous n’avancez aucun frais et
+            n’avez aucun dossier de remboursement à monter.
+          </p>
+        </div>
+        <a href="/taxi-conventionne-cpam/" class="btn btn-fantome">
+          Comment ça marche
+          <Icone nom="arrow" taille={17} />
+        </a>
+      </div>
+
+      <div class="grille grille-3 marge-haut">
+        {medical.map((service, i) => (
+          <div class="reveal" style={`transition-delay:${i * 70}ms`}>
+            <CarteService service={service} />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Autres services -->
+  <section class="section section-claire">
+    <div class="conteneur">
+      <div class="entete-section reveal">
+        <div>
+          <p class="surtitre">Transferts & déplacements</p>
+          <h2>Aéroports, gares et longue distance</h2>
+          <p class="intro-section">
+            Prix annoncé avant le départ, suivi des vols et des trains, van 7 places pour les
+            groupes et les familles chargées.
+          </p>
+        </div>
+      </div>
+
+      <div class="grille grille-4 marge-haut">
+        {autres.map((service, i) => (
+          <div class="reveal" style={`transition-delay:${i * 60}ms`}>
+            <CarteService service={service} />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Véhicules -->
+  <section class="section">
+    <div class="conteneur">
+      <div class="entete-section reveal">
+        <div>
+          <p class="surtitre">Nos véhicules</p>
+          <h2>Une berline électrique, un van 7 places</h2>
+          <p class="intro-section">
+            Deux véhicules récents, entretenus et non-fumeurs. Vous choisissez selon le nombre de
+            passagers, le volume de bagages et le confort recherché.
+          </p>
+        </div>
+        <a href="/vehicules/" class="btn btn-fantome">
+          Voir le détail
+          <Icone nom="arrow" taille={17} />
+        </a>
+      </div>
+
+      <div class="marge-haut">
+        <Vehicules />
+      </div>
+    </div>
+  </section>
+
+  <!-- Déroulement -->
+  <section class="section section-sombre-2">
+    <div class="conteneur">
+      <div class="entete-section reveal">
+        <div>
+          <p class="surtitre">Comment réserver</p>
+          <h2>Quatre étapes, pas une de plus</h2>
+        </div>
+      </div>
+
+      <ol class="etapes marge-haut">
+        {
+          etapes.map((etape, i) => (
+            <li class="etape reveal" style={`transition-delay:${i * 80}ms`}>
+              <span class="etape__num">{String(i + 1).padStart(2, '0')}</span>
+              <span class="etape__icone">
+                <Icone nom={etape.icone} taille={19} />
+              </span>
+              <h3>{etape.titre}</h3>
+              <p>{etape.texte}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- Zones desservies -->
+  <section class="section">
+    <div class="conteneur">
+      <div class="entete-section reveal">
+        <div>
+          <p class="surtitre">Zones desservies</p>
+          <h2>Saint-Étienne, la Loire et bien au-delà</h2>
+          <p class="intro-section">
+            Nous intervenons sur tout le bassin stéphanois, la vallée du Gier, l’Ondaine, le Forez
+            et le Roannais. Pour la longue distance, toute la France.
+          </p>
+        </div>
+        <a href="/taxi/" class="btn btn-fantome">
+          Toutes les communes
+          <Icone nom="arrow" taille={17} />
+        </a>
+      </div>
+
+      <ul class="villes marge-haut reveal">
+        {
+          VILLES.map((ville) => (
+            <li>
+              <a href={`/taxi/${ville.slug}/`}>
+                <Icone nom="map" taille={15} />
+                <span>
+                  <strong>{ville.nom}</strong>
+                  <small>{ville.codePostal}{ville.distanceKm > 0 && ` · ${ville.distanceKm} km`}</small>
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section section-claire">
+    <div class="conteneur conteneur-etroit">
+      <p class="surtitre reveal">Questions fréquentes</p>
+      <div class="reveal">
+        <Faq items={faqAccueil} titre="Ce que l’on nous demande le plus souvent" />
+      </div>
+      <p class="faq__plus reveal">
+        <a href="/faq/">Voir toutes les questions <Icone nom="arrow" taille={16} /></a>
+      </p>
+    </div>
+  </section>
+
+  <BlocCTA />
+</Base>
+
+<style>
+  .section-fine {
+    padding-block: clamp(2.25rem, 5vw, 3.5rem);
+    border-block: 1px solid var(--bord);
+  }
+
+  .reassurance h2 {
+    font-size: 1.06rem;
+    font-family: var(--font-display);
+    margin-bottom: 0.45rem;
+  }
+
+  .reassurance p {
+    font-size: 0.92rem;
+    color: var(--texte-faible);
+    line-height: 1.6;
+  }
+
+  .entete-section {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+
+  .marge-haut {
+    margin-top: clamp(2rem, 4vw, 3rem);
+  }
+
+  /* Étapes */
+  .etapes {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(232px, 1fr));
+    gap: 1.3rem;
+    counter-reset: etape;
+  }
+
+  .etape {
+    position: relative;
+    padding: 1.75rem 1.5rem 1.6rem;
+    border-radius: var(--r-lg);
+    border: 1px solid var(--bord);
+    background: rgba(255, 255, 255, 0.025);
+  }
+
+  .etape__num {
+    position: absolute;
+    top: 1.1rem;
+    right: 1.25rem;
+    font-family: var(--font-display);
+    font-size: 2.1rem;
+    font-weight: 800;
+    color: rgba(255, 194, 51, 0.16);
+    line-height: 1;
+  }
+
+  .etape__icone {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: var(--r-md);
+    background: rgba(255, 194, 51, 0.12);
+    border: 1px solid rgba(255, 194, 51, 0.24);
+    color: var(--or);
+    margin-bottom: 1.1rem;
+  }
+
+  .etape h3 {
+    font-size: 1.05rem;
+    margin-bottom: 0.45rem;
+  }
+
+  .etape p {
+    font-size: 0.9rem;
+    color: var(--texte-faible);
+    line-height: 1.6;
+  }
+
+  /* Villes */
+  .villes {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(196px, 1fr));
+    gap: 0.6rem;
+  }
+
+  .villes a {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.8rem 1rem;
+    border-radius: var(--r-md);
+    border: 1px solid var(--bord);
+    background: rgba(255, 255, 255, 0.022);
+    transition: border-color var(--transition), background-color var(--transition);
+  }
+
+  .villes a:hover {
+    border-color: rgba(255, 194, 51, 0.34);
+    background: rgba(255, 194, 51, 0.05);
+  }
+
+  .villes :global(svg) {
+    color: var(--or);
+    flex-shrink: 0;
+  }
+
+  .villes span {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.3;
+    min-width: 0;
+  }
+
+  .villes strong {
+    font-size: 0.925rem;
+    font-weight: 600;
+  }
+
+  .villes small {
+    font-size: 0.76rem;
+    color: var(--texte-faible);
+  }
+
+  .faq__plus {
+    margin-top: 1.75rem;
+    text-align: center;
+  }
+
+  .faq__plus a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-weight: 620;
+    color: var(--or-sombre);
+    transition: gap var(--transition);
+  }
+
+  .faq__plus a:hover {
+    gap: 0.75rem;
+  }
+</style>

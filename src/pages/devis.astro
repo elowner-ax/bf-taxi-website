@@ -1,0 +1,688 @@
+---
+import Base from '../layouts/Base.astro';
+import Icone from '../components/Icone.astro';
+import FilAriane from '../components/FilAriane.astro';
+import { CONTACT, OPENING_HOURS, VEHICLES } from '../data/site.ts';
+import { SERVICES } from '../data/services.ts';
+import { VILLES } from '../data/villes.ts';
+
+const ariane = [
+  { nom: 'Accueil', url: '/' },
+  { nom: 'Demande de devis', url: '/devis/' },
+];
+
+// Endpoint de réception, injecté au build depuis la variable d'environnement.
+// Vide en l'absence de configuration : le formulaire bascule alors sur WhatsApp.
+const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
+---
+
+<Base
+  titre="Demande de devis taxi — Saint-Étienne et Loire | BF Taxi"
+  description="Demandez un devis gratuit pour votre course de taxi à Saint-Étienne : transport conventionné CPAM, transfert aéroport ou gare, longue distance. Réponse rapide, 7j/7."
+  canonical="/devis/"
+  filAriane={ariane}
+>
+  <FilAriane elements={ariane} />
+
+  <section class="devis">
+    <div class="conteneur devis__grille">
+      <div class="devis__intro">
+        <p class="surtitre">Devis gratuit</p>
+        <h1>Décrivez votre trajet, nous vous répondons</h1>
+        <p class="devis__accroche">
+          Renseignez les informations utiles : nous revenons vers vous avec un prix et un créneau.
+          Pour une course immédiate ou dans l’heure, préférez le téléphone — c’est plus rapide.
+        </p>
+
+        <div class="devis__direct">
+          <a href={`tel:${CONTACT.phone}`} class="btn btn-or btn-large" data-evt="tel-devis">
+            <Icone nom="phone" taille={19} />
+            {CONTACT.phoneDisplay}
+          </a>
+          <a
+            href={`https://wa.me/${CONTACT.whatsapp}?text=${encodeURIComponent('Bonjour, je souhaite un devis pour un trajet en taxi.')}`}
+            class="btn btn-whatsapp btn-large"
+            rel="noopener"
+            target="_blank"
+          >
+            <Icone nom="whatsapp" taille={19} />
+            WhatsApp
+          </a>
+        </div>
+
+        <ul class="devis__points">
+          <li>
+            <Icone nom="clock" taille={18} />
+            <span><strong>Réponse rapide</strong>Sous quelques heures en journée, {OPENING_HOURS.humanShort} par téléphone.</span>
+          </li>
+          <li>
+            <Icone nom="euro" taille={18} />
+            <span><strong>Devis sans engagement</strong>Gratuit, et sans obligation de réserver ensuite.</span>
+          </li>
+          <li>
+            <Icone nom="shield" taille={18} />
+            <span><strong>Conventionné CPAM</strong>Avec prescription, la course est facturée à l’Assurance Maladie.</span>
+          </li>
+          <li>
+            <Icone nom="doc" taille={18} />
+            <span><strong>Données protégées</strong>Vos informations servent uniquement à traiter votre demande.</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="devis__form-zone">
+        <form class="formulaire" data-devis-form novalidate data-endpoint={endpoint}>
+          <!-- Piège à robots : invisible, laissé vide par un humain. -->
+          <div class="pot-de-miel" aria-hidden="true">
+            <label>Ne pas remplir<input type="text" name="site_web" tabindex="-1" autocomplete="off" /></label>
+          </div>
+
+          <fieldset>
+            <legend>1. Votre trajet</legend>
+
+            <label class="champ">
+              <span class="champ__label">Type de prestation *</span>
+              <select name="prestation" required>
+                <option value="">Choisissez une prestation…</option>
+                {SERVICES.map((s) => <option value={s.navLabel}>{s.navLabel} — {s.titre}</option>)}
+                <option value="Autre">Autre / je ne sais pas</option>
+              </select>
+            </label>
+
+            <div class="champ__duo">
+              <label class="champ">
+                <span class="champ__label">Adresse de départ *</span>
+                <input
+                  type="text"
+                  name="depart"
+                  required
+                  list="communes"
+                  placeholder="Ville, rue ou établissement"
+                  autocomplete="off"
+                />
+              </label>
+
+              <label class="champ">
+                <span class="champ__label">Destination *</span>
+                <input
+                  type="text"
+                  name="arrivee"
+                  required
+                  placeholder="Ville, aéroport, hôpital…"
+                  autocomplete="off"
+                />
+              </label>
+            </div>
+
+            <datalist id="communes">
+              {VILLES.map((v) => <option value={`${v.nom} (${v.codePostal})`}></option>)}
+            </datalist>
+
+            <div class="champ__duo">
+              <label class="champ">
+                <span class="champ__label">Date souhaitée</span>
+                <input type="date" name="date" />
+              </label>
+
+              <label class="champ">
+                <span class="champ__label">Heure de prise en charge</span>
+                <input type="time" name="heure" />
+              </label>
+            </div>
+
+            <fieldset class="segment">
+              <legend class="champ__label">Retour souhaité</legend>
+              <div class="segment__options segment__options--3">
+                <label><input type="radio" name="retour" value="non" checked /><span>Aller simple</span></label>
+                <label><input type="radio" name="retour" value="le même jour" /><span>Retour le même jour</span></label>
+                <label><input type="radio" name="retour" value="à une autre date" /><span>Autre date</span></label>
+              </div>
+            </fieldset>
+          </fieldset>
+
+          <fieldset>
+            <legend>2. Passagers et véhicule</legend>
+
+            <div class="champ__duo">
+              <label class="champ">
+                <span class="champ__label">Nombre de passagers</span>
+                <select name="passagers">
+                  {[1, 2, 3, 4, 5, 6, 7].map((n) => <option value={String(n)}>{n} passager{n > 1 ? 's' : ''}</option>)}
+                </select>
+              </label>
+
+              <label class="champ">
+                <span class="champ__label">Véhicule souhaité</span>
+                <select name="vehicule">
+                  <option value="indifferent">Peu importe</option>
+                  {VEHICLES.map((v) => <option value={v.name}>{v.name} — {v.model}</option>)}
+                </select>
+              </label>
+            </div>
+
+            <label class="case">
+              <input type="checkbox" name="conventionne" value="oui" />
+              <span>
+                <strong>Transport conventionné CPAM</strong>
+                Je dispose d’une prescription médicale de transport (ou je peux l’obtenir).
+              </span>
+            </label>
+          </fieldset>
+
+          <fieldset>
+            <legend>3. Vos coordonnées</legend>
+
+            <div class="champ__duo">
+              <label class="champ">
+                <span class="champ__label">Nom et prénom *</span>
+                <input type="text" name="nom" required autocomplete="name" />
+              </label>
+
+              <label class="champ">
+                <span class="champ__label">Téléphone *</span>
+                <input
+                  type="tel"
+                  name="telephone"
+                  required
+                  autocomplete="tel"
+                  placeholder="06 12 34 56 78"
+                  inputmode="tel"
+                />
+              </label>
+            </div>
+
+            <label class="champ">
+              <span class="champ__label">E-mail <small>facultatif</small></span>
+              <input type="email" name="email" autocomplete="email" placeholder="vous@exemple.fr" />
+            </label>
+
+            <label class="champ">
+              <span class="champ__label">
+                Précisions <small>fauteuil, bagages volumineux, siège enfant, numéro de vol…</small>
+              </span>
+              <textarea name="message" rows="4" placeholder="Tout ce qui nous aidera à préparer votre trajet."></textarea>
+            </label>
+
+            <label class="case case--rgpd">
+              <input type="checkbox" name="consentement" required />
+              <span>
+                J’accepte que mes informations soient utilisées pour traiter ma demande. *
+                <a href="/politique-de-confidentialite/">Politique de confidentialité</a>
+              </span>
+            </label>
+          </fieldset>
+
+          <p class="formulaire__erreur" data-erreur hidden role="alert"></p>
+
+          <button type="submit" class="btn btn-or btn-large formulaire__envoi">
+            <Icone nom="arrow" taille={19} />
+            <span data-libelle-envoi>Envoyer ma demande</span>
+          </button>
+
+          <p class="formulaire__note">
+            * Champs obligatoires. Vous préférez faire simple&nbsp;?
+            <a href={`tel:${CONTACT.phone}`}>Appelez-nous</a> ou
+            <a href={`https://wa.me/${CONTACT.whatsapp}`} rel="noopener" target="_blank">écrivez sur WhatsApp</a>.
+          </p>
+        </form>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .devis {
+    padding-block: clamp(1.5rem, 3vw, 2.5rem) clamp(3rem, 6vw, 5rem);
+  }
+
+  .devis__grille {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: start;
+  }
+
+  .devis__intro {
+    position: sticky;
+    top: 6rem;
+  }
+
+  .devis__intro h1 {
+    font-size: clamp(1.95rem, 4.4vw, 3rem);
+  }
+
+  .devis__accroche {
+    color: var(--texte-doux);
+    margin-top: 1.1rem;
+    line-height: 1.7;
+    max-width: 48ch;
+  }
+
+  .devis__direct {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    margin-top: 1.75rem;
+  }
+
+  .devis__points {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 1.05rem;
+    margin-top: 2.25rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--bord);
+  }
+
+  .devis__points li {
+    display: flex;
+    gap: 0.85rem;
+    align-items: flex-start;
+  }
+
+  .devis__points :global(svg) {
+    color: var(--or);
+    flex-shrink: 0;
+    margin-top: 0.15rem;
+  }
+
+  .devis__points span {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.89rem;
+    color: var(--texte-faible);
+    line-height: 1.55;
+  }
+
+  .devis__points strong {
+    color: var(--texte);
+    font-size: 0.95rem;
+    margin-bottom: 0.12rem;
+  }
+
+  /* Formulaire */
+  .formulaire {
+    padding: clamp(1.4rem, 3.5vw, 2.25rem);
+    border-radius: var(--r-xl);
+    border: 1px solid var(--bord-forte);
+    background: linear-gradient(165deg, var(--surface), var(--noir-3));
+    box-shadow: var(--ombre-lg);
+    display: grid;
+    gap: 1.75rem;
+  }
+
+  .pot-de-miel {
+    position: absolute;
+    left: -9999px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .formulaire fieldset {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 1rem;
+  }
+
+  .formulaire > fieldset > legend {
+    font-family: var(--font-display);
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--or);
+    padding: 0 0 0.85rem;
+    margin-bottom: 0.15rem;
+    width: 100%;
+    border-bottom: 1px solid var(--bord);
+  }
+
+  .champ {
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .champ__duo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .champ__label {
+    font-size: 0.82rem;
+    font-weight: 620;
+    color: var(--texte-doux);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.4rem;
+  }
+
+  .champ__label small {
+    font-weight: 450;
+    font-size: 0.74rem;
+    color: var(--texte-faible);
+  }
+
+  .champ input,
+  .champ select,
+  .champ textarea {
+    width: 100%;
+    padding: 0.78rem 0.9rem;
+    border-radius: var(--r-md);
+    background: rgba(8, 9, 12, 0.6);
+    border: 1px solid var(--bord-forte);
+    color: var(--texte);
+    font-size: 0.94rem;
+    font-family: inherit;
+    transition: border-color var(--transition), background-color var(--transition);
+  }
+
+  .champ select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23ffc233' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.85rem center;
+    padding-right: 2.4rem;
+  }
+
+  .champ textarea {
+    resize: vertical;
+    min-height: 90px;
+    line-height: 1.6;
+  }
+
+  .champ input:focus,
+  .champ select:focus,
+  .champ textarea:focus {
+    border-color: var(--or);
+    outline: none;
+    background: rgba(8, 9, 12, 0.85);
+  }
+
+  .champ input:user-invalid,
+  .champ textarea:user-invalid {
+    border-color: var(--alerte);
+  }
+
+  .champ option {
+    background: var(--noir-2);
+  }
+
+  .champ input::placeholder,
+  .champ textarea::placeholder {
+    color: var(--texte-faible);
+    opacity: 0.75;
+  }
+
+  /* Segments radio */
+  .segment {
+    gap: 0.4rem !important;
+  }
+
+  .segment legend {
+    padding: 0;
+    border: 0 !important;
+    text-transform: none !important;
+    letter-spacing: normal !important;
+    font-size: 0.82rem !important;
+    color: var(--texte-doux) !important;
+    font-family: var(--font-texte) !important;
+    margin-bottom: 0 !important;
+  }
+
+  .segment__options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.35rem;
+    padding: 0.25rem;
+    background: rgba(8, 9, 12, 0.6);
+    border: 1px solid var(--bord-forte);
+    border-radius: var(--r-md);
+  }
+
+  .segment__options--3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .segment__options label {
+    position: relative;
+  }
+
+  .segment__options input {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+    cursor: pointer;
+  }
+
+  .segment__options span {
+    display: block;
+    text-align: center;
+    padding: 0.5rem 0.4rem;
+    border-radius: calc(var(--r-md) - 4px);
+    font-size: 0.845rem;
+    font-weight: 560;
+    color: var(--texte-faible);
+    cursor: pointer;
+    transition: background-color var(--transition), color var(--transition);
+  }
+
+  .segment__options input:checked + span {
+    background: var(--or);
+    color: #1a1305;
+    font-weight: 640;
+  }
+
+  .segment__options input:focus-visible + span {
+    outline: 2px solid var(--or);
+    outline-offset: 2px;
+  }
+
+  /* Cases à cocher */
+  .case {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    padding: 0.95rem 1.1rem;
+    border-radius: var(--r-md);
+    border: 1px solid var(--bord);
+    background: rgba(255, 255, 255, 0.022);
+    cursor: pointer;
+    transition: border-color var(--transition);
+  }
+
+  .case:hover {
+    border-color: var(--bord-forte);
+  }
+
+  .case input {
+    width: 19px;
+    height: 19px;
+    margin-top: 0.1rem;
+    accent-color: var(--or);
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+
+  .case span {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.86rem;
+    color: var(--texte-faible);
+    line-height: 1.55;
+  }
+
+  .case strong {
+    color: var(--texte);
+    font-size: 0.93rem;
+    margin-bottom: 0.12rem;
+  }
+
+  .case--rgpd span {
+    display: block;
+  }
+
+  .case--rgpd a {
+    color: var(--or-clair);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .formulaire__erreur {
+    padding: 0.85rem 1.1rem;
+    border-radius: var(--r-md);
+    background: rgba(255, 138, 91, 0.12);
+    border: 1px solid rgba(255, 138, 91, 0.35);
+    color: var(--alerte);
+    font-size: 0.88rem;
+  }
+
+  .formulaire__envoi {
+    width: 100%;
+    flex-direction: row-reverse;
+  }
+
+  .formulaire__envoi[disabled] {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  .formulaire__note {
+    font-size: 0.82rem;
+    color: var(--texte-faible);
+    line-height: 1.6;
+    text-align: center;
+  }
+
+  .formulaire__note a {
+    color: var(--or-clair);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  @media (max-width: 900px) {
+    .devis__grille {
+      grid-template-columns: 1fr;
+    }
+
+    .devis__intro {
+      position: static;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .champ__duo {
+      grid-template-columns: 1fr;
+    }
+
+    .segment__options--3 {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  import { formaterDemande, CHAMPS_OBLIGATOIRES, type DemandeDevis } from '../lib/leads.ts';
+
+  const form = document.querySelector<HTMLFormElement>('[data-devis-form]');
+  if (form) {
+    const boiteErreur = form.querySelector<HTMLElement>('[data-erreur]');
+    const bouton = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+    const libelle = form.querySelector<HTMLElement>('[data-libelle-envoi]');
+    const endpoint = form.dataset.endpoint?.trim() ?? '';
+    const numeroWhatsapp = '33782333445';
+
+    // Pré-remplissage depuis le simulateur : le visiteur ne ressaisit rien.
+    const params = new URLSearchParams(window.location.search);
+    const affecter = (nom: string, valeur: string | null) => {
+      if (!valeur) return;
+      const champ = form.elements.namedItem(nom);
+      if (champ instanceof HTMLInputElement || champ instanceof HTMLTextAreaElement) {
+        champ.value = valeur;
+      }
+    };
+    affecter('depart', params.get('depart'));
+    affecter('arrivee', params.get('arrivee'));
+
+    const passagers = params.get('passagers');
+    if (passagers) {
+      const select = form.elements.namedItem('passagers');
+      if (select instanceof HTMLSelectElement) select.value = passagers;
+    }
+
+    if (params.get('sens') === 'ar') {
+      const radio = form.querySelector<HTMLInputElement>('input[name="retour"][value="le même jour"]');
+      if (radio) radio.checked = true;
+    }
+
+    const estimation = params.get('estimation');
+    if (estimation) {
+      const message = form.elements.namedItem('message');
+      if (message instanceof HTMLTextAreaElement && !message.value) {
+        message.value = `Estimation vue sur le simulateur du site : ${estimation} €.`;
+      }
+    }
+
+    const afficherErreur = (texte: string) => {
+      if (!boiteErreur) return;
+      boiteErreur.textContent = texte;
+      boiteErreur.hidden = false;
+      boiteErreur.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      boiteErreur && (boiteErreur.hidden = true);
+
+      const donnees = Object.fromEntries(new FormData(form)) as Record<string, string>;
+
+      // Un robot remplit tous les champs, y compris ceux qu'il ne voit pas.
+      if (donnees.site_web) return;
+
+      const manquants = CHAMPS_OBLIGATOIRES.filter((champ) => !donnees[champ]?.trim());
+      if (manquants.length || !donnees.consentement) {
+        afficherErreur('Merci de renseigner les champs obligatoires, y compris votre accord sur l’utilisation de vos données.');
+        const premier = form.querySelector<HTMLElement>(':invalid');
+        premier?.focus();
+        return;
+      }
+
+      const texte = formaterDemande(donnees as Partial<DemandeDevis>);
+
+      if (bouton) bouton.disabled = true;
+      if (libelle) libelle.textContent = 'Envoi en cours…';
+
+      // 1. Endpoint configuré : envoi direct, le visiteur ne quitte pas le site.
+      if (endpoint) {
+        try {
+          const reponse = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            body: JSON.stringify({ ...donnees, texte, source: 'bftaxi.fr/devis' }),
+          });
+          if (reponse.ok) {
+            window.location.href = '/merci/';
+            return;
+          }
+          throw new Error(`Réponse ${reponse.status}`);
+        } catch {
+          afficherErreur(
+            'L’envoi automatique a échoué. Nous ouvrons WhatsApp avec votre demande pré-remplie — sinon, appelez-nous au 07 82 33 34 45.'
+          );
+        }
+      }
+
+      // 2. Repli WhatsApp : la demande part malgré tout, sans rien ressaisir.
+      window.open(`https://wa.me/${numeroWhatsapp}?text=${encodeURIComponent(texte)}`, '_blank', 'noopener');
+
+      if (bouton) bouton.disabled = false;
+      if (libelle) libelle.textContent = 'Envoyer ma demande';
+
+      if (!endpoint) window.location.href = '/merci/';
+    });
+  }
+</script>

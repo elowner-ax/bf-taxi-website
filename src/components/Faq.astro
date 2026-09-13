@@ -1,0 +1,141 @@
+---
+/**
+ * Accordéon de questions fréquentes, en <details> natifs : accessible au
+ * clavier et aux lecteurs d'écran sans JavaScript, et le contenu des réponses
+ * reste dans le HTML — donc indexable et citable par les moteurs génératifs.
+ */
+interface Props {
+  items: { question: string; reponse: string }[];
+  titre?: string;
+  /** Le premier élément est déplié par défaut. */
+  premierOuvert?: boolean;
+}
+
+const { items, titre, premierOuvert = true } = Astro.props;
+---
+
+<div class="faq">
+  {titre && <h2 class="faq__titre">{titre}</h2>}
+  <div class="faq__liste">
+    {
+      items.map((item, i) => (
+        <details class="faq__item" open={premierOuvert && i === 0}>
+          <summary>
+            <span>{item.question}</span>
+            <span class="faq__signe" aria-hidden="true" />
+          </summary>
+          <div class="faq__reponse">
+            <p>{item.reponse}</p>
+          </div>
+        </details>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .faq__titre {
+    margin-bottom: 1.75rem;
+  }
+
+  .faq__liste {
+    display: grid;
+    gap: 0.7rem;
+  }
+
+  .faq__item {
+    border: 1px solid var(--bord);
+    border-radius: var(--r-md);
+    background: rgba(255, 255, 255, 0.025);
+    transition: border-color var(--transition), background-color var(--transition);
+  }
+
+  .faq__item[open] {
+    border-color: rgba(255, 194, 51, 0.3);
+    background: rgba(255, 194, 51, 0.045);
+  }
+
+  :global(.section-claire) .faq__item {
+    background: #fff;
+    border-color: rgba(18, 20, 26, 0.09);
+  }
+
+  :global(.section-claire) .faq__item[open] {
+    border-color: rgba(217, 154, 0, 0.4);
+    background: #fffdf6;
+  }
+
+  .faq__item summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.1rem;
+    padding: 1.1rem 1.3rem;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1.005rem;
+    list-style: none;
+    line-height: 1.45;
+  }
+
+  .faq__item summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq__signe {
+    position: relative;
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1px solid var(--bord-forte);
+    transition: transform var(--transition), border-color var(--transition);
+  }
+
+  .faq__signe::before,
+  .faq__signe::after {
+    content: '';
+    position: absolute;
+    inset: 50% 5px auto;
+    height: 1.5px;
+    background: var(--or);
+    transform: translateY(-50%);
+    transition: opacity var(--transition);
+  }
+
+  .faq__signe::after {
+    transform: translateY(-50%) rotate(90deg);
+  }
+
+  .faq__item[open] .faq__signe {
+    border-color: var(--or);
+  }
+
+  .faq__item[open] .faq__signe::after {
+    opacity: 0;
+  }
+
+  :global(.section-claire) .faq__signe {
+    border-color: rgba(18, 20, 26, 0.18);
+  }
+
+  :global(.section-claire) .faq__signe::before,
+  :global(.section-claire) .faq__signe::after {
+    background: var(--or-sombre);
+  }
+
+  .faq__reponse {
+    padding: 0 1.3rem 1.25rem;
+  }
+
+  .faq__reponse p {
+    color: var(--texte-doux);
+    font-size: 0.97rem;
+    line-height: 1.7;
+    max-width: 72ch;
+  }
+
+  :global(.section-claire) .faq__reponse p {
+    color: var(--texte-sombre-doux);
+  }
+</style>

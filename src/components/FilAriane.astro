@@ -1,0 +1,60 @@
+---
+import type { FilAriane as TypeFilAriane } from '../lib/schema.ts';
+
+interface Props {
+  elements: TypeFilAriane;
+}
+
+const { elements } = Astro.props;
+---
+
+<nav class="ariane" aria-label="Fil d'Ariane">
+  <div class="conteneur">
+    <ol>
+      {
+        elements.map((el, i) => (
+          <li>
+            {i < elements.length - 1 ? (
+              <a href={el.url}>{el.nom}</a>
+            ) : (
+              <span aria-current="page">{el.nom}</span>
+            )}
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</nav>
+
+<style>
+  .ariane {
+    padding-block: 1.1rem 0.3rem;
+    font-size: 0.82rem;
+  }
+
+  .ariane ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    color: var(--texte-faible);
+  }
+
+  .ariane li + li::before {
+    content: '›';
+    margin-right: 0.5rem;
+    opacity: 0.55;
+  }
+
+  .ariane a:hover {
+    color: var(--or-clair);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .ariane [aria-current] {
+    color: var(--texte-doux);
+  }
+</style>

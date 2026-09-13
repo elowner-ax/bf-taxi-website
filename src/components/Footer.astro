@@ -1,0 +1,247 @@
+---
+import Icone from './Icone.astro';
+import Logo from './Logo.astro';
+import { SITE, CONTACT, ADDRESS, OPENING_HOURS } from '../data/site.ts';
+import { SERVICES, servicesParCategorie } from '../data/services.ts';
+import { VILLES } from '../data/villes.ts';
+
+const annee = new Date().getFullYear();
+const medical = servicesParCategorie('medical');
+const transferts = [...servicesParCategorie('transfert'), ...servicesParCategorie('confort')];
+---
+
+<footer class="pied">
+  <div class="conteneur">
+    <div class="pied__haut">
+      <div class="pied__marque">
+        <Logo taille={42} />
+        <p class="pied__desc">{SITE.shortDescription}</p>
+
+        <div class="pied__contacts">
+          <a href={`tel:${CONTACT.phone}`} class="pied__contact">
+            <Icone nom="phone" taille={17} />
+            <strong>{CONTACT.phoneDisplay}</strong>
+          </a>
+          <a
+            href={`https://wa.me/${CONTACT.whatsapp}`}
+            class="pied__contact"
+            rel="noopener"
+            target="_blank"
+          >
+            <Icone nom="whatsapp" taille={17} />
+            WhatsApp
+          </a>
+          <a href={`mailto:${CONTACT.email}`} class="pied__contact">
+            <Icone nom="mail" taille={17} />
+            {CONTACT.email}
+          </a>
+          <p class="pied__contact pied__contact--statique">
+            <Icone nom="map" taille={17} />
+            {ADDRESS.city} ({ADDRESS.postalCode}) — {ADDRESS.department}
+          </p>
+          <p class="pied__contact pied__contact--statique">
+            <Icone nom="clock" taille={17} />
+            {OPENING_HOURS.human}
+          </p>
+        </div>
+      </div>
+
+      <nav class="pied__colonnes" aria-label="Plan du site">
+        <div class="pied__colonne">
+          <h2>Transport médical</h2>
+          <ul>
+            {medical.map((s) => <li><a href={`/${s.slug}/`}>{s.navLabel}</a></li>)}
+          </ul>
+        </div>
+
+        <div class="pied__colonne">
+          <h2>Transferts & confort</h2>
+          <ul>
+            {transferts.map((s) => <li><a href={`/${s.slug}/`}>{s.navLabel}</a></li>)}
+          </ul>
+        </div>
+
+        <div class="pied__colonne">
+          <h2>Informations</h2>
+          <ul>
+            <li><a href="/tarifs/">Tarifs et simulateur</a></li>
+            <li><a href="/devis/">Demande de devis</a></li>
+            <li><a href="/vehicules/">Nos véhicules</a></li>
+            <li><a href="/taxi/">Zones desservies</a></li>
+            <li><a href="/faq/">Questions fréquentes</a></li>
+            <li><a href="/a-propos/">À propos</a></li>
+            <li><a href="/contact/">Nous contacter</a></li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+
+    <div class="pied__villes">
+      <h2>Taxi conventionné dans la Loire</h2>
+      <ul>
+        {VILLES.map((v) => <li><a href={`/taxi/${v.slug}/`}>Taxi {v.nom}</a></li>)}
+      </ul>
+    </div>
+
+    <div class="pied__bas">
+      <p>© {annee} {SITE.name}. Tous droits réservés.</p>
+      <nav class="pied__legal" aria-label="Informations légales">
+        <a href="/mentions-legales/">Mentions légales</a>
+        <a href="/politique-de-confidentialite/">Confidentialité</a>
+        <a href="/plan-du-site/">Plan du site</a>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .pied {
+    background: var(--noir-2);
+    border-top: 1px solid var(--bord);
+    padding-block: clamp(3rem, 6vw, 4.5rem) 2rem;
+    font-size: 0.93rem;
+  }
+
+  .pied__haut {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 2fr);
+    gap: clamp(2rem, 5vw, 4rem);
+  }
+
+  .pied__desc {
+    color: var(--texte-faible);
+    margin-top: 1.15rem;
+    max-width: 42ch;
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .pied__contacts {
+    display: grid;
+    gap: 0.55rem;
+    margin-top: 1.6rem;
+  }
+
+  .pied__contact {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: var(--texte-doux);
+    transition: color var(--transition);
+    width: fit-content;
+  }
+
+  .pied__contact :global(svg) {
+    color: var(--or);
+    flex-shrink: 0;
+  }
+
+  a.pied__contact:hover {
+    color: var(--or-clair);
+  }
+
+  .pied__contact--statique {
+    color: var(--texte-faible);
+  }
+
+  .pied__colonnes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 2rem;
+  }
+
+  .pied__colonne h2 {
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--or);
+    margin-bottom: 1rem;
+  }
+
+  .pied__colonne ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .pied__colonne a {
+    color: var(--texte-faible);
+    transition: color var(--transition);
+  }
+
+  .pied__colonne a:hover {
+    color: var(--texte);
+  }
+
+  .pied__villes {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--bord);
+  }
+
+  .pied__villes h2 {
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--or);
+    margin-bottom: 1rem;
+  }
+
+  .pied__villes ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.5rem;
+  }
+
+  .pied__villes a {
+    display: inline-block;
+    padding: 0.35rem 0.75rem;
+    border-radius: var(--r-full);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--bord);
+    font-size: 0.83rem;
+    color: var(--texte-faible);
+    transition: color var(--transition), border-color var(--transition);
+  }
+
+  .pied__villes a:hover {
+    color: var(--or-clair);
+    border-color: rgba(255, 194, 51, 0.35);
+  }
+
+  .pied__bas {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--bord);
+    color: var(--texte-faible);
+    font-size: 0.85rem;
+  }
+
+  .pied__legal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+  }
+
+  .pied__legal a:hover {
+    color: var(--texte);
+  }
+
+  @media (max-width: 860px) {
+    .pied__haut {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

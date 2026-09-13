@@ -1,0 +1,96 @@
+---
+import Icone from './Icone.astro';
+import { CONTACT, OPENING_HOURS } from '../data/site.ts';
+
+interface Props {
+  titre?: string;
+  texte?: string;
+}
+
+const {
+  titre = 'Besoin d’un taxi maintenant ?',
+  texte = `Un appel suffit. Nous sommes joignables ${OPENING_HOURS.humanShort} pour organiser votre trajet, en conventionné comme en course classique.`,
+} = Astro.props;
+---
+
+<section class="cta-bloc">
+  <div class="conteneur">
+    <div class="cta-bloc__carte reveal">
+      <div class="cta-bloc__texte">
+        <h2>{titre}</h2>
+        <p>{texte}</p>
+      </div>
+      <div class="groupe-btn">
+        <a href={`tel:${CONTACT.phone}`} class="btn btn-or btn-large" data-evt="tel-cta">
+          <Icone nom="phone" taille={19} />
+          {CONTACT.phoneDisplay}
+        </a>
+        <a
+          href={`https://wa.me/${CONTACT.whatsapp}?text=${encodeURIComponent('Bonjour, je souhaite réserver un taxi.')}`}
+          class="btn btn-whatsapp btn-large"
+          rel="noopener"
+          target="_blank"
+          data-evt="whatsapp-cta"
+        >
+          <Icone nom="whatsapp" taille={19} />
+          WhatsApp
+        </a>
+        <a href="/devis/" class="btn btn-fantome btn-large">
+          <Icone nom="doc" taille={19} />
+          Devis en ligne
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta-bloc {
+    padding-block: clamp(2.5rem, 5vw, 4rem);
+  }
+
+  .cta-bloc__carte {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: clamp(1.8rem, 4vw, 3rem);
+    border-radius: var(--r-xl);
+    background: linear-gradient(130deg, var(--noir-3), var(--noir-2));
+    border: 1px solid var(--bord-forte);
+    overflow: hidden;
+  }
+
+  .cta-bloc__carte::before {
+    content: '';
+    position: absolute;
+    top: -60%;
+    right: -10%;
+    width: 420px;
+    height: 420px;
+    background: radial-gradient(circle, rgba(255, 194, 51, 0.16), transparent 65%);
+    filter: blur(40px);
+    pointer-events: none;
+  }
+
+  .cta-bloc__texte {
+    position: relative;
+    flex: 1 1 340px;
+  }
+
+  .cta-bloc__texte h2 {
+    font-size: clamp(1.5rem, 3.2vw, 2.15rem);
+  }
+
+  .cta-bloc__texte p {
+    color: var(--texte-doux);
+    margin-top: 0.75rem;
+    max-width: 52ch;
+  }
+
+  .cta-bloc .groupe-btn {
+    position: relative;
+  }
+</style>

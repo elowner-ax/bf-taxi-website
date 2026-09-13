@@ -1,0 +1,25 @@
+{
+  "name": "bftaxi-website",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Site vitrine SEO/GEO de BF Taxi — taxi conventionne CPAM a Saint-Etienne et dans la Loire",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.6.0",
+    "@fontsource-variable/bricolage-grotesque": "^5.3.0",
+    "@fontsource-variable/inter": "^5.3.0",
+    "astro": "^7.3.2"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "typescript": "^5.9.2"
+  }
+}

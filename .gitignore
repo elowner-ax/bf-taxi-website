@@ -1,0 +1,19 @@
+# Dépendances
+node_modules/
+
+# Build Astro
+dist/
+.astro/
+
+# Variables d'environnement (endpoint du formulaire de devis, clés d'analytics)
+.env
+.env.production
+.env.local
+
+# Système
+.DS_Store
+*.log
+npm-debug.log*
+
+# Canvas de maquette assemblé : régénérable depuis maquette/*.dc.html
+maquette/maquette-bf-taxi.html

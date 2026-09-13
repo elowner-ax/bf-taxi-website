@@ -1,0 +1,88 @@
+---
+/**
+ * Barre d'action fixe en bas d'écran sur mobile : appeler, WhatsApp, devis.
+ * Sur un site de taxi, l'appel est la conversion principale — il doit être
+ * atteignable en permanence, sans scroll.
+ */
+import Icone from './Icone.astro';
+import { CONTACT } from '../data/site.ts';
+---
+
+<div class="barre-mobile">
+  <a href={`tel:${CONTACT.phone}`} class="barre-mobile__lien barre-mobile__lien--principal" data-evt="tel-barre">
+    <Icone nom="phone" taille={19} />
+    <span>Appeler</span>
+  </a>
+  <a
+    href={`https://wa.me/${CONTACT.whatsapp}?text=${encodeURIComponent('Bonjour, je souhaite réserver un taxi.')}`}
+    class="barre-mobile__lien barre-mobile__lien--wa"
+    rel="noopener"
+    target="_blank"
+    data-evt="whatsapp-barre"
+  >
+    <Icone nom="whatsapp" taille={19} />
+    <span>WhatsApp</span>
+  </a>
+  <a href="/devis/" class="barre-mobile__lien">
+    <Icone nom="doc" taille={19} />
+    <span>Devis</span>
+  </a>
+</div>
+
+<style>
+  .barre-mobile {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 90;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--bord);
+    border-top: 1px solid var(--bord);
+    backdrop-filter: blur(18px);
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+
+  .barre-mobile__lien {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.2rem;
+    padding: 0.6rem 0.3rem 0.65rem;
+    background: rgba(14, 16, 21, 0.96);
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--texte-doux);
+    transition: color var(--transition), background-color var(--transition);
+  }
+
+  .barre-mobile__lien:active {
+    background: rgba(30, 33, 42, 0.98);
+  }
+
+  .barre-mobile__lien--principal {
+    color: var(--or);
+  }
+
+  .barre-mobile__lien--wa {
+    color: #25d366;
+  }
+
+  @media (min-width: 1060px) {
+    .barre-mobile {
+      display: none;
+    }
+  }
+</style>
+
+<style is:global>
+  /* Réserve la hauteur de la barre pour ne pas masquer le pied de page. */
+  @media (max-width: 1059px) {
+    body {
+      padding-bottom: 68px;
+    }
+  }
+</style>

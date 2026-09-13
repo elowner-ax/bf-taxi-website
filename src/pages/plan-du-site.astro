@@ -1,0 +1,120 @@
+---
+import Base from '../layouts/Base.astro';
+import FilAriane from '../components/FilAriane.astro';
+import { SERVICES, CATEGORIES, servicesParCategorie, type Service } from '../data/services.ts';
+import { VILLES } from '../data/villes.ts';
+
+const ariane = [
+  { nom: 'Accueil', url: '/' },
+  { nom: 'Plan du site', url: '/plan-du-site/' },
+];
+
+const groupes = [
+  {
+    titre: 'Pages principales',
+    liens: [
+      { url: '/', label: 'Accueil' },
+      { url: '/tarifs/', label: 'Tarifs et simulateur' },
+      { url: '/devis/', label: 'Demande de devis' },
+      { url: '/vehicules/', label: 'Nos véhicules' },
+      { url: '/taxi/', label: 'Zones desservies' },
+      { url: '/faq/', label: 'Questions fréquentes' },
+      { url: '/a-propos/', label: 'À propos' },
+      { url: '/contact/', label: 'Contact' },
+    ],
+  },
+  ...(Object.keys(CATEGORIES) as Service['categorie'][]).map((cle) => ({
+    titre: CATEGORIES[cle].label,
+    liens: servicesParCategorie(cle).map((s) => ({ url: `/${s.slug}/`, label: s.titre })),
+  })),
+  {
+    titre: 'Communes desservies',
+    liens: VILLES.map((v) => ({ url: `/taxi/${v.slug}/`, label: `Taxi ${v.nom} (${v.codePostal})` })),
+  },
+  {
+    titre: 'Informations légales',
+    liens: [
+      { url: '/mentions-legales/', label: 'Mentions légales' },
+      { url: '/politique-de-confidentialite/', label: 'Politique de confidentialité' },
+    ],
+  },
+];
+---
+
+<Base
+  titre="Plan du site — BF Taxi Saint-Étienne"
+  description="Toutes les pages du site BF Taxi : services de transport, communes desservies dans la Loire, tarifs, devis et informations pratiques."
+  canonical="/plan-du-site/"
+  filAriane={ariane}
+>
+  <FilAriane elements={ariane} />
+
+  <section class="section">
+    <div class="conteneur">
+      <h1>Plan du site</h1>
+      <p class="intro-section">
+        {SERVICES.length} pages de services, {VILLES.length} communes desservies et les pages
+        pratiques du site. La version destinée aux moteurs de recherche se trouve dans le
+        <a href="/sitemap-index.xml">sitemap XML</a>.
+      </p>
+
+      <div class="grille grille-3 marge-haut">
+        {
+          groupes.map((groupe) => (
+            <div class="groupe">
+              <h2>{groupe.titre}</h2>
+              <ul>
+                {groupe.liens.map((lien) => (
+                  <li>
+                    <a href={lien.url}>{lien.label}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .intro-section a {
+    color: var(--or-clair);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .marge-haut {
+    margin-top: clamp(2rem, 4vw, 3rem);
+  }
+
+  .groupe h2 {
+    font-family: var(--font-display);
+    font-size: 0.86rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--or);
+    padding-bottom: 0.8rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--bord);
+  }
+
+  .groupe ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .groupe a {
+    color: var(--texte-doux);
+    font-size: 0.93rem;
+    transition: color var(--transition);
+  }
+
+  .groupe a:hover {
+    color: var(--or-clair);
+  }
+</style>

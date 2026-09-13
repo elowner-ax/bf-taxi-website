@@ -1,0 +1,520 @@
+---
+import Base from '../layouts/Base.astro';
+import Icone from '../components/Icone.astro';
+import FilAriane from '../components/FilAriane.astro';
+import Faq from '../components/Faq.astro';
+import BlocCTA from '../components/BlocCTA.astro';
+import CarteService from '../components/CarteService.astro';
+import IllustrationVehicule from '../components/IllustrationVehicule.astro';
+import Simulateur from '../components/Simulateur.astro';
+import { CONTACT, VEHICLES, OPENING_HOURS } from '../data/site.ts';
+import { SERVICES, servicesLies, type Service } from '../data/services.ts';
+import { VILLES } from '../data/villes.ts';
+import { schemaService, schemaFaq } from '../lib/schema.ts';
+
+export function getStaticPaths() {
+  return SERVICES.map((service) => ({
+    params: { service: service.slug },
+    props: { service },
+  }));
+}
+
+interface Props {
+  service: Service;
+}
+
+const { service } = Astro.props;
+const lies = servicesLies(service);
+
+const vehicules =
+  service.vehicule === 'les-deux'
+    ? VEHICLES
+    : VEHICLES.filter((v) => v.slug === service.vehicule);
+
+const ariane = [
+  { nom: 'Accueil', url: '/' },
+  { nom: service.navLabel, url: `/${service.slug}/` },
+];
+
+const estMedical = service.categorie === 'medical';
+---
+
+<Base
+  titre={service.metaTitle}
+  description={service.metaDescription}
+  canonical={`/${service.slug}/`}
+  filAriane={ariane}
+  schemas={[schemaService(service), schemaFaq(service.faq)]}
+>
+  <FilAriane elements={ariane} />
+
+  <!-- En-tête -->
+  <section class="tete">
+    <div class="tete__halo" aria-hidden="true"></div>
+    <div class="conteneur">
+      <p class="badge">
+        <Icone nom={service.icon} taille={15} />
+        {estMedical ? 'Transport conventionné CPAM' : 'Course sur réservation'}
+      </p>
+      <h1>{service.titre}</h1>
+      <p class="tete__accroche">{service.accroche}</p>
+
+      <div class="groupe-btn tete__cta">
+        <a href={`tel:${CONTACT.phone}`} class="btn btn-or btn-large" data-evt="tel-service">
+          <Icone nom="phone" taille={19} />
+          {CONTACT.phoneDisplay}
+        </a>
+        <a
+          href={`https://wa.me/${CONTACT.whatsapp}?text=${encodeURIComponent(`Bonjour, je souhaite un renseignement concernant : ${service.navLabel}.`)}`}
+          class="btn btn-whatsapp btn-large"
+          rel="noopener"
+          target="_blank"
+        >
+          <Icone nom="whatsapp" taille={19} />
+          WhatsApp
+        </a>
+        <a href="/devis/" class="btn btn-fantome btn-large">
+          <Icone nom="doc" taille={19} />
+          Devis gratuit
+        </a>
+      </div>
+
+      <!-- Réponse directe : c'est ce bloc que reprennent les moteurs génératifs. -->
+      <aside class="resume">
+        <p class="resume__label">
+          <Icone nom="bolt" taille={15} />
+          L’essentiel
+        </p>
+        <p>{service.reponseCourte}</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- Arguments -->
+  <section class="section-sombre-2 section-fine">
+    <div class="conteneur">
+      <div class="grille grille-4">
+        {
+          service.points.map((point, i) => (
+            <div class="point reveal" style={`transition-delay:${i * 70}ms`}>
+              <span class="point__puce">
+                <Icone nom="check" taille={14} />
+              </span>
+              <h2>{point.titre}</h2>
+              <p>{point.texte}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Contenu rédactionnel -->
+  <section class="section">
+    <div class="conteneur corps">
+      <div class="corps__texte prose">
+        {service.intro.map((paragraphe) => <p class="corps__chapeau">{paragraphe}</p>)}
+
+        {
+          service.sections.map((bloc) => (
+            <div class="reveal">
+              <h2>{bloc.titre}</h2>
+              {bloc.paragraphes.map((p) => (
+                <p>{p}</p>
+              ))}
+              {bloc.liste && (
+                <ul class="liste-check corps__liste">
+                  {bloc.liste.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ))
+        }
+      </div>
+
+      <aside class="corps__aside">
+        <div class="encart encart--contact">
+          <h2>Réserver ce service</h2>
+          <p>Réponse immédiate par téléphone, {OPENING_HOURS.humanShort}.</p>
+          <a href={`tel:${CONTACT.phone}`} class="btn btn-or">
+            <Icone nom="phone" taille={18} />
+            {CONTACT.phoneDisplay}
+          </a>
+          <a
+            href={`https://wa.me/${CONTACT.whatsapp}`}
+            class="btn btn-whatsapp"
+            rel="noopener"
+            target="_blank"
+          >
+            <Icone nom="whatsapp" taille={18} />
+            Écrire sur WhatsApp
+          </a>
+          <a href="/devis/" class="btn btn-fantome">
+            <Icone nom="doc" taille={18} />
+            Demande de devis
+          </a>
+        </div>
+
+        {
+          estMedical && (
+            <div class="encart">
+              <h2>
+                <Icone nom="doc" taille={17} />À préparer
+              </h2>
+              <ul class="liste-check encart__liste">
+                <li>Prescription médicale de transport</li>
+                <li>Carte Vitale à jour</li>
+                <li>Attestation de mutuelle</li>
+              </ul>
+              <p class="encart__note">
+                Avec ces documents, vous ne réglez rien : nous facturons directement l’Assurance
+                Maladie.
+              </p>
+            </div>
+          )
+        }
+
+        <div class="encart">
+          <h2>
+            <Icone nom={vehicules.length > 1 ? 'car' : vehicules[0]?.slug === 'tesla-model-3' ? 'bolt' : 'users'} taille={17} />
+            {vehicules.length > 1 ? 'Véhicules adaptés' : 'Véhicule adapté'}
+          </h2>
+          {
+            vehicules.map((v) => (
+              <div class="encart__vehicule">
+                <IllustrationVehicule type={v.slug === 'tesla-model-3' ? 'berline' : 'van'} />
+                <p>
+                  <strong>{v.name}</strong>
+                  <span>
+                    {v.seats} passagers · {v.luggage}
+                  </span>
+                </p>
+              </div>
+            ))
+          }
+          <a href="/vehicules/" class="encart__lien">
+            Voir nos véhicules <Icone nom="arrow" taille={15} />
+          </a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- Simulateur sur les services à prix libre -->
+  {
+    !estMedical && (
+      <section class="section section-sombre-2">
+        <div class="conteneur conteneur-etroit">
+          <div class="reveal">
+            <Simulateur titre="Estimez le prix de votre trajet" />
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <!-- FAQ -->
+  <section class="section section-claire">
+    <div class="conteneur conteneur-etroit">
+      <p class="surtitre reveal">Questions fréquentes</p>
+      <div class="reveal">
+        <Faq items={service.faq} titre={`${service.navLabel} : vos questions`} />
+      </div>
+    </div>
+  </section>
+
+  <!-- Maillage interne -->
+  <section class="section">
+    <div class="conteneur">
+      <p class="surtitre reveal">Aller plus loin</p>
+      <h2 class="reveal">Nos autres prestations</h2>
+      <div class="grille grille-4 marge-haut">
+        {lies.map((s, i) => (
+          <div class="reveal" style={`transition-delay:${i * 60}ms`}>
+            <CarteService service={s} />
+          </div>
+        ))}
+      </div>
+
+      <div class="villes-liens reveal">
+        <h3>{service.navLabel} dans les communes de la Loire</h3>
+        <ul>
+          {VILLES.map((v) => <li><a href={`/taxi/${v.slug}/`}>{v.nom}</a></li>)}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <BlocCTA />
+</Base>
+
+<style>
+  .tete {
+    position: relative;
+    padding-block: clamp(1.75rem, 4vw, 3rem) clamp(2.5rem, 5vw, 3.75rem);
+    overflow: hidden;
+  }
+
+  .tete__halo {
+    position: absolute;
+    top: -45%;
+    left: 42%;
+    width: min(720px, 100vw);
+    height: min(560px, 80vw);
+    background: radial-gradient(circle, rgba(255, 194, 51, 0.22), transparent 66%);
+    filter: blur(70px);
+    pointer-events: none;
+  }
+
+  .tete > .conteneur {
+    position: relative;
+  }
+
+  .tete h1 {
+    margin-top: 1.1rem;
+    max-width: 20ch;
+  }
+
+  .tete__accroche {
+    font-size: clamp(1.02rem, 2vw, 1.2rem);
+    color: var(--texte-doux);
+    max-width: 56ch;
+    margin-top: 1.15rem;
+  }
+
+  .tete__cta {
+    margin-top: 1.9rem;
+  }
+
+  .resume {
+    margin-top: 2.5rem;
+    padding: 1.35rem 1.5rem;
+    border-radius: var(--r-lg);
+    border: 1px solid rgba(255, 194, 51, 0.26);
+    background: linear-gradient(140deg, rgba(255, 194, 51, 0.1), rgba(255, 194, 51, 0.022));
+    max-width: 78ch;
+  }
+
+  .resume__label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--or);
+    margin-bottom: 0.6rem;
+  }
+
+  .resume p:last-child {
+    color: var(--texte-doux);
+    line-height: 1.7;
+  }
+
+  .section-fine {
+    padding-block: clamp(2.25rem, 5vw, 3.25rem);
+    border-block: 1px solid var(--bord);
+  }
+
+  .point {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.5rem 0.8rem;
+    align-items: start;
+  }
+
+  .point__puce {
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: rgba(255, 194, 51, 0.14);
+    border: 1px solid rgba(255, 194, 51, 0.28);
+    color: var(--or);
+    grid-row: span 2;
+  }
+
+  .point h2 {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    align-self: center;
+  }
+
+  .point p {
+    grid-column: 2;
+    font-size: 0.89rem;
+    color: var(--texte-faible);
+    line-height: 1.6;
+  }
+
+  /* Corps de page + colonne latérale */
+  .corps {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: start;
+  }
+
+  .corps__chapeau {
+    font-size: 1.14rem !important;
+    color: var(--texte) !important;
+    line-height: 1.7;
+  }
+
+  .corps__chapeau + .corps__chapeau {
+    margin-top: 1rem;
+  }
+
+  .corps__liste {
+    margin-top: 1.2rem;
+  }
+
+  .corps__aside {
+    position: sticky;
+    top: 6rem;
+    display: grid;
+    gap: 1rem;
+  }
+
+  .encart {
+    padding: 1.5rem;
+    border-radius: var(--r-lg);
+    border: 1px solid var(--bord);
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .encart h2 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-display);
+    font-size: 1.02rem;
+    margin-bottom: 0.7rem;
+  }
+
+  .encart h2 :global(svg) {
+    color: var(--or);
+  }
+
+  .encart p {
+    font-size: 0.9rem;
+    color: var(--texte-faible);
+    line-height: 1.6;
+  }
+
+  .encart--contact {
+    background: linear-gradient(155deg, rgba(255, 194, 51, 0.11), rgba(255, 194, 51, 0.02));
+    border-color: rgba(255, 194, 51, 0.26);
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  .encart--contact .btn {
+    width: 100%;
+  }
+
+  .encart--contact p {
+    margin-bottom: 0.5rem;
+  }
+
+  .encart__liste {
+    font-size: 0.9rem;
+    margin-bottom: 0.9rem;
+  }
+
+  .encart__note {
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--bord);
+    font-size: 0.83rem !important;
+  }
+
+  .encart__vehicule {
+    margin-bottom: 0.5rem;
+  }
+
+  .encart__vehicule p {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.4;
+    margin-top: 0.3rem;
+  }
+
+  .encart__vehicule strong {
+    font-size: 0.95rem;
+    color: var(--texte);
+  }
+
+  .encart__vehicule span {
+    font-size: 0.82rem;
+  }
+
+  .encart__lien {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.85rem;
+    font-size: 0.87rem;
+    font-weight: 620;
+    color: var(--or);
+    transition: gap var(--transition);
+  }
+
+  .encart__lien:hover {
+    gap: 0.7rem;
+  }
+
+  .marge-haut {
+    margin-top: clamp(1.75rem, 3.5vw, 2.5rem);
+  }
+
+  .villes-liens {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--bord);
+  }
+
+  .villes-liens h3 {
+    font-size: 0.95rem;
+    font-family: var(--font-display);
+    color: var(--texte-doux);
+    margin-bottom: 1rem;
+  }
+
+  .villes-liens ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.5rem;
+  }
+
+  .villes-liens a {
+    display: inline-block;
+    padding: 0.35rem 0.8rem;
+    border-radius: var(--r-full);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--bord);
+    font-size: 0.83rem;
+    color: var(--texte-faible);
+    transition: color var(--transition), border-color var(--transition);
+  }
+
+  .villes-liens a:hover {
+    color: var(--or-clair);
+    border-color: rgba(255, 194, 51, 0.35);
+  }
+
+  @media (max-width: 940px) {
+    .corps {
+      grid-template-columns: 1fr;
+    }
+
+    .corps__aside {
+      position: static;
+    }
+  }
+</style>

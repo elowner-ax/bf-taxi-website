@@ -1,0 +1,94 @@
+---
+/**
+ * Logotype BF Taxi : monogramme « BF » dans un damier taxi stylisé,
+ * suivi du nom. Entièrement vectoriel, lisible dès 24 px de haut.
+ */
+interface Props {
+  /** Hauteur du monogramme en pixels. */
+  taille?: number;
+  /** Masque le texte : utile en pied de page ou en favicon. */
+  sansTexte?: boolean;
+}
+
+const { taille = 38, sansTexte = false } = Astro.props;
+---
+
+<span class="logo" style={`--h:${taille}px`}>
+  <svg class="logo__marque" viewBox="0 0 48 48" width={taille} height={taille} aria-hidden="true">
+    <defs>
+      <linearGradient id="lg-or" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#ffd978" />
+        <stop offset="100%" stop-color="#e8a800" />
+      </linearGradient>
+    </defs>
+    <rect x="1.5" y="1.5" width="45" height="45" rx="13" fill="url(#lg-or)" />
+    <!-- Damier taxi en bandeau supérieur -->
+    <g fill="#12141a" opacity="0.9">
+      <rect x="7" y="7" width="5.5" height="5.5" />
+      <rect x="18" y="7" width="5.5" height="5.5" />
+      <rect x="29" y="7" width="5.5" height="5.5" />
+      <rect x="12.5" y="12.5" width="5.5" height="5.5" />
+      <rect x="23.5" y="12.5" width="5.5" height="5.5" />
+      <rect x="34.5" y="12.5" width="5.5" height="5.5" />
+    </g>
+    <text
+      x="24"
+      y="39"
+      text-anchor="middle"
+      font-family="'Bricolage Grotesque Variable', system-ui, sans-serif"
+      font-size="19"
+      font-weight="800"
+      fill="#12141a"
+      letter-spacing="-0.5">BF</text>
+  </svg>
+
+  {
+    !sansTexte && (
+      <span class="logo__texte">
+        <span class="logo__nom">BF Taxi</span>
+        <span class="logo__baseline">Saint-Étienne · Loire</span>
+      </span>
+    )
+  }
+</span>
+
+<style>
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+  }
+
+  .logo__marque {
+    flex-shrink: 0;
+    filter: drop-shadow(0 4px 14px rgba(255, 194, 51, 0.24));
+  }
+
+  .logo__texte {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+  }
+
+  .logo__nom {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: calc(var(--h) * 0.46);
+    letter-spacing: -0.03em;
+    color: var(--texte);
+  }
+
+  .logo__baseline {
+    font-size: calc(var(--h) * 0.235);
+    font-weight: 550;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--texte-faible);
+  }
+
+  @media (max-width: 380px) {
+    .logo__texte {
+      display: none;
+    }
+  }
+</style>

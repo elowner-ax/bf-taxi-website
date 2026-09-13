@@ -1,0 +1,131 @@
+---
+/**
+ * Layout unique du site : head SEO complet, données structurées, header,
+ * footer et barre d'action mobile.
+ *
+ * Chaque page fournit son titre, sa description et, le cas échéant, ses
+ * schémas JSON-LD supplémentaires et son fil d'Ariane.
+ */
+import '@fontsource-variable/inter';
+import '@fontsource-variable/bricolage-grotesque';
+import '../styles/global.css';
+
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import BarreMobile from '../components/BarreMobile.astro';
+import { SITE } from '../data/site.ts';
+import { SERVICES } from '../data/services.ts';
+import { schemaEntreprise, schemaSite, schemaFilAriane, type FilAriane } from '../lib/schema.ts';
+
+interface Props {
+  titre: string;
+  description: string;
+  /** Chemin canonique, ex. « /tarifs/ ». Déduit de l'URL si absent. */
+  canonical?: string;
+  /** Schémas JSON-LD propres à la page (Service, FAQPage, etc.). */
+  schemas?: object[];
+  filAriane?: FilAriane;
+  /** Empêche l'indexation (pages de remerciement, pages techniques). */
+  noindex?: boolean;
+  /** Classe ajoutée au <body> pour les variantes de page. */
+  classeBody?: string;
+}
+
+const {
+  titre,
+  description,
+  canonical,
+  schemas = [],
+  filAriane,
+  noindex = false,
+  classeBody = '',
+} = Astro.props;
+
+const url = new URL(canonical ?? Astro.url.pathname, SITE.url).href;
+const ogImage = new URL('/og-image.png', SITE.url).href;
+
+// L'entité entreprise et le site sont répétés sur chaque page : c'est la
+// pratique recommandée pour le référencement local, les moteurs pouvant
+// entrer sur n'importe quelle URL.
+const jsonLd = [
+  schemaEntreprise(SERVICES),
+  schemaSite(),
+  ...(filAriane ? [schemaFilAriane(filAriane)] : []),
+  ...schemas,
+];
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{titre}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={url} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    {!noindex && <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />}
+
+    <meta name="author" content={SITE.name} />
+    <meta name="geo.region" content="FR-42" />
+    <meta name="geo.placename" content="Saint-Étienne" />
+    <meta name="theme-color" content="#08090c" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:title" content={titre} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={url} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${SITE.name} — ${SITE.tagline}`} />
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={titre} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
+  </head>
+
+  <body class={classeBody}>
+    <a class="skip-link" href="#contenu">Aller au contenu principal</a>
+    <Header />
+    <main id="contenu">
+      <slot />
+    </main>
+    <Footer />
+    <BarreMobile />
+
+    <script>
+      // Révélation progressive au scroll. Dégradé proprement : sans JS ou avec
+      // « mouvement réduit », le contenu reste visible (cf. global.css).
+      const cibles = document.querySelectorAll<HTMLElement>('.reveal');
+      if (cibles.length && 'IntersectionObserver' in window) {
+        const observateur = new IntersectionObserver(
+          (entrées) => {
+            for (const entrée of entrées) {
+              if (!entrée.isIntersecting) continue;
+              entrée.target.classList.add('visible');
+              observateur.unobserve(entrée.target);
+            }
+          },
+          { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+        );
+        cibles.forEach((cible) => observateur.observe(cible));
+      } else {
+        cibles.forEach((cible) => cible.classList.add('visible'));
+      }
+    </script>
+  </body>
+</html>

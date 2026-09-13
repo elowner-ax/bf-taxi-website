@@ -1,0 +1,309 @@
+---
+import Base from '../layouts/Base.astro';
+import Icone from '../components/Icone.astro';
+import FilAriane from '../components/FilAriane.astro';
+import { SITE, CONTACT, ADDRESS, OPENING_HOURS } from '../data/site.ts';
+import { VILLES } from '../data/villes.ts';
+
+const ariane = [
+  { nom: 'Accueil', url: '/' },
+  { nom: 'Contact', url: '/contact/' },
+];
+
+const canaux = [
+  {
+    icone: 'phone',
+    titre: 'Téléphone',
+    valeur: CONTACT.phoneDisplay,
+    href: `tel:${CONTACT.phone}`,
+    detail: 'Le plus rapide, y compris pour une course immédiate. Disponible 24h/24.',
+    classe: 'btn-or',
+    libelle: 'Appeler maintenant',
+  },
+  {
+    icone: 'whatsapp',
+    titre: 'WhatsApp',
+    valeur: CONTACT.phoneDisplay,
+    href: `https://wa.me/${CONTACT.whatsapp}`,
+    detail: 'Pratique pour envoyer une adresse exacte ou la photo d’une prescription.',
+    classe: 'btn-whatsapp',
+    libelle: 'Ouvrir WhatsApp',
+  },
+  {
+    icone: 'mail',
+    titre: 'E-mail',
+    valeur: CONTACT.email,
+    href: `mailto:${CONTACT.email}`,
+    detail: 'Pour les demandes professionnelles, devis détaillés et factures.',
+    classe: 'btn-fantome',
+    libelle: 'Écrire un e-mail',
+  },
+  {
+    icone: 'doc',
+    titre: 'Formulaire',
+    valeur: 'Devis en ligne',
+    href: '/devis/',
+    detail: 'Décrivez votre trajet en deux minutes, nous revenons vers vous avec un prix.',
+    classe: 'btn-fantome',
+    libelle: 'Demander un devis',
+  },
+];
+---
+
+<Base
+  titre={`Contact — Taxi Saint-Étienne 24h/24 | ${SITE.name}`}
+  description={`Contactez BF Taxi à Saint-Étienne : téléphone ${CONTACT.phoneDisplay}, WhatsApp, e-mail ou formulaire de devis. Disponible 24h/24 et 7j/7 dans toute la Loire.`}
+  canonical="/contact/"
+  filAriane={ariane}
+>
+  <FilAriane elements={ariane} />
+
+  <section class="tete">
+    <div class="conteneur">
+      <p class="surtitre">Contact</p>
+      <h1>Nous joindre, {OPENING_HOURS.humanShort}</h1>
+      <p class="tete__accroche">
+        Pour une course immédiate, le téléphone reste le plus efficace. Pour une réservation à
+        l’avance ou une demande détaillée, WhatsApp et le formulaire conviennent parfaitement.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section-haut-court">
+    <div class="conteneur">
+      <div class="grille grille-4">
+        {
+          canaux.map((canal, i) => (
+            <div class="canal reveal" style={`transition-delay:${i * 70}ms`}>
+              <span class="icone-carte">
+                <Icone nom={canal.icone} taille={21} />
+              </span>
+              <h2>{canal.titre}</h2>
+              <p class="canal__valeur">{canal.valeur}</p>
+              <p class="canal__detail">{canal.detail}</p>
+              <a
+                href={canal.href}
+                class={`btn ${canal.classe}`}
+                rel={canal.href.startsWith('http') ? 'noopener' : undefined}
+                target={canal.href.startsWith('http') ? '_blank' : undefined}
+              >
+                {canal.libelle}
+              </a>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-claire">
+    <div class="conteneur infos">
+      <div class="prose">
+        <p class="surtitre">Informations pratiques</p>
+        <h2>Où nous trouver, quand nous appeler</h2>
+
+        <dl class="infos__liste">
+          <div>
+            <dt><Icone nom="map" taille={17} /> Secteur d’activité</dt>
+            <dd>
+              {ADDRESS.city} ({ADDRESS.postalCode}) et l’ensemble du département de la
+              {' '}{ADDRESS.department} ({ADDRESS.departmentCode}). Longue distance dans toute la France.
+            </dd>
+          </div>
+          <div>
+            <dt><Icone nom="clock" taille={17} /> Disponibilité</dt>
+            <dd>{OPENING_HOURS.human}. Réservation conseillée la veille pour les rendez-vous du matin.</dd>
+          </div>
+          <div>
+            <dt><Icone nom="euro" taille={17} /> Moyens de paiement</dt>
+            <dd>
+              Carte bancaire, espèces et virement pour les professionnels. Tiers payant CPAM sur les
+              transports conventionnés : vous ne réglez rien.
+            </dd>
+          </div>
+          <div>
+            <dt><Icone nom="star" taille={17} /> Fiche Google</dt>
+            <dd>
+              Retrouvez-nous sur Google Business Profile pour l’itinéraire et les avis.
+              <a href={CONTACT.googleBusiness} rel="noopener nofollow" target="_blank">
+                Voir la fiche →
+              </a>
+            </dd>
+          </div>
+        </dl>
+      </div>
+
+      <aside class="infos__aside">
+        <h2>Communes desservies</h2>
+        <p>Notre secteur d’intervention habituel, au-delà duquel nous nous déplaçons sur réservation.</p>
+        <ul>
+          {VILLES.map((v) => <li><a href={`/taxi/${v.slug}/`}>{v.nom}</a></li>)}
+        </ul>
+        <a href="/taxi/" class="infos__lien">Toutes les zones desservies <Icone nom="arrow" taille={15} /></a>
+      </aside>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .tete {
+    padding-block: clamp(1.75rem, 4vw, 3rem) clamp(1rem, 2vw, 1.5rem);
+  }
+
+  .tete__accroche {
+    font-size: clamp(1.02rem, 2vw, 1.15rem);
+    color: var(--texte-doux);
+    max-width: 64ch;
+    margin-top: 1.2rem;
+    line-height: 1.7;
+  }
+
+  .section-haut-court {
+    padding-top: clamp(1.5rem, 3vw, 2.5rem);
+  }
+
+  .canal {
+    display: flex;
+    flex-direction: column;
+    padding: 1.75rem 1.6rem;
+    border-radius: var(--r-lg);
+    border: 1px solid var(--bord);
+    background: linear-gradient(155deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.012));
+  }
+
+  .canal h2 {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .canal__valeur {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--or);
+    word-break: break-word;
+  }
+
+  .canal__detail {
+    font-size: 0.88rem;
+    color: var(--texte-faible);
+    line-height: 1.6;
+    margin-top: 0.7rem;
+    flex: 1;
+  }
+
+  .canal .btn {
+    margin-top: 1.35rem;
+    width: 100%;
+    font-size: 0.89rem;
+  }
+
+  .infos {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: start;
+  }
+
+  .infos__liste {
+    display: grid;
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .infos__liste dt {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-display);
+    font-size: 0.98rem;
+    font-weight: 700;
+    color: var(--texte-sombre);
+  }
+
+  .infos__liste dt :global(svg) {
+    color: var(--or-sombre);
+  }
+
+  .infos__liste dd {
+    margin: 0.4rem 0 0;
+    color: var(--texte-sombre-doux);
+    font-size: 0.96rem;
+    line-height: 1.7;
+  }
+
+  .infos__liste a {
+    display: inline-block;
+    margin-top: 0.3rem;
+    color: #a06f00;
+    font-weight: 620;
+  }
+
+  .infos__aside {
+    padding: 1.75rem;
+    border-radius: var(--r-lg);
+    background: #fff;
+    border: 1px solid rgba(18, 20, 26, 0.09);
+  }
+
+  .infos__aside h2 {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .infos__aside p {
+    font-size: 0.88rem;
+    color: var(--texte-sombre-doux);
+    line-height: 1.6;
+  }
+
+  .infos__aside ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 1.1rem;
+  }
+
+  .infos__aside a {
+    color: var(--texte-sombre-doux);
+  }
+
+  .infos__aside li a {
+    display: inline-block;
+    padding: 0.3rem 0.7rem;
+    border-radius: var(--r-full);
+    background: #f2f1ea;
+    font-size: 0.82rem;
+    transition: background-color var(--transition), color var(--transition);
+  }
+
+  .infos__aside li a:hover {
+    background: var(--or);
+    color: var(--texte-sombre);
+  }
+
+  .infos__lien {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 1.35rem;
+    font-weight: 620;
+    font-size: 0.89rem;
+    color: #a06f00 !important;
+    transition: gap var(--transition);
+  }
+
+  .infos__lien:hover {
+    gap: 0.7rem;
+  }
+
+  @media (max-width: 880px) {
+    .infos {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

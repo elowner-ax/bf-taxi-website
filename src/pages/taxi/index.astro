@@ -1,0 +1,322 @@
+---
+import Base from '../../layouts/Base.astro';
+import Icone from '../../components/Icone.astro';
+import FilAriane from '../../components/FilAriane.astro';
+import BlocCTA from '../../components/BlocCTA.astro';
+import { CONTACT, OPENING_HOURS } from '../../data/site.ts';
+import { VILLES } from '../../data/villes.ts';
+import { DESTINATIONS, GROUPES_DESTINATION } from '../../data/tarifs.ts';
+
+const ariane = [
+  { nom: 'Accueil', url: '/' },
+  { nom: 'Zones desservies', url: '/taxi/' },
+];
+
+// Les communes sont regroupées par secteur : c'est ainsi que les habitants
+// se situent, bien plus que par ordre alphabétique.
+const secteurs = [
+  {
+    nom: 'Saint-Étienne et couronne',
+    description: 'Notre secteur principal : intervention rapide, souvent dans l’heure.',
+    slugs: ['saint-etienne', 'saint-priest-en-jarez', 'villars', 'roche-la-moliere', 'la-ricamarie', 'sorbiers'],
+  },
+  {
+    nom: 'Vallée du Gier',
+    description: 'L’axe Saint-Chamond — Rive-de-Gier, porte d’entrée vers Lyon.',
+    slugs: ['saint-chamond', 'rive-de-gier'],
+  },
+  {
+    nom: 'Vallée de l’Ondaine',
+    description: 'Firminy, Le Chambon-Feugerolles et Unieux, au sud du bassin.',
+    slugs: ['firminy', 'le-chambon-feugerolles', 'unieux'],
+  },
+  {
+    nom: 'Plaine du Forez',
+    description: 'Montbrison, Andrézieux-Bouthéon et les communes de la plaine.',
+    slugs: ['montbrison', 'andrezieux-boutheon', 'saint-just-saint-rambert', 'veauche'],
+  },
+  {
+    nom: 'Roannais',
+    description: 'Desservi sur réservation, principalement en longue distance.',
+    slugs: ['roanne'],
+  },
+];
+
+const groupesDestination = (Object.keys(GROUPES_DESTINATION) as (keyof typeof GROUPES_DESTINATION)[])
+  .filter((cle) => cle !== 'ville')
+  .map((cle) => ({ label: GROUPES_DESTINATION[cle], items: DESTINATIONS.filter((d) => d.groupe === cle) }));
+---
+
+<Base
+  titre="Zones desservies — Taxi Saint-Étienne et Loire 42 | BF Taxi"
+  description="Toutes les communes desservies par BF Taxi : Saint-Étienne, vallée du Gier, Ondaine, Forez, Roannais. Transport conventionné CPAM et transferts longue distance, 24h/24."
+  canonical="/taxi/"
+  filAriane={ariane}
+>
+  <FilAriane elements={ariane} />
+
+  <section class="tete">
+    <div class="conteneur">
+      <p class="surtitre">Zones desservies</p>
+      <h1>Saint-Étienne, la Loire et toute la France</h1>
+      <p class="tete__accroche">
+        Notre base est stéphanoise, notre rayon d’action bien plus large. Nous intervenons
+        quotidiennement sur le bassin de Saint-Étienne, la vallée du Gier, l’Ondaine, le Forez et
+        le Roannais — et sans limite de distance pour les transferts et les transports médicaux
+        prescrits.
+      </p>
+
+      <div class="groupe-btn tete__cta">
+        <a href={`tel:${CONTACT.phone}`} class="btn btn-or btn-large">
+          <Icone nom="phone" taille={19} />
+          {CONTACT.phoneDisplay}
+        </a>
+        <a href="/devis/" class="btn btn-fantome btn-large">
+          <Icone nom="doc" taille={19} />
+          Demander un devis
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="conteneur">
+      {
+        secteurs.map((secteur) => {
+          const villes = secteur.slugs
+            .map((slug) => VILLES.find((v) => v.slug === slug))
+            .filter((v): v is (typeof VILLES)[number] => Boolean(v));
+
+          return (
+            <div class="secteur reveal">
+              <div class="secteur__entete">
+                <h2>{secteur.nom}</h2>
+                <p>{secteur.description}</p>
+              </div>
+              <div class="grille grille-3">
+                {villes.map((ville) => (
+                  <a href={`/taxi/${ville.slug}/`} class="carte carte-ville">
+                    <div class="carte-ville__haut">
+                      <h3>{ville.nom}</h3>
+                      <span class="carte-ville__cp">{ville.codePostal}</span>
+                    </div>
+                    <p>{ville.intro}</p>
+                    <div class="carte-ville__pied">
+                      <span>
+                        <Icone nom="route" taille={14} />
+                        {ville.distanceKm === 0 ? 'Centre' : `${ville.distanceKm} km`}
+                      </span>
+                      <span>
+                        <Icone nom="clock" taille={14} />
+                        {ville.tempsMinutes === 0 ? '10-25 min' : `${ville.tempsMinutes} min`}
+                      </span>
+                      <span class="carte-ville__fleche">
+                        <Icone nom="arrow" taille={15} />
+                      </span>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </div>
+          );
+        })
+      }
+    </div>
+  </section>
+
+  <section class="section section-claire">
+    <div class="conteneur">
+      <p class="surtitre reveal">Destinations fréquentes</p>
+      <h2 class="reveal">Où nous vous emmenons</h2>
+      <p class="intro-section reveal">
+        Distances et durées indicatives au départ de Saint-Étienne, hors heures de pointe.
+      </p>
+
+      <div class="grille grille-2 marge-haut">
+        {
+          groupesDestination.map((groupe) => (
+            <div class="carte reveal">
+              <h3>{groupe.label}</h3>
+              <ul class="destinations">
+                {groupe.items.map((d) => (
+                  <li>
+                    <span>{d.label}</span>
+                    <b>
+                      {d.km} km · {d.minutes} min
+                    </b>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+
+      <p class="note reveal">
+        Ces valeurs servent de repère. Pour un prix, utilisez notre
+        <a href="/tarifs/#simulateur">simulateur de tarif</a> ou demandez-nous un forfait ferme.
+      </p>
+    </div>
+  </section>
+
+  <BlocCTA
+    titre="Votre commune n’est pas dans la liste ?"
+    texte={`Nous intervenons bien au-delà des communes listées ici. Appelez-nous, ${OPENING_HOURS.humanShort} : si nous ne pouvons pas assurer votre trajet, nous vous le dirons tout de suite.`}
+  />
+</Base>
+
+<style>
+  .tete {
+    padding-block: clamp(1.75rem, 4vw, 3rem) clamp(2rem, 4vw, 3rem);
+  }
+
+  .tete h1 {
+    max-width: 18ch;
+  }
+
+  .tete__accroche {
+    font-size: clamp(1.02rem, 2vw, 1.15rem);
+    color: var(--texte-doux);
+    max-width: 68ch;
+    margin-top: 1.2rem;
+    line-height: 1.7;
+  }
+
+  .tete__cta {
+    margin-top: 1.9rem;
+  }
+
+  .secteur + .secteur {
+    margin-top: clamp(2.5rem, 5vw, 3.75rem);
+  }
+
+  .secteur__entete {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--bord);
+  }
+
+  .secteur__entete h2 {
+    font-size: clamp(1.35rem, 2.8vw, 1.8rem);
+  }
+
+  .secteur__entete p {
+    color: var(--texte-faible);
+    font-size: 0.94rem;
+    margin-top: 0.4rem;
+  }
+
+  .carte-ville {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .carte-ville__haut {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.7rem;
+  }
+
+  .carte-ville__haut h3 {
+    margin-bottom: 0;
+    font-size: 1.2rem;
+  }
+
+  .carte-ville__cp {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--or);
+    padding: 0.2rem 0.55rem;
+    border-radius: var(--r-full);
+    background: rgba(255, 194, 51, 0.11);
+  }
+
+  .carte-ville p {
+    flex: 1;
+    font-size: 0.925rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .carte-ville__pied {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1.2rem;
+    padding-top: 0.95rem;
+    border-top: 1px solid var(--bord);
+    font-size: 0.82rem;
+    color: var(--texte-faible);
+  }
+
+  .carte-ville__pied span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .carte-ville__pied :global(svg) {
+    color: var(--or);
+  }
+
+  .carte-ville__fleche {
+    margin-left: auto;
+    color: var(--or);
+    transition: transform var(--transition);
+  }
+
+  .carte-ville:hover .carte-ville__fleche {
+    transform: translateX(4px);
+  }
+
+  .destinations {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 0.5rem;
+    margin-top: 0.9rem;
+  }
+
+  .destinations li {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    font-size: 0.9rem;
+    color: var(--texte-sombre-doux);
+    padding-bottom: 0.5rem;
+    border-bottom: 1px dashed rgba(18, 20, 26, 0.12);
+  }
+
+  .destinations li:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .destinations b {
+    white-space: nowrap;
+    color: var(--texte-sombre);
+    font-size: 0.84rem;
+  }
+
+  .marge-haut {
+    margin-top: clamp(1.75rem, 3.5vw, 2.5rem);
+  }
+
+  .note {
+    margin-top: 2rem;
+    font-size: 0.92rem;
+    color: var(--texte-sombre-doux);
+  }
+
+  .note a {
+    color: #a06f00;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    font-weight: 600;
+  }
+</style>

@@ -1,0 +1,426 @@
+---
+import Base from '../layouts/Base.astro';
+import Icone from '../components/Icone.astro';
+import FilAriane from '../components/FilAriane.astro';
+import Simulateur from '../components/Simulateur.astro';
+import Faq from '../components/Faq.astro';
+import BlocCTA from '../components/BlocCTA.astro';
+import { CONTACT } from '../data/site.ts';
+import { TARIFS, TARIF_CONSTANTS, ARRETE, DESTINATIONS, estimerCourse, euros } from '../data/tarifs.ts';
+import { faqParCategorie } from '../data/faq.ts';
+import { schemaFaq, schemaTarifs } from '../lib/schema.ts';
+
+const ariane = [
+  { nom: 'Accueil', url: '/' },
+  { nom: 'Tarifs', url: '/tarifs/' },
+];
+
+const faqTarifs = faqParCategorie('tarifs');
+
+// Exemples calculés avec la même fonction que le simulateur : les montants
+// affichés ne peuvent pas diverger de la grille réglementaire.
+const exemples = ['gare-chateaucreux', 'chu-hopital-nord', 'aeroport-saint-etienne-boutheon', 'aeroport-lyon-saint-exupery', 'lyon-centre', 'aeroport-geneve']
+  .map((slug) => DESTINATIONS.find((d) => d.slug === slug))
+  .filter((d): d is (typeof DESTINATIONS)[number] => Boolean(d))
+  .map((d) => ({
+    destination: d,
+    jour: estimerCourse({ km: d.km, tarif: 'C' }).total,
+    nuit: estimerCourse({ km: d.km, tarif: 'D' }).total,
+  }));
+
+const constantes = [
+  { label: 'Prise en charge', valeur: euros(TARIF_CONSTANTS.priseEnCharge), detail: 'Facturé au départ, avant le premier kilomètre' },
+  { label: 'Minimum de perception', valeur: euros(TARIF_CONSTANTS.minimumPerception), detail: 'Montant plancher d’une course, suppléments exclus' },
+  { label: 'Tarif horaire', valeur: `${euros(TARIF_CONSTANTS.tarifHoraire)} / h`, detail: 'Attente sur place ou circulation à vitesse réduite' },
+  { label: 'Supplément passager', valeur: euros(TARIF_CONSTANTS.supplement4ePassager), detail: 'Par personne à partir du 4e passager' },
+];
+---
+
+<Base
+  titre="Tarifs taxi Saint-Étienne et Loire 42 — Grille officielle et simulateur | BF Taxi"
+  description={`Tarifs taxi réglementés dans la Loire : prise en charge ${TARIF_CONSTANTS.priseEnCharge.toFixed(2)} €, de ${TARIFS.A.parKm.toFixed(2)} à ${TARIFS.D.parKm.toFixed(2)} €/km selon le tarif. Simulateur de prix en ligne et exemples de trajets.`}
+  canonical="/tarifs/"
+  filAriane={ariane}
+  schemas={[schemaTarifs(), schemaFaq(faqTarifs)]}
+>
+  <FilAriane elements={ariane} />
+
+  <section class="tete">
+    <div class="conteneur">
+      <p class="surtitre">Tarifs</p>
+      <h1>Des tarifs réglementés, affichés sans détour</h1>
+      <p class="tete__accroche">
+        Les prix des courses de taxi ne sont pas fixés par nous : ils sont plafonnés par la
+        préfecture de la Loire. Ils sont donc identiques chez tous les taxis du département.
+        Voici la grille en vigueur, et de quoi estimer votre course en quelques secondes.
+      </p>
+
+      <p class="source">
+        <Icone nom="doc" taille={16} />
+        Source : {ARRETE.reference} du {ARRETE.dateDisplay} — {ARRETE.departement}. Il s’agit de
+        tarifs <strong>maximaux</strong>.
+      </p>
+    </div>
+  </section>
+
+  <!-- Simulateur -->
+  <section class="section-simu">
+    <div class="conteneur conteneur-etroit">
+      <Simulateur titre="Simulateur de tarif" />
+    </div>
+  </section>
+
+  <!-- Grille officielle -->
+  <section class="section">
+    <div class="conteneur">
+      <p class="surtitre reveal">Grille officielle</p>
+      <h2 class="reveal">Les quatre tarifs kilométriques</h2>
+      <p class="intro-section reveal">
+        Le tarif appliqué dépend de deux choses : si le chauffeur revient à vide après vous avoir
+        déposé, et si le trajet a lieu de jour ou de nuit. Le taximètre bascule automatiquement.
+      </p>
+
+      <div class="grille grille-4 marge-haut">
+        {
+          Object.values(TARIFS).map((tarif, i) => (
+            <div class="tarif reveal" style={`transition-delay:${i * 70}ms`}>
+              <span class="tarif__lettre">{tarif.key}</span>
+              <p class="tarif__prix">
+                {tarif.parKm.toFixed(2).replace('.', ',')} <span>€ / km</span>
+              </p>
+              <p class="tarif__cond">{tarif.conditions}</p>
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="grille grille-4 marge-haut">
+        {
+          constantes.map((c) => (
+            <div class="constante reveal">
+              <dt>{c.label}</dt>
+              <dd>{c.valeur}</dd>
+              <p>{c.detail}</p>
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="encart-info reveal">
+        <Icone nom="bolt" taille={20} />
+        <div>
+          <h3>Pourquoi l’aller simple coûte-t-il le double au kilomètre ?</h3>
+          <p>
+            Parce qu’il intègre le retour à vide du véhicule. Sur un aller-retour, le chauffeur
+            vous ramène : les kilomètres du retour sont facturés mais au tarif réduit. Sur un aller
+            simple, il rentre seul, et ce trajet non facturé est répercuté sur le prix au
+            kilomètre. <strong>Conséquence pratique : si vous revenez avec nous, même plusieurs
+            heures plus tard, dites-le à la réservation — c’est nettement moins cher.</strong>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Exemples -->
+  <section class="section section-claire">
+    <div class="conteneur">
+      <p class="surtitre reveal">Exemples</p>
+      <h2 class="reveal">Combien coûtent les trajets les plus demandés ?</h2>
+      <p class="intro-section reveal">
+        Estimations au départ de Saint-Étienne centre, pour un aller simple, calculées selon la
+        grille ci-dessus. Le montant réel dépend du point de prise en charge exact et des
+        conditions de circulation.
+      </p>
+
+      <div class="tableau-wrap reveal">
+        <table class="tableau">
+          <thead>
+            <tr>
+              <th scope="col">Destination</th>
+              <th scope="col">Distance</th>
+              <th scope="col">Durée</th>
+              <th scope="col">Jour (tarif C)</th>
+              <th scope="col">Nuit, dim. et fériés (tarif D)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              exemples.map((ex) => (
+                <tr>
+                  <th scope="row">{ex.destination.label}</th>
+                  <td>{ex.destination.km} km</td>
+                  <td>{ex.destination.minutes} min</td>
+                  <td class="prix">{euros(ex.jour)}</td>
+                  <td class="prix">{euros(ex.nuit)}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <p class="note reveal">
+        Sur les longues distances, nous proposons généralement un <strong>forfait ferme</strong>,
+        communiqué avant le départ et incluant péages et carburant. Demandez-le au
+        <a href={`tel:${CONTACT.phone}`}>{CONTACT.phoneDisplay}</a> ou via le
+        <a href="/devis/">formulaire de devis</a>.
+      </p>
+    </div>
+  </section>
+
+  <!-- Conventionné -->
+  <section class="section">
+    <div class="conteneur conteneur-etroit prose">
+      <p class="surtitre reveal">Transport conventionné</p>
+      <h2 class="reveal">Et si mon transport est pris en charge par la CPAM ?</h2>
+      <p class="reveal">
+        Dans ce cas, les montants ci-dessus ne vous concernent pas directement :
+        <strong>vous ne réglez rien au moment de la course</strong>. Nous facturons l’Assurance
+        Maladie dans le cadre du tiers payant, sur la base d’une convention nationale qui applique
+        un abattement sur le tarif préfectoral.
+      </p>
+      <p class="reveal">
+        Reste éventuellement à votre charge le ticket modérateur, c’est-à-dire la part non
+        remboursée par l’Assurance Maladie — généralement 35 % hors affection de longue durée. Il
+        est le plus souvent pris en charge par votre complémentaire santé. En ALD, accident du
+        travail, maladie professionnelle ou maternité, la prise en charge est intégrale.
+      </p>
+      <p class="reveal">
+        <a href="/taxi-conventionne-cpam/">Tout savoir sur le transport conventionné CPAM</a>
+      </p>
+    </div>
+  </section>
+
+  <section class="section section-sombre-2">
+    <div class="conteneur conteneur-etroit">
+      <div class="reveal">
+        <Faq items={faqTarifs} titre="Tarifs et paiement : vos questions" />
+      </div>
+    </div>
+  </section>
+
+  <BlocCTA
+    titre="Un prix ferme avant de partir ?"
+    texte="Donnez-nous votre trajet : nous vous annonçons un montant, par téléphone, WhatsApp ou par écrit via le formulaire de devis."
+  />
+</Base>
+
+<style>
+  .tete {
+    padding-block: clamp(1.75rem, 4vw, 3rem) clamp(1.5rem, 3vw, 2.25rem);
+  }
+
+  .tete h1 {
+    max-width: 20ch;
+  }
+
+  .tete__accroche {
+    font-size: clamp(1.02rem, 2vw, 1.15rem);
+    color: var(--texte-doux);
+    max-width: 66ch;
+    margin-top: 1.2rem;
+    line-height: 1.7;
+  }
+
+  .source {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 0.55rem;
+    margin-top: 1.5rem;
+    padding: 0.7rem 1.05rem;
+    border-radius: var(--r-md);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--bord);
+    font-size: 0.86rem;
+    color: var(--texte-faible);
+    max-width: 72ch;
+  }
+
+  .source :global(svg) {
+    color: var(--or);
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+
+  .section-simu {
+    padding-block: clamp(1rem, 2vw, 1.5rem) clamp(2.5rem, 5vw, 4rem);
+  }
+
+  .marge-haut {
+    margin-top: clamp(1.75rem, 3.5vw, 2.5rem);
+  }
+
+  /* Cartes de tarif */
+  .tarif {
+    position: relative;
+    padding: 1.6rem 1.5rem;
+    border-radius: var(--r-lg);
+    border: 1px solid var(--bord);
+    background: linear-gradient(155deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.012));
+    overflow: hidden;
+  }
+
+  .tarif__lettre {
+    position: absolute;
+    top: 0.35rem;
+    right: 1rem;
+    font-family: var(--font-display);
+    font-size: 4.5rem;
+    font-weight: 800;
+    line-height: 1;
+    color: rgba(255, 194, 51, 0.13);
+  }
+
+  .tarif__prix {
+    font-family: var(--font-display);
+    font-size: 1.95rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--or);
+    line-height: 1;
+  }
+
+  .tarif__prix span {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--texte-doux);
+    letter-spacing: 0;
+  }
+
+  .tarif__cond {
+    margin-top: 0.85rem;
+    font-size: 0.87rem;
+    color: var(--texte-faible);
+    line-height: 1.55;
+    position: relative;
+  }
+
+  /* Constantes */
+  .constante {
+    padding: 1.3rem 1.4rem;
+    border-radius: var(--r-md);
+    border: 1px solid var(--bord);
+    background: rgba(255, 255, 255, 0.022);
+  }
+
+  .constante dt {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--texte-faible);
+  }
+
+  .constante dd {
+    margin: 0.4rem 0 0.5rem;
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--texte);
+  }
+
+  .constante p {
+    font-size: 0.82rem;
+    color: var(--texte-faible);
+    line-height: 1.5;
+  }
+
+  .encart-info {
+    display: flex;
+    gap: 1rem;
+    margin-top: clamp(2rem, 4vw, 3rem);
+    padding: 1.6rem 1.75rem;
+    border-radius: var(--r-lg);
+    background: linear-gradient(140deg, rgba(255, 194, 51, 0.1), rgba(255, 194, 51, 0.02));
+    border: 1px solid rgba(255, 194, 51, 0.26);
+  }
+
+  .encart-info > :global(svg) {
+    color: var(--or);
+    flex-shrink: 0;
+    margin-top: 0.15rem;
+  }
+
+  .encart-info h3 {
+    font-size: 1.08rem;
+    margin-bottom: 0.55rem;
+  }
+
+  .encart-info p {
+    color: var(--texte-doux);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    max-width: 78ch;
+  }
+
+  /* Tableau */
+  .tableau-wrap {
+    margin-top: clamp(1.75rem, 3.5vw, 2.5rem);
+    overflow-x: auto;
+    border-radius: var(--r-lg);
+    border: 1px solid rgba(18, 20, 26, 0.1);
+    background: #fff;
+  }
+
+  .tableau {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 660px;
+    font-size: 0.92rem;
+  }
+
+  .tableau th,
+  .tableau td {
+    padding: 0.95rem 1.15rem;
+    text-align: left;
+  }
+
+  .tableau thead th {
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--texte-sombre-doux);
+    background: #f2f1ea;
+    border-bottom: 1px solid rgba(18, 20, 26, 0.1);
+    white-space: nowrap;
+  }
+
+  .tableau tbody tr + tr {
+    border-top: 1px solid rgba(18, 20, 26, 0.07);
+  }
+
+  .tableau tbody th {
+    font-weight: 620;
+    color: var(--texte-sombre);
+  }
+
+  .tableau td {
+    color: var(--texte-sombre-doux);
+    white-space: nowrap;
+  }
+
+  .tableau .prix {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--texte-sombre);
+  }
+
+  .note {
+    margin-top: 1.75rem;
+    font-size: 0.94rem;
+    color: var(--texte-sombre-doux);
+    max-width: 76ch;
+    line-height: 1.7;
+  }
+
+  .note a {
+    color: #a06f00;
+    font-weight: 620;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+</style>

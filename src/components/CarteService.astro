@@ -1,0 +1,52 @@
+---
+import Icone from './Icone.astro';
+import type { Service } from '../data/services.ts';
+
+interface Props {
+  service: Service;
+}
+
+const { service } = Astro.props;
+---
+
+<a href={`/${service.slug}/`} class="carte carte-service">
+  <span class="icone-carte">
+    <Icone nom={service.icon} taille={22} />
+  </span>
+  <h3>{service.navLabel}</h3>
+  <p>{service.accroche}</p>
+  <span class="carte-service__lien">
+    En savoir plus
+    <Icone nom="arrow" taille={16} />
+  </span>
+</a>
+
+<style>
+  .carte-service {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .carte-service p {
+    flex: 1;
+  }
+
+  .carte-service__lien {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 1.15rem;
+    font-size: 0.88rem;
+    font-weight: 620;
+    color: var(--or);
+    transition: gap var(--transition);
+  }
+
+  .carte-service:hover .carte-service__lien {
+    gap: 0.7rem;
+  }
+
+  :global(.section-claire) .carte-service__lien {
+    color: var(--or-sombre);
+  }
+</style>

@@ -1,0 +1,132 @@
+---
+import Base from '../layouts/Base.astro';
+import Icone from '../components/Icone.astro';
+import { CONTACT } from '../data/site.ts';
+import { SERVICES } from '../data/services.ts';
+
+const populaires = ['taxi-conventionne-cpam', 'taxi-aeroport-lyon-saint-exupery', 'taxi-groupe']
+  .map((slug) => SERVICES.find((s) => s.slug === slug))
+  .filter((s): s is (typeof SERVICES)[number] => Boolean(s));
+---
+
+<Base
+  titre="Page introuvable — BF Taxi"
+  description="Cette page n’existe pas ou a été déplacée."
+  canonical="/404/"
+  noindex
+>
+  <section class="erreur">
+    <div class="conteneur conteneur-etroit">
+      <p class="erreur__code">404</p>
+      <h1>Cette page a pris une autre route</h1>
+      <p class="erreur__texte">
+        L’adresse demandée n’existe pas, ou n’existe plus. Voici de quoi retrouver votre chemin —
+        et si vous cherchiez simplement à réserver, le plus court reste le téléphone.
+      </p>
+
+      <div class="groupe-btn erreur__cta">
+        <a href={`tel:${CONTACT.phone}`} class="btn btn-or btn-large">
+          <Icone nom="phone" taille={19} />
+          {CONTACT.phoneDisplay}
+        </a>
+        <a href="/" class="btn btn-fantome btn-large">Retour à l’accueil</a>
+      </div>
+
+      <div class="erreur__liens">
+        <h2>Pages les plus consultées</h2>
+        <ul>
+          {populaires.map((s) => (
+            <li>
+              <a href={`/${s.slug}/`}>
+                <Icone nom={s.icon} taille={18} />
+                {s.navLabel}
+              </a>
+            </li>
+          ))}
+          <li><a href="/tarifs/"><Icone nom="euro" taille={18} /> Tarifs et simulateur</a></li>
+          <li><a href="/taxi/"><Icone nom="map" taille={18} /> Zones desservies</a></li>
+          <li><a href="/plan-du-site/"><Icone nom="doc" taille={18} /> Plan du site</a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .erreur {
+    padding-block: clamp(3rem, 8vw, 6rem);
+    text-align: center;
+  }
+
+  .erreur__code {
+    font-family: var(--font-display);
+    font-size: clamp(4.5rem, 14vw, 8rem);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.05em;
+    background: linear-gradient(160deg, var(--or-clair), rgba(255, 194, 51, 0.18));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .erreur h1 {
+    margin-top: 0.5rem;
+    font-size: clamp(1.6rem, 4vw, 2.5rem);
+  }
+
+  .erreur__texte {
+    color: var(--texte-doux);
+    margin: 1.1rem auto 0;
+    max-width: 54ch;
+    line-height: 1.7;
+  }
+
+  .erreur__cta {
+    justify-content: center;
+    margin-top: 2rem;
+  }
+
+  .erreur__liens {
+    margin-top: 3.5rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid var(--bord);
+    text-align: left;
+  }
+
+  .erreur__liens h2 {
+    font-size: 1rem;
+    margin-bottom: 1.1rem;
+  }
+
+  .erreur__liens ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 0.6rem;
+  }
+
+  .erreur__liens a {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.85rem 1.05rem;
+    border-radius: var(--r-md);
+    border: 1px solid var(--bord);
+    background: rgba(255, 255, 255, 0.025);
+    font-size: 0.92rem;
+    color: var(--texte-doux);
+    transition: border-color var(--transition), color var(--transition);
+  }
+
+  .erreur__liens a:hover {
+    border-color: rgba(255, 194, 51, 0.34);
+    color: var(--texte);
+  }
+
+  .erreur__liens :global(svg) {
+    color: var(--or);
+    flex-shrink: 0;
+  }
+</style>

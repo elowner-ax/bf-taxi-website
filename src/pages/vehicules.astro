@@ -1,0 +1,132 @@
+---
+import Base from '../layouts/Base.astro';
+import Icone from '../components/Icone.astro';
+import FilAriane from '../components/FilAriane.astro';
+import Vehicules from '../components/Vehicules.astro';
+import Faq from '../components/Faq.astro';
+import BlocCTA from '../components/BlocCTA.astro';
+import { faqParCategorie } from '../data/faq.ts';
+import { schemaFaq } from '../lib/schema.ts';
+
+const ariane = [
+  { nom: 'Accueil', url: '/' },
+  { nom: 'Nos véhicules', url: '/vehicules/' },
+];
+
+const faqVehicules = faqParCategorie('vehicules');
+
+const equipements = [
+  { icone: 'bolt', titre: 'Recharge et connectivité', texte: 'Prises USB-C à l’avant comme à l’arrière, et Wi-Fi à bord de la berline.' },
+  { icone: 'heart', titre: 'Véhicules non-fumeurs', texte: 'Aucun désodorisant n’est utilisé : indispensable pour les patients sensibles aux odeurs.' },
+  { icone: 'users', titre: 'Sièges enfants', texte: 'Réhausseurs et sièges bébé fournis gratuitement, installés avant votre départ.' },
+  { icone: 'luggage', titre: 'Bagages volumineux', texte: 'Poussettes, déambulateurs, matériel médical : dites-le-nous, nous prévoyons le van.' },
+  { icone: 'wheelchair', titre: 'Aides à la marche', texte: 'Canne, déambulateur et fauteuil roulant pliant chargés et déchargés par nos soins.' },
+  { icone: 'euro', titre: 'Paiement à bord', texte: 'Carte bancaire et espèces acceptées. Facture remise sur demande.' },
+];
+---
+
+<Base
+  titre="Nos véhicules — Tesla Model 3 et van Mercedes Classe V | BF Taxi"
+  description="Les véhicules BF Taxi à Saint-Étienne : Tesla Model 3 blanche 100 % électrique et van Mercedes Classe V jusqu’à 7 passagers. Sièges enfants, grand volume de bagages."
+  canonical="/vehicules/"
+  filAriane={ariane}
+  schemas={[schemaFaq(faqVehicules)]}
+>
+  <FilAriane elements={ariane} />
+
+  <section class="tete">
+    <div class="conteneur">
+      <p class="surtitre">Nos véhicules</p>
+      <h1>Deux véhicules, deux usages</h1>
+      <p class="tete__accroche">
+        Une berline électrique pour le confort et le silence, un van pour les groupes et les
+        bagages. Vous n’avez pas à choisir : indiquez-nous le nombre de passagers et vos
+        contraintes, nous envoyons le véhicule adapté.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section-haut-court">
+    <div class="conteneur">
+      <Vehicules detaille />
+    </div>
+  </section>
+
+  <section class="section section-claire">
+    <div class="conteneur">
+      <p class="surtitre reveal">À bord</p>
+      <h2 class="reveal">Ce que vous trouverez dans nos véhicules</h2>
+
+      <div class="grille grille-3 marge-haut">
+        {
+          equipements.map((eq, i) => (
+            <div class="carte reveal" style={`transition-delay:${i * 60}ms`}>
+              <span class="icone-carte">
+                <Icone nom={eq.icone} taille={21} />
+              </span>
+              <h3>{eq.titre}</h3>
+              <p>{eq.texte}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="conteneur conteneur-etroit prose">
+      <p class="surtitre reveal">Le choix de l’électrique</p>
+      <h2 class="reveal">Pourquoi une Tesla pour du transport médical ?</h2>
+      <p class="reveal">
+        Ce n’est pas un argument de style. Une motorisation électrique supprime les vibrations du
+        moteur thermique, les à-coups de boîte de vitesses et l’odeur de carburant — trois facteurs
+        d’inconfort bien réels pour un patient nauséeux après une chimiothérapie ou fatigué après
+        quatre heures de dialyse.
+      </p>
+      <p class="reveal">
+        S’y ajoute le silence de l’habitacle, qui permet de se reposer sur le trajet du retour ou
+        de téléphoner sereinement lors d’un déplacement professionnel. Et la possibilité de
+        préchauffer ou pré-climatiser le véhicule à distance, avant même de venir vous chercher.
+      </p>
+      <p class="reveal">
+        Enfin, un transport en véhicule électrique n’émet aucun gaz d’échappement là où il roule :
+        dans une agglomération dense comme Saint-Étienne, cela compte.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section-sombre-2">
+    <div class="conteneur conteneur-etroit">
+      <div class="reveal">
+        <Faq items={faqVehicules} titre="Véhicules et bagages : vos questions" />
+      </div>
+    </div>
+  </section>
+
+  <BlocCTA
+    titre="Un doute sur le véhicule adapté ?"
+    texte="Décrivez-nous votre trajet, le nombre de passagers et vos bagages : nous vous dirons lequel convient, et s’il faut prévoir autre chose."
+  />
+</Base>
+
+<style>
+  .tete {
+    padding-block: clamp(1.75rem, 4vw, 3rem) clamp(1rem, 2vw, 1.5rem);
+  }
+
+  .tete__accroche {
+    font-size: clamp(1.02rem, 2vw, 1.15rem);
+    color: var(--texte-doux);
+    max-width: 64ch;
+    margin-top: 1.2rem;
+    line-height: 1.7;
+  }
+
+  .section-haut-court {
+    padding-top: clamp(1.5rem, 3vw, 2.5rem);
+  }
+
+  .marge-haut {
+    margin-top: clamp(1.75rem, 3.5vw, 2.5rem);
+  }
+</style>

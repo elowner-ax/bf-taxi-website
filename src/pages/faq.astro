@@ -1,0 +1,135 @@
+---
+import Base from '../layouts/Base.astro';
+import Icone from '../components/Icone.astro';
+import FilAriane from '../components/FilAriane.astro';
+import Faq from '../components/Faq.astro';
+import BlocCTA from '../components/BlocCTA.astro';
+import { FAQ_GENERALE, CATEGORIES_FAQ, faqParCategorie, type ItemFaq } from '../data/faq.ts';
+import { schemaFaq } from '../lib/schema.ts';
+
+const ariane = [
+  { nom: 'Accueil', url: '/' },
+  { nom: 'Questions fréquentes', url: '/faq/' },
+];
+
+const categories = (Object.keys(CATEGORIES_FAQ) as ItemFaq['categorie'][]).map((cle) => ({
+  cle,
+  label: CATEGORIES_FAQ[cle],
+  items: faqParCategorie(cle),
+}));
+---
+
+<Base
+  titre="Questions fréquentes — Taxi conventionné Saint-Étienne | BF Taxi"
+  description="Toutes les réponses sur le taxi conventionné CPAM, la réservation, les tarifs réglementés de la Loire, les véhicules et les zones desservies autour de Saint-Étienne."
+  canonical="/faq/"
+  filAriane={ariane}
+  schemas={[schemaFaq(FAQ_GENERALE)]}
+>
+  <FilAriane elements={ariane} />
+
+  <section class="tete">
+    <div class="conteneur">
+      <p class="surtitre">Questions fréquentes</p>
+      <h1>Vos questions, nos réponses</h1>
+      <p class="tete__accroche">
+        Prise en charge CPAM, prescription, tarifs réglementés, délais de réservation : voici ce
+        qu’on nous demande le plus souvent. Si votre question n’y figure pas, appelez-nous — nous
+        répondons volontiers, même si vous ne réservez pas.
+      </p>
+
+      <nav class="ancres" aria-label="Catégories de questions">
+        {
+          categories.map((cat) => (
+            <a href={`#${cat.cle}`}>
+              {cat.label}
+              <span>{cat.items.length}</span>
+            </a>
+          ))
+        }
+      </nav>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="conteneur conteneur-etroit">
+      {
+        categories.map((cat) => (
+          <div class="cat" id={cat.cle}>
+            <h2 class="cat__titre">{cat.label}</h2>
+            <Faq items={cat.items} premierOuvert={false} />
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <BlocCTA
+    titre="Votre question n’est pas là ?"
+    texte="Posez-la directement : par téléphone, par WhatsApp, ou par écrit via le formulaire. Nous répondons sans obligation de réserver."
+  />
+</Base>
+
+<style>
+  .tete {
+    padding-block: clamp(1.75rem, 4vw, 3rem) clamp(1rem, 2vw, 1.5rem);
+  }
+
+  .tete__accroche {
+    font-size: clamp(1.02rem, 2vw, 1.15rem);
+    color: var(--texte-doux);
+    max-width: 66ch;
+    margin-top: 1.2rem;
+    line-height: 1.7;
+  }
+
+  .ancres {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    margin-top: 2rem;
+  }
+
+  .ancres a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 1rem;
+    border-radius: var(--r-full);
+    border: 1px solid var(--bord);
+    background: rgba(255, 255, 255, 0.03);
+    font-size: 0.875rem;
+    font-weight: 560;
+    color: var(--texte-doux);
+    transition: border-color var(--transition), color var(--transition);
+  }
+
+  .ancres a:hover {
+    border-color: rgba(255, 194, 51, 0.4);
+    color: var(--or-clair);
+  }
+
+  .ancres span {
+    display: grid;
+    place-items: center;
+    min-width: 20px;
+    height: 20px;
+    padding-inline: 0.3rem;
+    border-radius: var(--r-full);
+    background: rgba(255, 194, 51, 0.16);
+    color: var(--or);
+    font-size: 0.74rem;
+    font-weight: 700;
+  }
+
+  .cat + .cat {
+    margin-top: clamp(2.5rem, 5vw, 3.5rem);
+  }
+
+  .cat__titre {
+    font-size: clamp(1.3rem, 2.8vw, 1.7rem);
+    margin-bottom: 1.4rem;
+    padding-bottom: 0.85rem;
+    border-bottom: 1px solid var(--bord);
+  }
+</style>

@@ -1,0 +1,223 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300&family=Instrument+Sans:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; background: #ffffff; color: #16181c;
+      font-family: 'Instrument Sans', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+    a { color: #1c3d5a; text-decoration: none; }
+    a:hover { color: #0f2739; }
+    h1, h2, h3 { margin: 0; font-family: 'Newsreader', Georgia, serif; font-weight: 400;
+      letter-spacing: -0.015em; line-height: 1.08; }
+    p { margin: 0; text-wrap: pretty; }
+    .rule { height: 1px; background: #e4e0d8; border: 0; margin: 0; }
+    .eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.18em;
+      text-transform: uppercase; color: #8a8578; }
+  </style>
+</helmet>
+
+<div style="width: 1280px; background: #ffffff">
+
+  <!-- Barre d'annonce -->
+  <div style="display: flex; align-items: center; justify-content: center; gap: 10px; padding: 10px 0; background: {{accent}}; color: #ffffff; font-size: 13px; letter-spacing: 0.01em">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4.5 6v5.5c0 4.4 3.2 8.3 7.5 9.5 4.3-1.2 7.5-5.1 7.5-9.5V6L12 3Z"/><path d="m9 12 2 2 4-4"/></svg>
+    <span>Conventionné par l&#39;Assurance Maladie — transport médical sans avance de frais</span>
+  </div>
+
+  <!-- En-tête -->
+  <header style="display: flex; align-items: center; justify-content: space-between; padding: 26px 72px; border-bottom: 1px solid #e4e0d8">
+    <div style="display: flex; align-items: baseline; gap: 12px">
+      <span style="font-family: 'Newsreader', Georgia, serif; font-size: 27px; letter-spacing: -0.02em; color: #16181c">BF Taxi</span>
+      <span class="eyebrow" style="font-size: 10px">Saint-Étienne</span>
+    </div>
+    <nav style="display: flex; align-items: center; gap: 34px; font-size: 14.5px; color: #4a4a44">
+      <a href="#">Transport médical</a>
+      <a href="#">Aéroports &amp; gares</a>
+      <a href="#">Tarifs</a>
+      <a href="#">Véhicules</a>
+      <a href="#">Contact</a>
+    </nav>
+    <a href="#" style="display: flex; align-items: center; gap: 9px; padding: 11px 20px; border: 1px solid {{accent}}; border-radius: 2px; font-size: 14.5px; font-weight: 600; color: {{accent}}">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M6.6 3.5h3l1.5 4-2 1.4a11 11 0 0 0 5 5l1.4-2 4 1.5v3a1.9 1.9 0 0 1-2.1 1.9A16.4 16.4 0 0 1 4.7 5.6 1.9 1.9 0 0 1 6.6 3.5Z"/></svg>
+      07 82 33 34 45
+    </a>
+  </header>
+
+  <!-- Hero -->
+  <section style="display: grid; grid-template-columns: 1.12fr 0.88fr; gap: 72px; padding: 82px 72px 74px; align-items: start">
+    <div>
+      <p class="eyebrow" style="margin-bottom: 26px">Taxi conventionné · Loire 42</p>
+      <h1 style="font-size: 70px; max-width: 11ch">
+        Votre taxi à<br>Saint-Étienne,<br>
+        <em style="font-style: italic; font-weight: 300; color: {{accent}}">24 heures sur 24.</em>
+      </h1>
+      <p style="margin-top: 30px; font-size: 18.5px; line-height: 1.65; color: #55564f; max-width: 46ch">
+        Transport médical conventionné CPAM, transferts vers les aéroports et les gares, trajets
+        longue distance. Une berline Tesla Model 3 et un van Mercedes 7 places, disponibles
+        tous les jours de l&#39;année.
+      </p>
+
+      <div style="display: flex; gap: 12px; margin-top: 38px">
+        <a href="#" style="display: flex; align-items: center; gap: 10px; padding: 17px 30px; background: {{accent}}; color: #ffffff; border-radius: 2px; font-size: 16px; font-weight: 600">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M6.6 3.5h3l1.5 4-2 1.4a11 11 0 0 0 5 5l1.4-2 4 1.5v3a1.9 1.9 0 0 1-2.1 1.9A16.4 16.4 0 0 1 4.7 5.6 1.9 1.9 0 0 1 6.6 3.5Z"/></svg>
+          07 82 33 34 45
+        </a>
+        <a href="#" style="display: flex; align-items: center; gap: 10px; padding: 17px 28px; border: 1px solid #d6d2c8; border-radius: 2px; font-size: 16px; font-weight: 500; color: #16181c">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 20.5 5 16.2A8 8 0 1 1 8 19.2l-4.5 1.3Z"/></svg>
+          WhatsApp
+        </a>
+      </div>
+
+      <div style="display: flex; gap: 46px; margin-top: 52px; padding-top: 30px; border-top: 1px solid #e4e0d8">
+        <div>
+          <p style="font-family: 'Newsreader', Georgia, serif; font-size: 31px; color: {{accent}}">24h/24</p>
+          <p style="font-size: 13.5px; color: #8a8578; margin-top: 3px">7j/7, jours fériés inclus</p>
+        </div>
+        <div>
+          <p style="font-family: 'Newsreader', Georgia, serif; font-size: 31px; color: {{accent}}">0 €</p>
+          <p style="font-size: 13.5px; color: #8a8578; margin-top: 3px">à avancer sur prescription</p>
+        </div>
+        <div>
+          <p style="font-family: 'Newsreader', Georgia, serif; font-size: 31px; color: {{accent}}">7 places</p>
+          <p style="font-size: 13.5px; color: #8a8578; margin-top: 3px">van Mercedes Classe V</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Estimation -->
+    <div style="border: 1px solid #e4e0d8; background: #faf9f6; padding: 34px 32px">
+      <p class="eyebrow" style="margin-bottom: 8px">Estimation immédiate</p>
+      <h2 style="font-size: 26px; margin-bottom: 6px">Combien coûtera ma course ?</h2>
+      <p style="font-size: 13.5px; color: #8a8578; line-height: 1.55">
+        Calcul basé sur les tarifs préfectoraux de la Loire, arrêté du 23 février 2026.
+      </p>
+
+      <div style="display: grid; gap: 16px; margin-top: 26px">
+        <div>
+          <p style="font-size: 12.5px; font-weight: 600; color: #55564f; margin-bottom: 7px">Départ</p>
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 13px 15px; background: #ffffff; border: 1px solid #ddd9d0; font-size: 15px">
+            <span>Saint-Étienne</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#a5a096" stroke-width="1.8" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+          </div>
+        </div>
+        <div>
+          <p style="font-size: 12.5px; font-weight: 600; color: #55564f; margin-bottom: 7px">Destination</p>
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 13px 15px; background: #ffffff; border: 1px solid #ddd9d0; font-size: 15px">
+            <span>Aéroport Lyon-Saint-Exupéry</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#a5a096" stroke-width="1.8" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px">
+          <div>
+            <p style="font-size: 12.5px; font-weight: 600; color: #55564f; margin-bottom: 7px">Trajet</p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; border: 1px solid #ddd9d0; background: #ffffff">
+              <span style="padding: 11px 4px; text-align: center; font-size: 13.5px; background: {{accent}}; color: #ffffff">Aller</span>
+              <span style="padding: 11px 4px; text-align: center; font-size: 13.5px; color: #55564f">A/R</span>
+            </div>
+          </div>
+          <div>
+            <p style="font-size: 12.5px; font-weight: 600; color: #55564f; margin-bottom: 7px">Horaire</p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; border: 1px solid #ddd9d0; background: #ffffff">
+              <span style="padding: 11px 4px; text-align: center; font-size: 13.5px; background: {{accent}}; color: #ffffff">Jour</span>
+              <span style="padding: 11px 4px; text-align: center; font-size: 13.5px; color: #55564f">Nuit</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 26px; padding-top: 24px; border-top: 1px solid #e4e0d8">
+        <p class="eyebrow" style="color: {{accent}}; margin-bottom: 6px">Estimation</p>
+        <p style="font-family: 'Newsreader', Georgia, serif; font-size: 52px; line-height: 1; color: #16181c">148,80 €</p>
+        <p style="font-size: 13.5px; color: #8a8578; margin-top: 9px">85 km · 1 h 05 · tarif C, aller simple de jour</p>
+        <p style="font-size: 12.5px; color: #a5a096; margin-top: 14px; line-height: 1.5">
+          Indicatif : seul le taximètre fait foi. En transport conventionné, vous ne réglez rien.
+        </p>
+      </div>
+
+      <a href="#" style="display: block; margin-top: 22px; padding: 15px; background: #16181c; color: #ffffff; text-align: center; font-size: 15px; font-weight: 600; border-radius: 2px">
+        Demander un devis écrit
+      </a>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- Services -->
+  <section style="padding: 74px 72px; background: #faf9f6">
+    <div style="display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 46px">
+      <div>
+        <p class="eyebrow" style="margin-bottom: 16px">Nos prestations</p>
+        <h2 style="font-size: 42px; max-width: 16ch">Le transport de soins, et tout le reste</h2>
+      </div>
+      <a href="#" style="font-size: 15px; font-weight: 600; border-bottom: 1px solid {{accent}}; padding-bottom: 2px">Voir les 11 services</a>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: #e4e0d8; border: 1px solid #e4e0d8">
+      <div style="background: #ffffff; padding: 32px 28px 34px">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 22px"><path d="M12 3 4.5 6v5.5c0 4.4 3.2 8.3 7.5 9.5 4.3-1.2 7.5-5.1 7.5-9.5V6L12 3Z"/><path d="m9 12 2 2 4-4"/></svg>
+        <h3 style="font-size: 21px; margin-bottom: 10px">Conventionné CPAM</h3>
+        <p style="font-size: 14.5px; color: #6b6c63; line-height: 1.6">Dialyse, oncologie, consultations, hospitalisations. Sur prescription, vous n&#39;avancez aucun frais.</p>
+        <p style="font-size: 13px; font-weight: 600; color: {{accent}}; margin-top: 20px">Transport médical →</p>
+      </div>
+      <div style="background: #ffffff; padding: 32px 28px 34px">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 22px"><path d="M10.5 19.5 12 22l1.5-2.5v-4l7 2.2v-2.4l-7-4.6V5.5a1.5 1.5 0 0 0-3 0v5.2l-7 4.6v2.4l7-2.2v4Z"/></svg>
+        <h3 style="font-size: 21px; margin-bottom: 10px">Aéroports</h3>
+        <p style="font-size: 14.5px; color: #6b6c63; line-height: 1.6">Lyon-Saint-Exupéry en 1 h 05, Genève, Clermont-Ferrand et Bouthéon. Prix fixé avant le départ.</p>
+        <p style="font-size: 13px; font-weight: 600; color: {{accent}}; margin-top: 20px">Transferts aéroport →</p>
+      </div>
+      <div style="background: #ffffff; padding: 32px 28px 34px">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 22px"><rect x="5" y="3" width="14" height="13" rx="3"/><path d="M5 10.5h14M8.5 20l-2 2M15.5 20l2 2"/></svg>
+        <h3 style="font-size: 21px; margin-bottom: 10px">Gares</h3>
+        <p style="font-size: 14.5px; color: #6b6c63; line-height: 1.6">Châteaucreux, Part-Dieu, Perrache. Nous suivons l&#39;horaire réel de votre train.</p>
+        <p style="font-size: 13px; font-weight: 600; color: {{accent}}; margin-top: 20px">Transferts gare →</p>
+      </div>
+      <div style="background: #ffffff; padding: 32px 28px 34px">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="{{accent}}" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 22px"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20.5c0-3.6 2.9-6.5 6.5-6.5s6.5 2.9 6.5 6.5M16 5.3a3.2 3.2 0 0 1 0 6M17.5 14.4c2.4.7 4 2.9 4 5.4"/></svg>
+        <h3 style="font-size: 21px; margin-bottom: 10px">Groupes et van</h3>
+        <p style="font-size: 14.5px; color: #6b6c63; line-height: 1.6">Jusqu&#39;à 7 passagers avec leurs bagages. Sièges enfants fournis sur demande.</p>
+        <p style="font-size: 13px; font-weight: 600; color: {{accent}}; margin-top: 20px">Van 7 places →</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- Bande finale -->
+  <section style="display: grid; grid-template-columns: 1fr auto; gap: 60px; align-items: center; padding: 62px 72px">
+    <div>
+      <h2 style="font-size: 38px; margin-bottom: 12px">Besoin d&#39;un taxi maintenant ?</h2>
+      <p style="font-size: 16.5px; color: #55564f; max-width: 52ch">
+        Un appel suffit. Nous organisons votre trajet en conventionné comme en course classique,
+        à Saint-Étienne et dans toute la Loire.
+      </p>
+    </div>
+    <div style="display: flex; gap: 12px">
+      <a href="#" style="display: flex; align-items: center; gap: 10px; padding: 18px 32px; background: {{accent}}; color: #ffffff; font-size: 16px; font-weight: 600; border-radius: 2px">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M6.6 3.5h3l1.5 4-2 1.4a11 11 0 0 0 5 5l1.4-2 4 1.5v3a1.9 1.9 0 0 1-2.1 1.9A16.4 16.4 0 0 1 4.7 5.6 1.9 1.9 0 0 1 6.6 3.5Z"/></svg>
+        07 82 33 34 45
+      </a>
+      <a href="#" style="padding: 18px 30px; border: 1px solid #d6d2c8; font-size: 16px; font-weight: 500; color: #16181c; border-radius: 2px">Devis en ligne</a>
+    </div>
+  </section>
+
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"accent":{"editor":"color","default":"#1c3d5a","options":["#1c3d5a","#2f4f3e","#6b3f2a","#16181c"],"section":"Couleurs"}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      accent: this.props.accent ?? '#1c3d5a',
+    };
+  }
+}
+</script>
+</body>
+</html>
