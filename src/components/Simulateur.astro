@@ -14,7 +14,7 @@
 import Icone from './Icone.astro';
 import BoutonRappel from './BoutonRappel.astro';
 import { CONTACT, CAPACITES } from '../data/site.ts';
-import { TARIFS, TARIF_CONSTANTS, DESTINATIONS, ARRETE } from '../data/tarifs.ts';
+import { DESTINATIONS, ARRETE, APPROCHE } from '../data/tarifs.ts';
 import { COORDONNEES } from '../data/geo.ts';
 import { urlRechercheBase } from '../lib/adresses.ts';
 
@@ -36,13 +36,22 @@ const RACCOURCIS = ['aeroport-lyon-saint-exupery', 'gare-chateaucreux', 'chu-hop
   })
   .filter((x): x is NonNullable<typeof x> => x !== null);
 
+// Le calcul lui-même n'est plus sérialisé : le script client importe
+// directement src/data/tarifs.ts, seule source de vérité.
 const donnees = {
-  tarifs: TARIFS,
-  constantes: TARIF_CONSTANTS,
   raccourcis: RACCOURCIS,
   whatsapp: CONTACT.whatsapp,
   urlApi: urlRechercheBase(),
   capacites: CAPACITES,
+};
+
+// Un départ à la station ne paie pas de course d'approche : le raccourci le
+// rend visible, pour ceux qui arrivent en train.
+const RACCOURCI_DEPART = {
+  label: DESTINATIONS.find((d) => d.slug === 'gare-chateaucreux')!.label,
+  court: 'Gare de Châteaucreux',
+  lat: APPROCHE.station.lat,
+  lon: APPROCHE.station.lon,
 };
 ---
 
@@ -76,6 +85,13 @@ const donnees = {
         </button>
       </div>
       <ul class="suggestions" id="liste-depart" data-liste="depart" role="listbox" hidden></ul>
+
+      <div class="raccourcis">
+        <button type="button" data-raccourci-depart={JSON.stringify(RACCOURCI_DEPART)}>
+          {RACCOURCI_DEPART.court}
+        </button>
+        <span class="raccourcis__note">sans course d’approche</span>
+      </div>
     </div>
 
     <!-- Arrivée -->
@@ -172,6 +188,11 @@ const donnees = {
       </div>
       <p class="simu__meta" data-simu-meta></p>
     </div>
+
+    <p class="simu__eloigne" data-simu-eloigne hidden>
+      Départ éloigné de notre station : nous proposons généralement un <strong>forfait plus
+      avantageux</strong> que le compteur. Appelez-nous, on vous le donne tout de suite.
+    </p>
 
     <details class="simu__detail" data-simu-details hidden>
       <summary>Voir le détail du calcul</summary>
@@ -400,6 +421,22 @@ const donnees = {
   .raccourcis button:hover {
     border-color: var(--encre);
     color: var(--encre);
+  }
+
+  .raccourcis__note {
+    align-self: center;
+    font-size: 0.76rem;
+    color: var(--texte-3);
+  }
+
+  .simu__eloigne {
+    margin-top: 0.85rem;
+    padding: 0.75rem 0.9rem;
+    background: var(--ivoire);
+    border-left: 2px solid var(--chaud);
+    font-size: 0.84rem;
+    color: var(--texte-2);
+    line-height: 1.6;
   }
 
   .segment {
@@ -696,7 +733,15 @@ const donnees = {
 
 <script>
   import { brancherAutocompletion, type Point } from '../lib/autocomplete.ts';
-  import { estTarifNuit, tarifApplicable } from '../data/tarifs.ts';
+  import {
+    TARIFS,
+    TARIF_CONSTANTS,
+    APPROCHE,
+    estTarifNuit,
+    tarifApplicable,
+    estimerCourse,
+  } from '../data/tarifs.ts';
+  import { distanceRoutiere, haversine } from '../data/geo.ts';
   import { blocNavigation, lienWaze, lienMaps, lienItineraire } from '../lib/navigation.ts';
 
   for (const racine of document.querySelectorAll<HTMLElement>('[data-simu]')) {
@@ -704,13 +749,6 @@ const donnees = {
     if (!balise?.textContent) continue;
 
     const d = JSON.parse(balise.textContent) as {
-      tarifs: Record<string, { key: string; parKm: number; label: string; court: string }>;
-      constantes: {
-        priseEnCharge: number;
-        tarifHoraire: number;
-        minimumPerception: number;
-        supplement4ePassager: number;
-      };
       raccourcis: Point[];
       whatsapp: string;
       urlApi: string;
@@ -736,22 +774,6 @@ const donnees = {
     champHeure.value = `${String(maintenant.getHours()).padStart(2, '0')}:${String(maintenant.getMinutes()).padStart(2, '0')}`;
     champDate.min = champDate.value;
 
-    /* --- Distance ---------------------------------------------------------
-       Même méthode que src/data/geo.ts : orthodromie × coefficient de
-       sinuosité calibré sur des trajets réels au départ de Saint-Étienne. */
-    const COEFF_ROUTE = 1.32;
-    const rad = (deg: number) => (deg * Math.PI) / 180;
-
-    function distance(a: Point, b: Point): number {
-      const dLat = rad(b.lat - a.lat);
-      const dLon = rad(b.lon - a.lon);
-      const h =
-        Math.sin(dLat / 2) ** 2 +
-        Math.cos(rad(a.lat)) * Math.cos(rad(b.lat)) * Math.sin(dLon / 2) ** 2;
-      const km = 2 * 6371 * Math.asin(Math.sqrt(h)) * COEFF_ROUTE;
-      return km < 50 ? Math.max(1, Math.round(km)) : Math.round(km / 5) * 5;
-    }
-
     /* --- Autocomplétion --------------------------------------------------- */
     function brancherAdresse(cle: 'depart' | 'arrivee') {
       return brancherAutocompletion({
@@ -766,14 +788,14 @@ const donnees = {
       });
     }
 
-    brancherAdresse('depart');
+    const choisirDepart = brancherAdresse('depart');
     const choisirArrivee = brancherAdresse('arrivee');
 
     for (const b of racine.querySelectorAll<HTMLButtonElement>('[data-raccourci]')) {
-      b.addEventListener('click', () => {
-        const p = JSON.parse(b.dataset.raccourci!) as Point;
-        choisirArrivee(p);
-      });
+      b.addEventListener('click', () => choisirArrivee(JSON.parse(b.dataset.raccourci!) as Point));
+    }
+    for (const b of racine.querySelectorAll<HTMLButtonElement>('[data-raccourci-depart]')) {
+      b.addEventListener('click', () => choisirDepart(JSON.parse(b.dataset.raccourciDepart!) as Point));
     }
 
     /* --- Calcul ----------------------------------------------------------- */
@@ -796,7 +818,7 @@ const donnees = {
       prix.hidden = false;
       details.hidden = false;
 
-      const km = distance(a, b);
+      const km = distanceRoutiere(a, b);
       const allerRetour =
         racine.querySelector<HTMLInputElement>('input[name="sens"]:checked')?.value === 'ar';
       const passagers = Number(champPassagers.value) || 1;
@@ -816,47 +838,30 @@ const donnees = {
       const moment = dateValide ? priseEnCharge : new Date();
 
       const cle = tarifApplicable(moment, allerRetour);
-      const tarif = d.tarifs[cle];
+      const tarif = TARIFS[cle];
       const nuit = estTarifNuit(moment);
+
+      // Course d'approche : le compteur tourne dès que le taxi quitte sa
+      // station. Un départ à la station même n'en paie pas.
+      const aLaStation = haversine(a, APPROCHE.station) < APPROCHE.rayonStationKm;
+      const approcheKm = aLaStation ? null : distanceRoutiere(APPROCHE.station, a);
 
       // Sur un aller-retour, le client est à bord dans les deux sens : le
       // taximètre compte les deux trajets, au tarif réduit correspondant.
       const kmFactures = allerRetour ? km * 2 : km;
 
-      const lignes = [
-        { label: 'Prise en charge', montant: d.constantes.priseEnCharge },
-        {
-          label: `${kmFactures} km au ${tarif.label} (${tarif.parKm.toFixed(2).replace('.', ',')} €/km)`,
-          montant: kmFactures * tarif.parKm,
-        },
-      ];
-
-      let total = lignes.reduce((s, l) => s + l.montant, 0);
-
-      if (total < d.constantes.minimumPerception) {
-        lignes.push({
-          label: 'Minimum de perception',
-          montant: d.constantes.minimumPerception - total,
-        });
-        total = d.constantes.minimumPerception;
-      }
-
-      if (passagers >= 4) {
-        const sup = d.constantes.supplement4ePassager * (passagers - 3);
-        lignes.push({ label: `Supplément ${passagers - 3} passager(s) au-delà de 3`, montant: sup });
-        total += sup;
-      }
-
-      total = Math.round(total * 100) / 100;
+      const estimation = estimerCourse({ km: kmFactures, tarif: cle, passagers, bagages, approcheKm });
+      const total = estimation.total;
 
       $<HTMLElement>('[data-simu-total]')!.textContent = euros(total);
+      $<HTMLElement>('[data-simu-eloigne]')!.hidden = !estimation.approcheEloignee;
 
       const duree = Math.max(5, Math.round((km / 60) * 60));
       $<HTMLElement>('[data-simu-meta]')!.textContent =
         `${km} km environ${allerRetour ? ' × 2 (aller-retour)' : ''} · ${duree} min de trajet · ` +
         (nuit ? 'tarif nuit, dimanche ou jour férié' : 'tarif de journée');
 
-      $<HTMLElement>('[data-simu-lignes]')!.innerHTML = lignes
+      $<HTMLElement>('[data-simu-lignes]')!.innerHTML = estimation.detail
         .map(
           (l) =>
             `<li><span>${l.label}</span><b>${euros(Math.round(l.montant * 100) / 100)}</b></li>`
@@ -865,9 +870,12 @@ const donnees = {
 
       // Le prix identique entre aller simple et aller-retour surprend : il
       // vaut mieux l'expliquer que de laisser croire à une erreur.
+      const approcheTexte = aLaStation
+        ? 'Départ à notre station : aucune course d’approche.'
+        : `La course d’approche correspond au trajet de notre station, ${APPROCHE.stationLabel}, jusqu’à vous : le compteur tourne dès que le taxi part vous chercher.`;
       $<HTMLElement>('[data-simu-explication]')!.textContent = allerRetour
-        ? `Pourquoi le même prix qu’un aller simple ? Sur un aller-retour, vous êtes à bord dans les deux sens : le compteur tourne sur ${kmFactures} km, mais au ${tarif.label}, deux fois moins cher au kilomètre. Sur un aller simple, il ne compte que ${km} km, au tarif plein qui couvre le retour à vide du véhicule. Le kilométrage parcouru étant le même, le montant l’est aussi. Un temps d’attente sur place serait en revanche facturé ${d.constantes.tarifHoraire.toFixed(2).replace('.', ',')} € de l’heure.`
-        : `Le ${tarif.label} s’applique aux courses aller simple : il intègre le retour à vide du véhicule, que vous ne payez donc pas en plus. Si vous rentrez avec nous, même plusieurs heures plus tard, signalez-le — le tarif aller-retour est plus avantageux dès qu’il y a de l’attente.`;
+        ? `Pourquoi le même prix qu’un aller simple ? Sur un aller-retour, le taxi revient « en charge à la station », vous à bord : le compteur tourne sur ${kmFactures} km, mais au ${tarif.label}, deux fois moins cher au kilomètre. Sur un aller simple, il ne compte que ${km} km, au tarif plein qui couvre le « retour à vide ». Même kilométrage parcouru, même montant. Un temps d’attente sur place serait en revanche facturé ${TARIF_CONSTANTS.tarifHoraire.toFixed(2).replace('.', ',')} € de l’heure. ${approcheTexte}`
+        : `Le ${tarif.label} s’applique aux courses aller simple : il intègre le « retour à vide à la station », que vous ne payez donc pas en plus. Si vous rentrez avec nous, même plusieurs heures plus tard, signalez-le — le tarif aller-retour est plus avantageux dès qu’il y a de l’attente. ${approcheTexte} Péages éventuels en sus, après accord.`;
 
       /* Les boutons reprennent le trajet : rien à ressaisir. */
       const resume =

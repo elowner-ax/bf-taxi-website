@@ -30,6 +30,12 @@ export const CATEGORIES_FAQ: Record<ItemFaq['categorie'], string> = {
 
 export const FAQ_GENERALE: ItemFaq[] = [
   {
+    question: 'Faites-vous aussi les courses classiques, non médicales ?',
+    reponse:
+      "Oui, et c'est une grande part de notre activité : trajets en ville, sorties, restaurants, retours de soirée, rendez-vous, courses, gares et aéroports. Aucune prescription n'est nécessaire, vous réglez par carte ou en espèces. Le conventionnement CPAM s'ajoute à cela pour les trajets médicaux — il ne le remplace pas.",
+    categorie: 'reservation',
+  },
+  {
     question: 'Qu’est-ce qu’un taxi conventionné CPAM ?',
     reponse:
       "Un taxi conventionné est un taxi agréé par l'Assurance Maladie pour transporter des patients vers leurs lieux de soins. Sur présentation d'une prescription médicale de transport et de votre carte Vitale, la course est facturée directement à votre caisse : vous n'avancez aucun frais. BF Taxi est conventionné et intervient à Saint-Étienne et dans toute la Loire.",
@@ -78,7 +84,7 @@ export const FAQ_GENERALE: ItemFaq[] = [
   },
   {
     question: 'Combien de personnes peut prendre le van ?',
-    reponse: `Le van Mercedes Classe V transporte jusqu'à 7 passagers avec leurs bagages. Au-delà de 3 passagers, un supplément réglementaire de ${eur(TARIF_CONSTANTS.supplement4ePassager)} € par personne supplémentaire s'applique, conformément à l'arrêté préfectoral de la Loire.`,
+    reponse: `Le van Mercedes Classe V transporte jusqu'à 7 passagers avec leurs bagages. À partir de la ${TARIF_CONSTANTS.passagersSansSupplement + 1}e personne transportée, un supplément réglementaire de ${eur(TARIF_CONSTANTS.supplementPassager)} € par passager s'applique ; au-delà de ${TARIF_CONSTANTS.bagagesSansSupplement} valises, ${eur(TARIF_CONSTANTS.supplementBagage)} € par bagage. Les deux sont fixés par l'arrêté préfectoral de la Loire.`,
     categorie: 'vehicules',
   },
   {

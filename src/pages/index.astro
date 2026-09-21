@@ -13,7 +13,7 @@ import { FAQ_GENERALE } from '../data/faq.ts';
 import { schemaFaq } from '../lib/schema.ts';
 
 const medical = servicesParCategorie('medical');
-const autres = [...servicesParCategorie('transfert'), ...servicesParCategorie('confort')];
+const autres = [...servicesParCategorie('quotidien'), ...servicesParCategorie('transfert'), ...servicesParCategorie('confort')];
 const faqAccueil = FAQ_GENERALE.slice(0, 6);
 
 const etapes = [
@@ -41,7 +41,7 @@ const etapes = [
 ---
 
 <Base
-  titre={`Taxi Saint-Étienne 24h/24 — Conventionné CPAM | ${SITE.name}`}
+  titre={`Taxi Saint-Étienne 24h/24 — Toutes courses, conventionné CPAM | ${SITE.name}`}
   description={SITE.shortDescription}
   canonical="/"
   schemas={[schemaFaq(faqAccueil)]}
@@ -67,8 +67,50 @@ const etapes = [
     </div>
   </section>
 
-  <!-- Transport médical : le pilier -->
+  <!-- Pour qui ? — trois publics, chacun reconnaît son cas en une lecture -->
   <section class="section">
+    <div class="conteneur">
+      <div class="entete-section reveal">
+        <div>
+          <p class="surtitre">Un taxi pour tous vos trajets</p>
+          <h2>Quel que soit le motif, on vient vous chercher</h2>
+        </div>
+      </div>
+
+      <div class="grille grille-3 marge-haut">
+        <a href="/taxi-en-ville/" class="carte publics reveal">
+          <Icone nom="car" taille={30} class="publics__icone" />
+          <h3>Au quotidien</h3>
+          <p>
+            Courses en ville, sorties, rendez-vous, retour de soirée ou de gare. Le taxi tout
+            simplement : sans prescription, souvent dans l’heure.
+          </p>
+          <span class="publics__lien">Courses en ville →</span>
+        </a>
+        <a href="/taxi-aeroport-lyon-saint-exupery/" class="carte publics reveal" style="transition-delay:70ms">
+          <Icone nom="plane" taille={30} class="publics__icone" />
+          <h3>En déplacement</h3>
+          <p>
+            Châteaucreux, Part-Dieu, Perrache ; aéroports de Lyon, Genève et Clermont-Ferrand ;
+            longue distance au forfait, prix connu avant le départ.
+          </p>
+          <span class="publics__lien">Gares et aéroports →</span>
+        </a>
+        <a href="/taxi-conventionne-cpam/" class="carte publics reveal" style="transition-delay:140ms">
+          <Icone nom="shield" taille={30} class="publics__icone" />
+          <h3>Pour vos soins</h3>
+          <p>
+            Transport médical conventionné CPAM : dialyse, oncologie, hospitalisation. Sans avance
+            de frais avec votre prescription.
+          </p>
+          <span class="publics__lien">Transport conventionné →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Transport médical : le pilier -->
+  <section class="section section-ivoire">
     <div class="conteneur">
       <div class="entete-section reveal">
         <div>
@@ -97,12 +139,12 @@ const etapes = [
   </section>
 
   <!-- Autres services -->
-  <section class="section section-ivoire">
+  <section class="section">
     <div class="conteneur">
       <div class="entete-section reveal">
         <div>
-          <p class="surtitre">Transferts & déplacements</p>
-          <h2>Aéroports, gares et longue distance</h2>
+          <p class="surtitre">Courses & transferts</p>
+          <h2>En ville, en gare, à l’aéroport, sur la route</h2>
           <p class="intro-section">
             Prix annoncé avant le départ, suivi des vols et des trains, van 7 places pour les
             groupes et les familles chargées.
@@ -237,6 +279,29 @@ const etapes = [
     font-size: 0.92rem;
     color: var(--texte-3);
     line-height: 1.6;
+  }
+
+  .publics {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .publics :global(.publics__icone) {
+    color: var(--encre);
+    stroke-width: 1.3;
+    margin-bottom: 1.35rem;
+  }
+
+  .publics p {
+    flex: 1;
+  }
+
+  .publics__lien {
+    display: block;
+    margin-top: 1.25rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--chaud);
   }
 
   .entete-section {

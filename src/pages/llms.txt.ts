@@ -2,7 +2,7 @@ import type { APIRoute } from 'astro';
 import { SITE, CONTACT, ADDRESS, OPENING_HOURS, VEHICLES } from '../data/site.ts';
 import { SERVICES } from '../data/services.ts';
 import { VILLES } from '../data/villes.ts';
-import { TARIFS, TARIF_CONSTANTS, ARRETE, DESTINATIONS } from '../data/tarifs.ts';
+import { TARIFS, TARIF_CONSTANTS, ARRETE, APPROCHE, DESTINATIONS } from '../data/tarifs.ts';
 import { FAQ_GENERALE } from '../data/faq.ts';
 
 /**
@@ -24,7 +24,7 @@ export const GET: APIRoute = () => {
     '',
     '## Identité',
     '',
-    `- Activité : taxi conventionné par l'Assurance Maladie (CPAM)`,
+    `- Activité : taxi toutes courses (ville, gares, aéroports, longue distance), conventionné par l'Assurance Maladie (CPAM) pour le transport médical`,
     `- Base : ${ADDRESS.city} (${ADDRESS.postalCode}), département de la ${ADDRESS.department} (${ADDRESS.departmentCode}), ${ADDRESS.region}`,
     `- Téléphone et WhatsApp : ${CONTACT.phoneDisplay} (${CONTACT.phone})`,
     `- E-mail : ${CONTACT.email}`,
@@ -48,7 +48,10 @@ export const GET: APIRoute = () => {
     `- Prise en charge : ${TARIF_CONSTANTS.priseEnCharge.toFixed(2)} €`,
     `- Minimum de perception : ${TARIF_CONSTANTS.minimumPerception.toFixed(2)} €`,
     `- Tarif horaire d'attente : ${TARIF_CONSTANTS.tarifHoraire.toFixed(2)} € / h`,
-    `- Supplément à partir du 4e passager : ${TARIF_CONSTANTS.supplement4ePassager.toFixed(2)} €`,
+    `- Supplément par passager à partir de la ${TARIF_CONSTANTS.passagersSansSupplement + 1}e personne : ${TARIF_CONSTANTS.supplementPassager.toFixed(2)} €`,
+    `- Supplément par bagage au-delà de ${TARIF_CONSTANTS.bagagesSansSupplement} valises : ${TARIF_CONSTANTS.supplementBagage.toFixed(2)} €`,
+    `- Course d'approche depuis la station (gare de Châteaucreux) : comptée au tarif de la course, ${APPROCHE.minimum.toFixed(2)} € minimum ; aucune pour un départ à la gare`,
+    `- Péages en sus, après accord du client. Tarifs de nuit également applicables sur route enneigée ou verglacée.`,
     ...Object.values(TARIFS).map(
       (t) => `- ${t.label} : ${t.parKm.toFixed(2)} €/km — ${l(t.conditions)}`
     ),

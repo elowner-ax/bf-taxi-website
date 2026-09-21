@@ -6,10 +6,10 @@
  * le simulateur fonctionne hors ligne côté navigateur.
  *
  * Méthode : distance orthodromique (Haversine) × coefficient de sinuosité.
- * Le coefficient 1.32 a été calibré sur des trajets réels au départ de
- * Saint-Étienne (Lyon-Saint-Exupéry 1,36 · Saint-Chamond 1,33 · Paris 1,27).
- * Lorsque le couple départ/arrivée figure dans la table `DESTINATIONS`, c'est
- * la distance réelle qui prime : l'estimation n'est qu'un filet de sécurité.
+ * Calibré sur des trajets réels au départ de Saint-Étienne (Lyon-Saint-Exupéry
+ * 1,36 · Saint-Chamond 1,33 · Paris 1,27), le coefficient est fixé dans le
+ * haut de la fourchette : l'estimation doit rester une borne haute, un client
+ * qui paie moins que prévu étant un client rassuré.
  */
 
 export type Coord = { lat: number; lon: number };
@@ -65,7 +65,7 @@ export const COORDONNEES: Record<string, Coord> = {
 };
 
 /** Coefficient de passage du vol d'oiseau à la distance routière. */
-export const COEFF_ROUTE = 1.32;
+export const COEFF_ROUTE = 1.36;
 
 const RAYON_TERRE_KM = 6371;
 const rad = (deg: number) => (deg * Math.PI) / 180;
@@ -80,6 +80,13 @@ export function haversine(a: Coord, b: Coord): number {
   return 2 * RAYON_TERRE_KM * Math.asin(Math.sqrt(h));
 }
 
+/** Distance routière estimée entre deux points, arrondie comme le taximètre
+ *  ne le fait pas : au kilomètre en ville, aux 5 km sur les longs trajets. */
+export function distanceRoutiere(a: Coord, b: Coord): number {
+  const km = haversine(a, b) * COEFF_ROUTE;
+  return km < 50 ? Math.max(1, Math.round(km)) : Math.round(km / 5) * 5;
+}
+
 /**
  * Distance routière estimée entre deux slugs.
  * Renvoie `null` si l'un des points est inconnu, afin que l'appelant puisse
@@ -89,9 +96,5 @@ export function distanceEstimee(slugDepart: string, slugArrivee: string): number
   const a = COORDONNEES[slugDepart];
   const b = COORDONNEES[slugArrivee];
   if (!a || !b) return null;
-
-  const km = haversine(a, b) * COEFF_ROUTE;
-  // Arrondi au kilomètre en ville, aux 5 km sur les longs trajets : afficher
-  // « 347 km » suggérerait une précision que la méthode n'a pas.
-  return km < 50 ? Math.max(1, Math.round(km)) : Math.round(km / 5) * 5;
+  return distanceRoutiere(a, b);
 }

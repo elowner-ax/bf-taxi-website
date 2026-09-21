@@ -20,7 +20,7 @@ export type Service = {
   navLabel: string;
   metaTitle: string;
   metaDescription: string;
-  categorie: 'medical' | 'transfert' | 'confort';
+  categorie: 'quotidien' | 'medical' | 'transfert' | 'confort';
   icon: string;
   /** Phrase d'accroche affichée sous le H1. */
   accroche: string;
@@ -36,6 +36,93 @@ export type Service = {
 };
 
 export const SERVICES: Service[] = [
+  {
+    slug: 'taxi-en-ville',
+    titre: 'Taxi en ville à Saint-Étienne',
+    navLabel: 'Courses en ville',
+    metaTitle: 'Taxi en ville Saint-Étienne — Courses, sorties, soirées, 24h/24 | BF Taxi',
+    metaDescription:
+      'Taxi pour vos trajets du quotidien à Saint-Étienne et dans la Loire : courses en ville, sorties, retours de soirée, rendez-vous. Sans prescription, souvent dans l’heure. 07 82 33 34 45.',
+    categorie: 'quotidien',
+    icon: 'car',
+    accroche: 'Le taxi tout simplement : en ville, en soirée, pour un rendez-vous ou une sortie.',
+    reponseCourte:
+      "BF Taxi assure toutes les courses classiques à Saint-Étienne et dans la Loire : trajets en ville, sorties, restaurants, retours de soirée, rendez-vous, courses. Aucune prescription n'est nécessaire, réservation par téléphone ou WhatsApp, prise en charge souvent dans l'heure, règlement par carte ou en espèces.",
+    intro: [
+      "Parce que nous sommes conventionnés par l'Assurance Maladie, certains pensent que nous ne faisons que du transport médical. C'est faux : la course ordinaire — celle qui vous emmène dîner, à un rendez-vous, à la gare ou chez un ami — est une grande part de notre journée.",
+      "Pas de prescription, pas de dossier : vous appelez, nous venons. Et pour une course dans l'heure à Saint-Étienne ou dans les communes voisines, c'est souvent possible.",
+    ],
+    points: [
+      {
+        titre: 'Souvent dans l’heure',
+        texte: 'À Saint-Étienne et dans les communes limitrophes, nous pouvons fréquemment intervenir sans réservation la veille.',
+      },
+      {
+        titre: 'Tarif au compteur, sans surprise',
+        texte: 'Grille préfectorale, la même pour tous les taxis de la Loire. Notre simulateur vous donne un prix plafond avant de monter.',
+      },
+      {
+        titre: 'Soirées et retours de nuit',
+        texte: 'Restaurant, concert, fête de famille : nous venons vous chercher à l’heure dite, même tard, même le dimanche.',
+      },
+      {
+        titre: 'Carte ou espèces',
+        texte: 'Paiement à bord par carte bancaire ou en espèces. Note remise sur demande, obligatoire au-delà de 25 €.',
+      },
+    ],
+    sections: [
+      {
+        titre: 'Les trajets que nous faisons tous les jours',
+        paragraphes: [
+          "Un aller au centre-ville pour des courses, un retour de Châteaucreux les bras chargés, une soirée à Saint-Chamond dont on ne veut pas prendre le volant, un rendez-vous chez le notaire, un enfant à conduire à l'entraînement quand la voiture est au garage. Rien de médical, rien d'exceptionnel : du quotidien.",
+          "Ces courses se réservent par téléphone ou WhatsApp, cinq minutes ou trois jours à l'avance. Nous vous confirmons l'heure de prise en charge et nous vous prévenons à notre arrivée.",
+        ],
+        liste: [
+          'Courses en ville et dans l’agglomération',
+          'Sorties, restaurants, spectacles, retours de soirée',
+          'Rendez-vous professionnels, administratifs ou personnels',
+          'Gares et haltes ferroviaires du bassin stéphanois',
+          'Trajets réguliers : travail, école, activités',
+        ],
+      },
+      {
+        titre: 'Combien ça coûte ?',
+        paragraphes: [
+          "Le prix est celui du compteur, fixé par l'arrêté préfectoral de la Loire — identique chez tous les taxis du département. Une course courte en centre-ville se situe le plus souvent entre le minimum de 8 € et une quinzaine d'euros. Le simulateur en ligne vous donne une estimation à partir de vos adresses réelles, calculée pour être un plafond : au compteur, vous paierez au pire ce montant, le plus souvent un peu moins.",
+        ],
+      },
+      {
+        titre: 'Le soir, la nuit, le dimanche',
+        paragraphes: [
+          "De 19h à 7h, les dimanches et les jours fériés, le tarif de nuit s'applique — c'est la règle, pas un supplément de notre part. Pour un retour de soirée, dites-nous l'heure à laquelle vous voulez être pris en charge : nous serons devant la porte. Si la soirée s'éternise, un message suffit pour décaler.",
+        ],
+      },
+    ],
+    faq: [
+      {
+        question: 'Faut-il une prescription ou un motif particulier ?',
+        reponse:
+          "Non. Une course classique se réserve comme n'importe quel taxi : vous nous donnez l'adresse, l'heure et la destination. Le conventionnement CPAM ne concerne que les trajets médicaux prescrits ; il s'ajoute à notre activité, il ne la remplace pas.",
+      },
+      {
+        question: 'Prenez-vous les petites courses en ville ?',
+        reponse:
+          "Oui. Le minimum de perception fixé par la préfecture est de 8 €, suppléments inclus : une course de quelques rues coûte ce montant. Nous les prenons volontiers, et sans réservation préalable quand nous sommes disponibles.",
+      },
+      {
+        question: 'Peut-on réserver un retour de soirée à l’avance ?',
+        reponse:
+          "C'est même conseillé : le vendredi et le samedi soir, la demande est forte. Indiquez-nous l'heure de prise en charge souhaitée ; nous serons là. Le tarif de nuit s'applique de 19h à 7h, comme pour tous les taxis.",
+      },
+      {
+        question: 'Puis-je payer par carte ?',
+        reponse:
+          "Oui, carte bancaire et espèces sont acceptées à bord. Pour les entreprises, nous établissons une facture mensuelle sur demande.",
+      },
+    ],
+    vehicule: 'les-deux',
+    servicesLies: ['taxi-gare-chateaucreux', 'taxi-aeroport-lyon-saint-exupery', 'taxi-mise-a-disposition', 'taxi-conventionne-cpam'],
+  },
   {
     slug: 'taxi-conventionne-cpam',
     titre: 'Taxi conventionné CPAM à Saint-Étienne',
@@ -828,7 +915,7 @@ export const SERVICES: Service[] = [
     faq: [
       {
         question: 'Combien de passagers peut prendre le van ?',
-        reponse: `Jusqu'à 7 passagers en plus du chauffeur. Au-delà de 3 passagers adultes, un supplément réglementaire de ${eur(TARIF_CONSTANTS.supplement4ePassager)} € par personne supplémentaire s'applique, conformément à l'arrêté préfectoral de la Loire.`,
+        reponse: `Jusqu'à 7 passagers en plus du chauffeur. À partir de la ${TARIF_CONSTANTS.passagersSansSupplement + 1}e personne transportée, un supplément réglementaire de ${eur(TARIF_CONSTANTS.supplementPassager)} € par passager s'applique, conformément à l'arrêté préfectoral de la Loire — quatre personnes voyagent donc sans supplément.`,
       },
       {
         question: 'Le van coûte-t-il plus cher que la berline ?',
@@ -927,6 +1014,10 @@ export const SERVICES: Service[] = [
 ];
 
 export const CATEGORIES: Record<Service['categorie'], { label: string; description: string }> = {
+  quotidien: {
+    label: 'Courses du quotidien',
+    description: 'En ville, en soirée, pour un rendez-vous ou une sortie : le taxi tout simplement.',
+  },
   medical: {
     label: 'Transport médical conventionné',
     description: "Trajets de soins pris en charge par l'Assurance Maladie, sur prescription médicale.",

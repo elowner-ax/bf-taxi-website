@@ -15,14 +15,14 @@ export const SITE = {
   url: 'https://bftaxi.fr',
   locale: 'fr_FR',
   lang: 'fr',
-  tagline: 'Taxi conventionné CPAM à Saint-Étienne et dans toute la Loire',
+  tagline: 'Taxi à Saint-Étienne et dans toute la Loire — toutes courses, conventionné CPAM',
   /** BF = Baroutile Family. Le sigle n'est pas parlant seul : il est toujours
    *  développé la première fois qu'il apparaît sur une page. */
   slogan: 'Baroutile Family Taxi — une entreprise familiale à votre service',
   sloganCourt: 'Une entreprise familiale à votre service',
   /** Baseline courte réutilisée en meta description et en partage social. */
   shortDescription:
-    "Taxi conventionné CPAM à Saint-Étienne : transport médical assis, transferts aéroports et gares, longue distance. Tesla Model 3 et van Mercedes Classe V 7 places, 7j/7.",
+    "Taxi à Saint-Étienne pour tous vos trajets : ville, gares, aéroports, longue distance — et transport médical conventionné CPAM. Tesla Model 3 et van Mercedes Classe V 7 places, 7j/7.",
   founded: '2019', // TODO : année réelle de création.
 } as const;
 
@@ -140,9 +140,9 @@ export function vehiculeConseille(passagers: number, bagages: number): 'berline'
 /** Arguments de réassurance affichés sur la page d'accueil. */
 export const TRUST_POINTS = [
   {
-    title: 'Conventionné CPAM',
-    text: "Transport médical assis pris en charge par l'Assurance Maladie, sans avance de frais avec votre prescription.",
-    icon: 'shield',
+    title: 'Toutes les courses',
+    text: 'En ville, en soirée, pour un rendez-vous ou une gare : le taxi tout simplement, sans prescription ni longue réservation.',
+    icon: 'car',
   },
   {
     title: 'Disponible 24h/24',
@@ -150,13 +150,13 @@ export const TRUST_POINTS = [
     icon: 'clock',
   },
   {
-    title: 'Deux véhicules récents',
-    text: 'Tesla Model 3 pour le confort silencieux, van Mercedes Classe V pour les groupes et les bagages.',
-    icon: 'car',
-  },
-  {
     title: 'Toutes distances',
     text: "Saint-Étienne, la Loire et toute la France. Aéroports de Lyon, Genève et Clermont-Ferrand au forfait.",
     icon: 'route',
+  },
+  {
+    title: 'Conventionné CPAM',
+    text: "Pour vos trajets médicaux : pris en charge par l'Assurance Maladie, sans avance de frais avec votre prescription.",
+    icon: 'shield',
   },
 ] as const;

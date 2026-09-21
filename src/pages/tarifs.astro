@@ -6,7 +6,7 @@ import Simulateur from '../components/Simulateur.astro';
 import Faq from '../components/Faq.astro';
 import BlocCTA from '../components/BlocCTA.astro';
 import { CONTACT } from '../data/site.ts';
-import { TARIFS, TARIF_CONSTANTS, ARRETE, DESTINATIONS, estimerCourse, euros } from '../data/tarifs.ts';
+import { TARIFS, TARIF_CONSTANTS, ARRETE, APPROCHE, DESTINATIONS, estimerCourse, euros } from '../data/tarifs.ts';
 import { faqParCategorie } from '../data/faq.ts';
 import { schemaFaq, schemaTarifs } from '../lib/schema.ts';
 
@@ -18,21 +18,24 @@ const ariane = [
 const faqTarifs = faqParCategorie('tarifs');
 
 // Exemples calculés avec la même fonction que le simulateur : les montants
-// affichés ne peuvent pas diverger de la grille réglementaire.
+// affichés ne peuvent pas diverger de la grille réglementaire. Départ pris
+// en centre-ville, à deux kilomètres de la station.
+const APPROCHE_CENTRE_KM = 2;
 const exemples = ['gare-chateaucreux', 'chu-hopital-nord', 'aeroport-saint-etienne-boutheon', 'aeroport-lyon-saint-exupery', 'lyon-centre', 'aeroport-geneve']
   .map((slug) => DESTINATIONS.find((d) => d.slug === slug))
   .filter((d): d is (typeof DESTINATIONS)[number] => Boolean(d))
   .map((d) => ({
     destination: d,
-    jour: estimerCourse({ km: d.km, tarif: 'C' }).total,
-    nuit: estimerCourse({ km: d.km, tarif: 'D' }).total,
+    jour: estimerCourse({ km: d.km, tarif: 'C', approcheKm: APPROCHE_CENTRE_KM }).total,
+    nuit: estimerCourse({ km: d.km, tarif: 'D', approcheKm: APPROCHE_CENTRE_KM }).total,
   }));
 
 const constantes = [
   { label: 'Prise en charge', valeur: euros(TARIF_CONSTANTS.priseEnCharge), detail: 'Facturé au départ, avant le premier kilomètre' },
-  { label: 'Minimum de perception', valeur: euros(TARIF_CONSTANTS.minimumPerception), detail: 'Montant plancher d’une course, suppléments exclus' },
-  { label: 'Tarif horaire', valeur: `${euros(TARIF_CONSTANTS.tarifHoraire)} / h`, detail: 'Attente sur place ou circulation à vitesse réduite' },
-  { label: 'Supplément passager', valeur: euros(TARIF_CONSTANTS.supplement4ePassager), detail: 'Par personne à partir du 4e passager' },
+  { label: 'Minimum de perception', valeur: euros(TARIF_CONSTANTS.minimumPerception), detail: 'Montant plancher d’une course, suppléments inclus' },
+  { label: 'Tarif horaire', valeur: `${euros(TARIF_CONSTANTS.tarifHoraire)} / h`, detail: 'Attente sur place ou marche lente dans la circulation' },
+  { label: 'Supplément passager', valeur: euros(TARIF_CONSTANTS.supplementPassager), detail: `Par personne à partir de la ${TARIF_CONSTANTS.passagersSansSupplement + 1}e transportée` },
+  { label: 'Supplément bagage', valeur: euros(TARIF_CONSTANTS.supplementBagage), detail: `Par bagage au-delà de ${TARIF_CONSTANTS.bagagesSansSupplement} valises, ou nécessitant un équipement extérieur` },
 ];
 ---
 
@@ -79,8 +82,10 @@ const constantes = [
       <p class="surtitre reveal">Grille officielle</p>
       <h2 class="reveal">Les quatre tarifs kilométriques</h2>
       <p class="intro-section reveal">
-        Le tarif appliqué dépend de deux choses : si le chauffeur revient à vide après vous avoir
-        déposé, et si le trajet a lieu de jour ou de nuit. Le taximètre bascule automatiquement.
+        Le tarif appliqué dépend de deux choses : si le taxi revient « en charge » ou « à vide »
+        à sa station après vous avoir déposé, et si le trajet a lieu de jour ou de nuit. Le
+        taximètre bascule automatiquement. Les tarifs de nuit s’appliquent aussi les dimanches,
+        les jours fériés et sur route enneigée ou verglacée.
       </p>
 
       <div class="grille grille-4 marge-haut">
@@ -114,16 +119,24 @@ const constantes = [
         <div>
           <h3>Pourquoi l’aller simple coûte-t-il le double au kilomètre ?</h3>
           <p>
-            Parce qu’il intègre le retour à vide du véhicule. Sur un aller simple, le chauffeur
-            rentre seul : ces kilomètres non facturés sont répercutés sur le prix au kilomètre.
-            Sur un aller-retour, vous êtes à bord dans les deux sens, le compteur tourne donc sur
-            deux fois plus de kilomètres, mais à un tarif deux fois moindre.
+            Parce qu’il intègre le « retour à vide à la station » : sur un aller simple, le
+            chauffeur rentre seul, et ces kilomètres non facturés sont répercutés sur le prix au
+            kilomètre. Sur un aller-retour, le taxi revient « en charge », vous à bord : le
+            compteur tourne sur deux fois plus de kilomètres, mais à un tarif deux fois moindre.
           </p>
           <p>
             <strong>Conséquence : à kilométrage égal, un aller-retour coûte le même prix qu’un
             aller simple.</strong> Ce n’est pas une erreur d’affichage — c’est la logique de
             l’arrêté, et elle vous est favorable. Seul un temps d’attente sur place s’ajoute,
             facturé au tarif horaire.
+          </p>
+          <h3>Et la course d’approche ?</h3>
+          <p>
+            Le compteur tourne dès que le taxi quitte sa station — la {APPROCHE.stationLabel} —
+            pour venir vous chercher. C’est ce qui explique les quelques euros que vous voyez au
+            compteur avant même de monter. Notre simulateur les compte, avec un minimum de
+            {euros(APPROCHE.minimum)} : ce qu’il affiche est un plafond, pas un plancher. Un
+            départ à la gare n’en paie pas. Péages éventuels en sus, après votre accord.
           </p>
         </div>
       </div>
@@ -136,9 +149,9 @@ const constantes = [
       <p class="surtitre reveal">Exemples</p>
       <h2 class="reveal">Combien coûtent les trajets les plus demandés ?</h2>
       <p class="intro-section reveal">
-        Estimations au départ de Saint-Étienne centre, pour un aller simple, calculées selon la
-        grille ci-dessus. Le montant réel dépend du point de prise en charge exact et des
-        conditions de circulation.
+        Estimations au départ du centre de Saint-Étienne, pour un aller simple, course d’approche
+        comprise et arrondies à l’euro supérieur. Le montant réel dépend du point de prise en
+        charge exact et de la circulation — il sera au pire égal, le plus souvent inférieur.
       </p>
 
       <div class="tableau-wrap reveal">

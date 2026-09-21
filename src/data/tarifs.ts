@@ -1,23 +1,22 @@
+import { COORDONNEES, type Coord } from './geo.ts';
+
 /**
  * Grille tarifaire réglementée des taxis de la Loire (42).
  *
- * Ce sont des tarifs MAXIMAUX : le taximètre seul fait foi à l'arrivée.
+ * Relevée sur la plaque « Tarifs maxima » affichée dans le véhicule, éditée
+ * par la DDPP de la Loire. Ce sont des tarifs MAXIMAUX : le taximètre seul
+ * fait foi à l'arrivée.
  *
- * ⚠️ SOURCE À CONFIRMER. Ces montants ont été transmis par l'exploitant mais
- * n'ont pas été relevés sur l'arrêté préfectoral lui-même. Avant toute
- * campagne publicitaire, les recouper avec la grille affichée dans le
- * véhicule : un prix faux affiché en ligne engage la responsabilité de
- * l'entreprise vis-à-vis de la DGCCRF.
- *
- * 🔁 À VÉRIFIER CHAQUE ANNÉE : un nouvel arrêté paraît généralement en début
- * d'année. Mettre à jour les montants ci-dessous et `ARRETE.date` suffit à
- * rafraîchir le simulateur, la page tarifs et les données structurées.
+ * 🔁 À VÉRIFIER CHAQUE ANNÉE : un nouvel arrêté paraît en début d'année.
+ * Mettre à jour les montants ci-dessous et `ARRETE` suffit à rafraîchir le
+ * simulateur, la page tarifs, les textes et les données structurées, qui
+ * lisent tous ce fichier.
  */
 
 export const ARRETE = {
-  reference: 'arrêté préfectoral des tarifs de taxi',
-  date: '2026-01-01',
-  dateDisplay: 'en vigueur en 2026',
+  reference: 'arrêté préfectoral n° 16-DDPP-2026',
+  date: '2026-01-20',
+  dateDisplay: 'du 20 janvier 2026',
   departement: 'Loire (42)',
   url: 'https://www.loire.gouv.fr/Actions-de-l-Etat/Transports.-deplacements-et-securite-routiere/Taxis',
 } as const;
@@ -40,28 +39,28 @@ export const TARIFS: Record<TarifKey, Tarif> = {
     key: 'A',
     parKm: 1.10,
     label: 'Tarif A',
-    conditions: 'Course aller-retour, du lundi au samedi de 7h à 19h',
+    conditions: 'Course de jour avec retour en charge à la station — du lundi au samedi, de 7h à 19h',
     court: 'Aller-retour · jour',
   },
   B: {
     key: 'B',
     parKm: 1.65,
     label: 'Tarif B',
-    conditions: 'Course aller-retour, de 19h à 7h, les dimanches et jours fériés',
+    conditions: 'Course de nuit avec retour en charge à la station — de 19h à 7h, dimanches et jours fériés',
     court: 'Aller-retour · nuit, dimanche et jours fériés',
   },
   C: {
     key: 'C',
     parKm: 2.20,
     label: 'Tarif C',
-    conditions: 'Course aller simple avec retour à vide, du lundi au samedi de 7h à 19h',
+    conditions: 'Course de jour avec retour à vide à la station — du lundi au samedi, de 7h à 19h',
     court: 'Aller simple · jour',
   },
   D: {
     key: 'D',
     parKm: 3.30,
     label: 'Tarif D',
-    conditions: 'Course aller simple avec retour à vide, de 19h à 7h, les dimanches et jours fériés',
+    conditions: 'Course de nuit avec retour à vide à la station — de 19h à 7h, dimanches et jours fériés',
     court: 'Aller simple · nuit, dimanche et jours fériés',
   },
 };
@@ -71,11 +70,40 @@ export const TARIF_CONSTANTS = {
   priseEnCharge: 3.2,
   /** Facturation à l'heure en cas d'attente ou de marche lente. */
   tarifHoraire: 28.34,
-  /** Minimum de perception national, suppléments exclus. */
+  /** « La somme perçue ne peut être inférieure à 8,00 €, suppléments inclus. » */
   minimumPerception: 8.0,
-  /** Supplément applicable à partir du 4e passager adulte.
-   *  TODO : relever la valeur exacte sur l'arrêté en vigueur. */
-  supplement4ePassager: 1.83,
+  /** Supplément par passager, à partir de la 5e personne transportée. */
+  supplementPassager: 4.0,
+  passagersSansSupplement: 4,
+  /** Supplément par bagage, au-delà de 3 valises (ou bagages nécessitant un
+   *  équipement extérieur). */
+  supplementBagage: 2.0,
+  bagagesSansSupplement: 3,
+} as const;
+
+/**
+ * Course d'approche.
+ *
+ * Le compteur tourne dès que le taxi quitte sa station pour aller chercher le
+ * client : c'est ce qui explique les quelques euros d'écart entre une
+ * estimation « à la prise en charge » et le montant réel. Le site les compte
+ * pour que l'estimation reste une borne haute — un client qui paie moins que
+ * prévu est un client rassuré.
+ *
+ * Règle : rien si le départ est à la station ; sinon, la distance réelle au
+ * tarif de la course, avec un plancher qui couvre le centre-ville et la marche
+ * lente dans la circulation.
+ */
+export const APPROCHE = {
+  /** Station de rattachement : gare de Saint-Étienne Châteaucreux. */
+  station: COORDONNEES['gare-chateaucreux'] as Coord,
+  stationLabel: 'gare de Saint-Étienne Châteaucreux',
+  /** En deçà, le départ est considéré comme à la station. */
+  rayonStationKm: 0.4,
+  /** Plancher facturé dès que le départ n'est pas à la station. */
+  minimum: 5.0,
+  /** Au-delà, un forfait est généralement plus avantageux que le compteur. */
+  seuilEloigneKm: 20,
 } as const;
 
 /**
@@ -136,50 +164,93 @@ export const GROUPES_DESTINATION: Record<Destination['groupe'], string> = {
   'grande-ville': 'Grandes villes',
 };
 
+export type Estimation = {
+  /** Montant arrondi à l'euro supérieur : une borne haute, jamais basse. */
+  total: number;
+  detail: { label: string; montant: number }[];
+  /** Vrai quand le départ est si loin de la station qu'un forfait vaut mieux. */
+  approcheEloignee: boolean;
+};
+
 /**
  * Estime le prix d'une course selon la grille préfectorale.
- * Le résultat est indicatif : seul le taximètre fait foi.
+ *
+ * Le résultat est indicatif — seul le taximètre fait foi — mais il est calculé
+ * pour se situer au-dessus du compteur plutôt qu'en dessous : approche
+ * comptée, arrondi vers le haut.
  */
 export function estimerCourse(options: {
+  /** Kilomètres de la course elle-même, client à bord (comptés deux fois si
+   *  aller-retour : c'est à l'appelant de le faire). */
   km: number;
   tarif: TarifKey;
   passagers?: number;
+  bagages?: number;
+  /** Kilomètres de la station au point de prise en charge ; `null` si le
+   *  départ est à la station. */
+  approcheKm?: number | null;
   /** Minutes d'attente sur place facturées au tarif horaire. */
   attenteMinutes?: number;
-}): { total: number; detail: { label: string; montant: number }[] } {
-  const { km, tarif, passagers = 1, attenteMinutes = 0 } = options;
+}): Estimation {
+  const { km, tarif, passagers = 1, bagages = 0, approcheKm = null, attenteMinutes = 0 } = options;
   const grille = TARIFS[tarif];
+  const c = TARIF_CONSTANTS;
+  const detail: Estimation['detail'] = [];
+
+  detail.push({ label: 'Prise en charge', montant: c.priseEnCharge });
+  let total: number = c.priseEnCharge;
+
+  const approcheEloignee = approcheKm !== null && approcheKm > APPROCHE.seuilEloigneKm;
+  if (approcheKm !== null) {
+    const approche = Math.max(APPROCHE.minimum, approcheKm * grille.parKm);
+    detail.push({
+      label: `Course d'approche depuis notre station (${approcheKm} km)`,
+      montant: approche,
+    });
+    total += approche;
+  }
 
   const distance = Math.max(0, km) * grille.parKm;
-  const detail: { label: string; montant: number }[] = [
-    { label: 'Prise en charge', montant: TARIF_CONSTANTS.priseEnCharge },
-    { label: `${km} km au ${grille.label} (${grille.parKm.toFixed(2)} €/km)`, montant: distance },
-  ];
-
-  let total = TARIF_CONSTANTS.priseEnCharge + distance;
+  detail.push({
+    label: `${km} km au ${grille.label} (${grille.parKm.toFixed(2).replace('.', ',')} €/km)`,
+    montant: distance,
+  });
+  total += distance;
 
   if (attenteMinutes > 0) {
-    const attente = (attenteMinutes / 60) * TARIF_CONSTANTS.tarifHoraire;
+    const attente = (attenteMinutes / 60) * c.tarifHoraire;
     detail.push({ label: `${attenteMinutes} min d'attente`, montant: attente });
     total += attente;
   }
 
-  // Le minimum de perception s'applique avant les suppléments.
-  if (total < TARIF_CONSTANTS.minimumPerception) {
-    detail.push({
-      label: 'Minimum de perception appliqué',
-      montant: TARIF_CONSTANTS.minimumPerception - total,
-    });
-    total = TARIF_CONSTANTS.minimumPerception;
-  }
-
-  if (passagers >= 4) {
-    const sup = TARIF_CONSTANTS.supplement4ePassager * (passagers - 3);
-    detail.push({ label: `Supplément passagers (à partir du 4e)`, montant: sup });
+  if (passagers > c.passagersSansSupplement) {
+    const n = passagers - c.passagersSansSupplement;
+    const sup = c.supplementPassager * n;
+    detail.push({ label: `Supplément ${n} passager${n > 1 ? 's' : ''} à partir du 5e`, montant: sup });
     total += sup;
   }
 
-  return { total: Math.round(total * 100) / 100, detail };
+  if (bagages > c.bagagesSansSupplement) {
+    const n = bagages - c.bagagesSansSupplement;
+    const sup = c.supplementBagage * n;
+    detail.push({ label: `Supplément ${n} bagage${n > 1 ? 's' : ''} au-delà de 3`, montant: sup });
+    total += sup;
+  }
+
+  // Le minimum s'entend suppléments inclus : il s'applique sur le tout.
+  if (total < c.minimumPerception) {
+    detail.push({ label: 'Minimum de perception', montant: c.minimumPerception - total });
+    total = c.minimumPerception;
+  }
+
+  // Arrondi à l'euro supérieur, montré tel quel pour que le détail reste
+  // vérifiable : la somme des lignes donne bien le total.
+  const arrondi = Math.ceil(total - 1e-9);
+  if (arrondi - total > 0.004) {
+    detail.push({ label: 'Arrondi à l’euro supérieur', montant: arrondi - total });
+  }
+
+  return { total: arrondi, detail, approcheEloignee };
 }
 
 /** Formate un montant en euros, format français. */

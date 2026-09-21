@@ -7,7 +7,7 @@ import { VILLES } from '../data/villes.ts';
 
 const annee = new Date().getFullYear();
 const medical = servicesParCategorie('medical');
-const transferts = [...servicesParCategorie('transfert'), ...servicesParCategorie('confort')];
+const courses = [...servicesParCategorie('quotidien'), ...servicesParCategorie('transfert'), ...servicesParCategorie('confort')];
 ---
 
 <footer class="pied">
@@ -34,12 +34,12 @@ const transferts = [...servicesParCategorie('transfert'), ...servicesParCategori
 
       <nav class="pied__colonnes" aria-label="Plan du site">
         <div>
-          <h2>Transport médical</h2>
-          <ul>{medical.map((s) => <li><a href={`/${s.slug}/`}>{s.navLabel}</a></li>)}</ul>
+          <h2>Courses & transferts</h2>
+          <ul>{courses.map((s) => <li><a href={`/${s.slug}/`}>{s.navLabel}</a></li>)}</ul>
         </div>
         <div>
-          <h2>Transferts</h2>
-          <ul>{transferts.map((s) => <li><a href={`/${s.slug}/`}>{s.navLabel}</a></li>)}</ul>
+          <h2>Transport médical</h2>
+          <ul>{medical.map((s) => <li><a href={`/${s.slug}/`}>{s.navLabel}</a></li>)}</ul>
         </div>
         <div>
           <h2>Informations</h2>
