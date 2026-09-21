@@ -3,6 +3,14 @@ import Icone from './Icone.astro';
 import Simulateur from './Simulateur.astro';
 import BoutonRappel from '../components/BoutonRappel.astro';
 import { SITE, CONTACT } from '../data/site.ts';
+
+/**
+ * L'ordre du DOM est l'ordre de lecture sur mobile : titre, accroche, puis le
+ * simulateur tout de suite après, et enfin les boutons, le slogan et les
+ * chiffres. Sur grand écran, la grille replace le simulateur dans la colonne
+ * de droite sur toute la hauteur — sans toucher à l'ordre du DOM, ce qui garde
+ * l'ordre de tabulation et de lecture cohérent avec l'affichage.
+ */
 ---
 
 <section class="hero">
@@ -20,7 +28,13 @@ import { SITE, CONTACT } from '../data/site.ts';
         CPAM. Une berline Tesla Model 3 et un van Mercedes 7 places, disponibles tous les jours de
         l’année.
       </p>
+    </div>
 
+    <div class="hero__simu">
+      <Simulateur compact titre="Estimer ma course" />
+    </div>
+
+    <div class="hero__suite">
       <div class="groupe-btn hero__cta">
         <a href={`tel:${CONTACT.phone}`} class="btn btn-appel btn-large" data-evt="tel-hero">
           <Icone nom="phone" taille={18} />
@@ -56,10 +70,6 @@ import { SITE, CONTACT } from '../data/site.ts';
         </div>
       </dl>
     </div>
-
-    <div class="hero__simu">
-      <Simulateur compact titre="Estimer ma course" />
-    </div>
   </div>
 </section>
 
@@ -68,11 +78,33 @@ import { SITE, CONTACT } from '../data/site.ts';
     padding-block: clamp(2.75rem, 6vw, 4.75rem);
   }
 
+  /*
+   * Deux colonnes : le texte à gauche sur deux rangées (titre / suite), le
+   * simulateur à droite sur toute la hauteur. La seconde rangée est en `1fr`
+   * pour absorber la hauteur du simulateur sans écarter le titre de la suite.
+   */
   .hero__inner {
     display: grid;
     grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
-    gap: clamp(2.25rem, 5vw, 4.25rem);
+    grid-template-rows: auto 1fr;
+    column-gap: clamp(2.25rem, 5vw, 4.25rem);
+    row-gap: 0;
     align-items: start;
+  }
+
+  .hero__texte {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .hero__simu {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+
+  .hero__suite {
+    grid-column: 1;
+    grid-row: 2;
   }
 
   .hero h1 {
@@ -121,14 +153,45 @@ import { SITE, CONTACT } from '../data/site.ts';
     color: var(--texte-3);
   }
 
+  /*
+   * Une colonne : le simulateur vient juste sous l'accroche. Les boutons du
+   * hero disparaissent, car le simulateur porte déjà l'appel, WhatsApp et le
+   * rappel, et la barre fixe en bas d'écran les répète.
+   */
   @media (max-width: 1000px) {
     .hero__inner {
       grid-template-columns: 1fr;
+      grid-template-rows: none;
+    }
+
+    .hero__texte,
+    .hero__simu,
+    .hero__suite {
+      grid-column: auto;
+      grid-row: auto;
+    }
+
+    .hero__accroche {
+      margin-top: 1.35rem;
     }
 
     .hero__simu {
       max-width: 560px;
       width: 100%;
+      margin-top: 1.85rem;
+    }
+
+    .hero__cta {
+      display: none;
+    }
+
+    .hero__slogan {
+      margin-top: 2rem;
+    }
+
+    .hero__chiffres {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
     }
   }
 </style>
